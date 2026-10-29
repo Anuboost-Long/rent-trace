@@ -1,6 +1,6 @@
 # Authentication and accounts
 
-Decisions made after spec v3 (`RentTrace_Database_Structure_and_Processes_v3.md`). Where this document and spec §3 disagree, this document is the current rule. Models live in `accounts/models.py`.
+Decisions made after spec v3 (`RentTrace_Database_Structure_and_Processes_v3.md`). Where this document and spec §3 disagree, this document is the current rule. Models live in `accounts/models/` (`users.py`, `sessions.py`, `access.py`).
 
 ## 1. Sign-in methods
 
@@ -268,7 +268,7 @@ One row per `email_normalized`, keyed by email rather than user. Unknown emails 
   - Records show the super admin as the actor. The person they acted for goes in `on_behalf_of` on `business_change_history`, `review_status_history` and `maintenance_status_history`.
   - Only a super admin may set `is_top_level_admin` or `on_behalf_of`.
 - **`access.view_hidden_records`** never comes from a role or from super admin status alone. It needs `access_policy` ≠ `DENY_ALL`, plus `is_top_level_admin`, plus an active individual grant.
-- **Permission codes:** see `accounts/permission_seed.py` (draft, pending review).
+- **Permission codes:** see `accounts/seeds/permissions.py` (draft, pending review).
 
 ## 9. MFA for Admin and super admin
 
