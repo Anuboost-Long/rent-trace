@@ -12,7 +12,6 @@ from accounts.services.shared.mail import send_after_commit
 from accounts.services.shared.passwords import dummy_password_hash
 from accounts.services.shared.sessions import SignedIn, start_session
 
-
 FREE_SIGN_IN_ATTEMPTS = 5
 FIRST_LOCK = timedelta(minutes=10)
 MAX_LOCK_DOUBLINGS = 30

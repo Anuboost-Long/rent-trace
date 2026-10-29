@@ -6,15 +6,11 @@ from .requests import ReviewRequest, ReviewSubmission
 
 
 class Dispute(EventRecord):
-    request = models.OneToOneField(
-        ReviewRequest, models.PROTECT, related_name="dispute"
-    )
+    request = models.OneToOneField(ReviewRequest, models.PROTECT, related_name="dispute")
     origin_request = models.ForeignKey(
         ReviewRequest, models.PROTECT, related_name="originated_disputes"
     )
-    opened_by = models.ForeignKey(
-        "accounts.User", models.PROTECT, related_name="opened_disputes"
-    )
+    opened_by = models.ForeignKey("accounts.User", models.PROTECT, related_name="opened_disputes")
     disputed_submission = models.ForeignKey(
         ReviewSubmission, models.PROTECT, related_name="disputes"
     )

@@ -2,7 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from accounts.integrations import emails
-from accounts.models import AuthMethod, AuthTokenPurpose, User
+from accounts.models import AuthTokenPurpose, User
 from accounts.services.shared.account_rules import normalize_email
 from accounts.services.shared.links import RESET_LINK_LIFETIME, issue_link
 from accounts.services.shared.mail import send_after_commit

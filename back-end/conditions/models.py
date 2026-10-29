@@ -15,7 +15,11 @@ class ConditionRecord(MutableRecord):
         "properties.PropertyUnit", models.PROTECT, related_name="condition_records"
     )
     unit_area = models.ForeignKey(
-        "properties.UnitArea", models.PROTECT, null=True, blank=True, related_name="condition_records"
+        "properties.UnitArea",
+        models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="condition_records",
     )
     tenancy = models.ForeignKey(
         "tenancies.Tenancy", models.PROTECT, null=True, blank=True, related_name="condition_records"
@@ -27,7 +31,8 @@ class ConditionRecord(MutableRecord):
     maintenance_issue = models.ForeignKey(
         "maintenance.MaintenanceIssue",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="condition_records",
     )
     accepted_version = models.ForeignKey(
@@ -41,9 +46,7 @@ class ConditionRecord(MutableRecord):
             enum_check("condition_records", "record_type", ConditionRecordType),
         ]
         indexes = [
-            models.Index(
-                fields=["property_unit", "unit_area"], name="ix_condition_records_unit"
-            ),
+            models.Index(fields=["property_unit", "unit_area"], name="ix_condition_records_unit"),
         ]
 
 
@@ -55,9 +58,7 @@ class SourceType(models.TextChoices):
 
 
 class ConditionVersion(EventRecord):
-    condition_record = models.ForeignKey(
-        ConditionRecord, models.PROTECT, related_name="versions"
-    )
+    condition_record = models.ForeignKey(ConditionRecord, models.PROTECT, related_name="versions")
     version_no = models.PositiveIntegerField()
     supersedes_version = models.ForeignKey(
         "self", models.PROTECT, null=True, blank=True, related_name="superseded_by"
@@ -88,12 +89,8 @@ class ConditionVersion(EventRecord):
 
 
 class ConditionRecordFile(LinkRecord):
-    condition_version = models.ForeignKey(
-        ConditionVersion, models.PROTECT, related_name="files"
-    )
-    file = models.ForeignKey(
-        "files.File", models.PROTECT, related_name="condition_attachments"
-    )
+    condition_version = models.ForeignKey(ConditionVersion, models.PROTECT, related_name="files")
+    file = models.ForeignKey("files.File", models.PROTECT, related_name="condition_attachments")
     caption = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:

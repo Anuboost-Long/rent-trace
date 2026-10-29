@@ -18,22 +18,29 @@ class CommunicationLog(MutableRecord):
     property_unit = models.ForeignKey(
         "properties.PropertyUnit",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="communication_logs",
     )
     tenancy = models.ForeignKey(
-        "tenancies.Tenancy", models.PROTECT, null=True, blank=True, related_name="communication_logs"
+        "tenancies.Tenancy",
+        models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="communication_logs",
     )
     maintenance_issue = models.ForeignKey(
         "maintenance.MaintenanceIssue",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="communication_logs",
     )
     service_provider = models.ForeignKey(
         "providers.ServiceProvider",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="communication_logs",
     )
     contact_name = models.CharField(max_length=150, null=True, blank=True)
@@ -51,12 +58,8 @@ class CommunicationLog(MutableRecord):
 
 
 class CommunicationLogFile(LinkRecord):
-    communication_log = models.ForeignKey(
-        CommunicationLog, models.PROTECT, related_name="files"
-    )
-    file = models.ForeignKey(
-        "files.File", models.PROTECT, related_name="communication_attachments"
-    )
+    communication_log = models.ForeignKey(CommunicationLog, models.PROTECT, related_name="files")
+    file = models.ForeignKey("files.File", models.PROTECT, related_name="communication_attachments")
 
     class Meta:
         db_table = "communication_log_files"

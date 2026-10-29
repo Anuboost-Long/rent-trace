@@ -20,8 +20,4 @@ class UserResource(serializers.ModelSerializer):
         ]
 
     def get_roles(self, user) -> list[str]:
-        return list(
-            user.role_bridges.active().values_list(
-                "role__code", flat=True
-            )
-        )
+        return list(user.role_bridges.active().values_list("role__code", flat=True))

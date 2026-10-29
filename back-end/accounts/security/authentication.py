@@ -4,8 +4,8 @@ from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed
 
-from accounts.security import tokens
 from accounts.models import AuthSession
+from accounts.security import tokens
 from accounts.services.shared.account_rules import is_account_usable
 from accounts.services.shared.sessions import SESSION_ENDED
 
@@ -19,15 +19,15 @@ class SessionTokenAuthentication(BaseAuthentication):
             raise AuthenticationFailed("Send the access token as 'Authorization: Bearer <token>'.")
         try:
             claims = tokens.decode_access_token(header[1].decode())
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Your access token has expired. Refresh it and try again.")
-        except (jwt.PyJWTError, UnicodeDecodeError):
-            raise AuthenticationFailed("Your access token is invalid. Sign in again.")
+        except jwt.ExpiredSignatureError as error:
+            raise AuthenticationFailed(
+                "Your access token has expired. Refresh it and try again."
+            ) from error
+        except (jwt.PyJWTError, UnicodeDecodeError) as error:
+            raise AuthenticationFailed("Your access token is invalid. Sign in again.") from error
 
         now = timezone.now()
-        session = (
-            AuthSession.objects.for_access_token(claims["sid"], claims["sub"]).first()
-        )
+        session = AuthSession.objects.for_access_token(claims["sid"], claims["sub"]).first()
         if (
             session is None
             or session.revoked_at is not None

@@ -1,5 +1,4 @@
 from django.db import transaction
-
 from rest_framework.exceptions import ValidationError
 
 from accounts.services.shared.account_rules import assign_role, has_active_role

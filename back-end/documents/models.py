@@ -47,7 +47,8 @@ class DocumentVersion(EventRecord):
     confirmation_request = models.OneToOneField(
         "reviews.ReviewRequest",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="confirmed_document_version",
     )
 
@@ -64,17 +65,11 @@ class DocumentVersion(EventRecord):
 
 
 class DocumentFile(LinkRecord):
-    document_version = models.ForeignKey(
-        DocumentVersion, models.PROTECT, related_name="files"
-    )
-    file = models.ForeignKey(
-        "files.File", models.PROTECT, related_name="document_attachments"
-    )
+    document_version = models.ForeignKey(DocumentVersion, models.PROTECT, related_name="files")
+    file = models.ForeignKey("files.File", models.PROTECT, related_name="document_attachments")
 
     class Meta:
         db_table = "document_files"
         constraints = [
-            models.UniqueConstraint(
-                fields=["document_version", "file"], name="uq_document_files"
-            ),
+            models.UniqueConstraint(fields=["document_version", "file"], name="uq_document_files"),
         ]

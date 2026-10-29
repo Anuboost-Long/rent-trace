@@ -85,8 +85,7 @@ class AuthSession(models.Model):
                 name="ck_auth_sessions_expiry",
             ),
             models.CheckConstraint(
-                condition=Q(revoked_at__isnull=True)
-                | Q(revoked_at__gte=F("verified_at")),
+                condition=Q(revoked_at__isnull=True) | Q(revoked_at__gte=F("verified_at")),
                 name="ck_auth_sessions_revoked",
             ),
             models.CheckConstraint(
@@ -136,9 +135,7 @@ class RefreshTokenQuerySet(models.QuerySet):
 
 class RefreshToken(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    session = models.ForeignKey(
-        AuthSession, models.PROTECT, related_name="refresh_tokens"
-    )
+    session = models.ForeignKey(AuthSession, models.PROTECT, related_name="refresh_tokens")
     token_hash = models.CharField(max_length=64, unique=True)
     expires_at = models.DateTimeField()
     used_at = models.DateTimeField(null=True, blank=True)

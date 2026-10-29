@@ -52,9 +52,7 @@ class UserRoleBridge(MutableRecord):
 
 class RolePermissionBridge(MutableRecord):
     role = models.ForeignKey(Role, models.PROTECT, related_name="permission_bridges")
-    permission = models.ForeignKey(
-        Permission, models.PROTECT, related_name="role_bridges"
-    )
+    permission = models.ForeignKey(Permission, models.PROTECT, related_name="role_bridges")
     is_active = models.BooleanField(default=True)
 
     class Meta(MutableRecord.Meta):
@@ -68,12 +66,8 @@ class RolePermissionBridge(MutableRecord):
 
 
 class UserPermissionBridge(MutableRecord):
-    user = models.ForeignKey(
-        User, models.PROTECT, related_name="permission_bridges"
-    )
-    permission = models.ForeignKey(
-        Permission, models.PROTECT, related_name="user_bridges"
-    )
+    user = models.ForeignKey(User, models.PROTECT, related_name="permission_bridges")
+    permission = models.ForeignKey(Permission, models.PROTECT, related_name="user_bridges")
     is_active = models.BooleanField(default=True)
     reason = models.TextField()
 

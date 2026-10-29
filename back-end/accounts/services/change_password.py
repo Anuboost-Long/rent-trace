@@ -13,7 +13,9 @@ def change_password(*, user, session, current_password, new_password, sign_out_o
     now = timezone.now()
     credential = UserCredential.objects.select_for_update().filter(user=user).first()
     if credential is None:
-        raise ValidationError({"current_password": "This account signs in with Google, so it has no password."})
+        raise ValidationError(
+            {"current_password": "This account signs in with Google, so it has no password."}
+        )
     if not check_password(current_password, credential.password_hash):
         raise ValidationError({"current_password": "Current password is incorrect."})
     check_password_strength(new_password, user, "new_password")

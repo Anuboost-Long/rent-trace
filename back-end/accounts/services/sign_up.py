@@ -13,7 +13,6 @@ from accounts.services.shared.links import VERIFICATION_LINK_LIFETIME, issue_lin
 from accounts.services.shared.mail import send_after_commit
 from accounts.services.shared.passwords import check_password_strength
 
-
 UNVERIFIED_RECLAIM_AFTER = timedelta(days=7)
 
 

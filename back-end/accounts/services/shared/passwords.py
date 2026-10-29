@@ -18,7 +18,7 @@ def check_password_strength(password, user, field):
     try:
         validate_password(password, user)
     except DjangoValidationError as error:
-        raise ValidationError({field: error.messages})
+        raise ValidationError({field: error.messages}) from error
 
 
 def replace_password(user, new_password, now):

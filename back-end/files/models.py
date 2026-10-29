@@ -23,9 +23,7 @@ class File(MutableRecord):
     size_bytes = models.BigIntegerField()
     sha256 = models.CharField(max_length=64)
     upload_status = models.TextField(choices=UploadStatus, default=UploadStatus.STAGED)
-    uploaded_by = models.ForeignKey(
-        "accounts.User", models.PROTECT, related_name="uploaded_files"
-    )
+    uploaded_by = models.ForeignKey("accounts.User", models.PROTECT, related_name="uploaded_files")
 
     class Meta(MutableRecord.Meta):
         db_table = "files"

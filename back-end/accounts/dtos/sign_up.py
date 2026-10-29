@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from accounts.dtos.fields import PasswordField, SELF_SERVICE_ROLES
+from accounts.dtos.fields import SELF_SERVICE_ROLES, PasswordField
 
 
 class SignUpDto(serializers.Serializer):

@@ -19,8 +19,12 @@ class SignInWithPasswordTests(AuthApiTestCase):
         self.assertAlmostEqual(
             (throttle.locked_until - throttle.last_failed_at).total_seconds(), 600, delta=1
         )
-        self.assertEqual(self.sign_in().status_code, 401, "correct password is refused while locked")
-        self.assertEqual(SignInThrottle.objects.get().failed_count, 5, "attempts while locked aren't counted")
+        self.assertEqual(
+            self.sign_in().status_code, 401, "correct password is refused while locked"
+        )
+        self.assertEqual(
+            SignInThrottle.objects.get().failed_count, 5, "attempts while locked aren't counted"
+        )
 
         SignInThrottle.objects.update(locked_until=timezone.now() - timedelta(seconds=1))
         self.sign_in(password="wrong password here")

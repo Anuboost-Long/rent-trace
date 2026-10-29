@@ -19,6 +19,7 @@ TARGET_FIELDS = [
     "access_policy",
 ]
 
+
 def target_link(model):
     return models.OneToOneField(
         model, models.PROTECT, null=True, blank=True, related_name="review_target"

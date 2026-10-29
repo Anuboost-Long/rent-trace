@@ -82,9 +82,7 @@ class ReviewRequest(MutableRecord):
 
 class ReviewRequestScope(EventRecord):
     request = models.ForeignKey(ReviewRequest, models.PROTECT, related_name="scopes")
-    tenancy = models.ForeignKey(
-        "tenancies.Tenancy", models.PROTECT, related_name="review_scopes"
-    )
+    tenancy = models.ForeignKey("tenancies.Tenancy", models.PROTECT, related_name="review_scopes")
     scope_revision = models.PositiveIntegerField()
 
     class Meta:
@@ -102,9 +100,7 @@ class ReviewRequestScope(EventRecord):
 
 
 class ReviewSubmission(EventRecord):
-    request = models.ForeignKey(
-        ReviewRequest, models.PROTECT, related_name="submissions"
-    )
+    request = models.ForeignKey(ReviewRequest, models.PROTECT, related_name="submissions")
     revision_no = models.PositiveIntegerField()
     submitted_by = models.ForeignKey(
         "accounts.User", models.PROTECT, related_name="review_submissions"
@@ -142,12 +138,8 @@ class ReviewSubmission(EventRecord):
 
 
 class ReviewSubmissionFile(LinkRecord):
-    submission = models.ForeignKey(
-        ReviewSubmission, models.PROTECT, related_name="files"
-    )
-    file = models.ForeignKey(
-        "files.File", models.PROTECT, related_name="submission_attachments"
-    )
+    submission = models.ForeignKey(ReviewSubmission, models.PROTECT, related_name="files")
+    file = models.ForeignKey("files.File", models.PROTECT, related_name="submission_attachments")
 
     class Meta:
         db_table = "review_submission_files"
@@ -173,12 +165,8 @@ class ReviewDecisionType(models.TextChoices):
 
 class ReviewDecision(EventRecord):
     request = models.ForeignKey(ReviewRequest, models.PROTECT, related_name="decisions")
-    submission = models.ForeignKey(
-        ReviewSubmission, models.PROTECT, related_name="decisions"
-    )
-    reviewer = models.ForeignKey(
-        "accounts.User", models.PROTECT, related_name="review_decisions"
-    )
+    submission = models.ForeignKey(ReviewSubmission, models.PROTECT, related_name="decisions")
+    reviewer = models.ForeignKey("accounts.User", models.PROTECT, related_name="review_decisions")
     reviewer_side = models.TextField(choices=ReviewerSide)
     decision = models.TextField(choices=ReviewDecisionType)
     reason = models.TextField(null=True, blank=True)
@@ -203,9 +191,7 @@ class ReviewDecision(EventRecord):
 
 
 class ReviewStatusHistory(EventRecord):
-    request = models.ForeignKey(
-        ReviewRequest, models.PROTECT, related_name="status_history"
-    )
+    request = models.ForeignKey(ReviewRequest, models.PROTECT, related_name="status_history")
     sequence_no = models.PositiveBigIntegerField()
     from_status = models.CharField(max_length=30, null=True, blank=True)
     to_status = models.CharField(max_length=30, choices=ReviewStatus)

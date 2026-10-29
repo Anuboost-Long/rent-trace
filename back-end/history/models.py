@@ -12,7 +12,8 @@ class BusinessChangeHistory(EventRecord):
     request = models.ForeignKey(
         "reviews.ReviewRequest",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="change_history",
     )
     action = models.CharField(max_length=60)
@@ -31,8 +32,7 @@ class BusinessChangeHistory(EventRecord):
                 name="uq_business_change_history_seq",
             ),
             models.CheckConstraint(
-                condition=Q(on_behalf_of__isnull=True)
-                | ~Q(on_behalf_of=F("created_by")),
+                condition=Q(on_behalf_of__isnull=True) | ~Q(on_behalf_of=F("created_by")),
                 name="ck_business_change_history_on_behalf_of",
             ),
         ]
@@ -49,7 +49,8 @@ class TimelineEvent(models.Model):
     property_unit = models.ForeignKey(
         "properties.PropertyUnit",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="timeline_events",
     )
     tenancy = models.ForeignKey(
@@ -61,7 +62,5 @@ class TimelineEvent(models.Model):
     class Meta:
         db_table = "timeline_events"
         indexes = [
-            models.Index(
-                fields=["property_unit", "event_at"], name="ix_timeline_events_unit"
-            ),
+            models.Index(fields=["property_unit", "event_at"], name="ix_timeline_events_unit"),
         ]

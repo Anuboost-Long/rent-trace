@@ -33,7 +33,8 @@ class BusinessEvent(EventRecord):
     request = models.ForeignKey(
         "reviews.ReviewRequest",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="business_events",
     )
     payload = models.JSONField(default=dict)
@@ -45,12 +46,8 @@ class BusinessEvent(EventRecord):
 class Notification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     read_at = models.DateTimeField(null=True, blank=True)
-    event = models.ForeignKey(
-        BusinessEvent, models.PROTECT, related_name="notifications"
-    )
-    recipient = models.ForeignKey(
-        "accounts.User", models.PROTECT, related_name="notifications"
-    )
+    event = models.ForeignKey(BusinessEvent, models.PROTECT, related_name="notifications")
+    recipient = models.ForeignKey("accounts.User", models.PROTECT, related_name="notifications")
     title = models.CharField(max_length=200)
     body = models.TextField()
     is_suppressed = models.BooleanField(default=False)
@@ -73,9 +70,7 @@ class Notification(models.Model):
 class NotificationDelivery(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    notification = models.ForeignKey(
-        Notification, models.PROTECT, related_name="deliveries"
-    )
+    notification = models.ForeignKey(Notification, models.PROTECT, related_name="deliveries")
     channel = models.TextField(choices=DeliveryChannel, default=DeliveryChannel.EMAIL)
     status = models.TextField(choices=DeliveryStatus, default=DeliveryStatus.QUEUED)
     recipient_email = models.CharField(max_length=255)
@@ -96,16 +91,12 @@ class NotificationDelivery(models.Model):
             ),
         ]
         indexes = [
-            models.Index(
-                fields=["status", "next_attempt_at"], name="ix_deliveries_due"
-            ),
+            models.Index(fields=["status", "next_attempt_at"], name="ix_deliveries_due"),
         ]
 
 
 class NotificationDeliveryAttempt(EventRecord):
-    delivery = models.ForeignKey(
-        NotificationDelivery, models.PROTECT, related_name="attempts"
-    )
+    delivery = models.ForeignKey(NotificationDelivery, models.PROTECT, related_name="attempts")
     attempt_no = models.PositiveIntegerField()
     started_at = models.DateTimeField()
     finished_at = models.DateTimeField()

@@ -5,7 +5,6 @@ from rest_framework.exceptions import ValidationError
 from accounts.models import AuthToken
 from accounts.security import tokens
 
-
 VERIFICATION_LINK_LIFETIME = timedelta(hours=24)
 RESET_LINK_LIFETIME = timedelta(hours=1)
 INVALID_LINK = "This link is invalid or has expired. Request a new one."

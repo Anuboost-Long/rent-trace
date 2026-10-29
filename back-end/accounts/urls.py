@@ -5,7 +5,9 @@ from accounts import views
 urlpatterns = [
     path("sign-up/", views.SignUpView.as_view(), name="sign-up"),
     path("verify-email/", views.VerifyEmailView.as_view(), name="verify-email"),
-    path("resend-verification/", views.ResendVerificationView.as_view(), name="resend-verification"),
+    path(
+        "resend-verification/", views.ResendVerificationView.as_view(), name="resend-verification"
+    ),
     path("sign-in/", views.SignInView.as_view(), name="sign-in"),
     path("google/", views.GoogleSignInView.as_view(), name="google-sign-in"),
     path("refresh/", views.RefreshView.as_view(), name="refresh"),

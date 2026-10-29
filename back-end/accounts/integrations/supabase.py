@@ -5,14 +5,16 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from django.conf import settings
-from rest_framework.exceptions import AuthenticationFailed, APIException
+from rest_framework.exceptions import APIException, AuthenticationFailed
 
 GOOGLE_SIGN_IN_FAILED = "We couldn't sign you in with Google. Try again."
 
 
 class GoogleSignInUnavailable(APIException):
     status_code = 503
-    default_detail = "Google sign-in isn't available right now. Try again later or use your email and password."
+    default_detail = (
+        "Google sign-in isn't available right now. Try again later or use your email and password."
+    )
     default_code = "google_unavailable"
 
 
@@ -38,10 +40,10 @@ def fetch_google_identity(supabase_access_token):
             user = json.load(response)
     except HTTPError as error:
         if error.code in (401, 403):
-            raise AuthenticationFailed(GOOGLE_SIGN_IN_FAILED)
-        raise GoogleSignInUnavailable()
-    except (URLError, TimeoutError, ValueError):
-        raise GoogleSignInUnavailable()
+            raise AuthenticationFailed(GOOGLE_SIGN_IN_FAILED) from error
+        raise GoogleSignInUnavailable() from error
+    except (URLError, TimeoutError, ValueError) as error:
+        raise GoogleSignInUnavailable() from error
 
     metadata = user.get("user_metadata") or {}
     if (

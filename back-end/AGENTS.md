@@ -58,9 +58,11 @@ class BanQuerySet(models.QuerySet):
             Q(expires_at__isnull=True) | Q(expires_at__gt=now)
         )
 
+
 class Ban(MutableRecord):
     ...
     objects = BanQuerySet.as_manager()
+
 
 # services/shared/account_rules.py
 Ban.objects.active(now).for_identity(email_normalized).exists()
@@ -106,6 +108,8 @@ Ban.objects.active(now).for_identity(email_normalized).exists()
 Run all of these from `back-end/` with the Docker containers up:
 
 ```bash
+ruff format .                                       # format (config in pyproject.toml)
+ruff check .                                        # lint; must report "All checks passed!"
 python manage.py check
 python manage.py makemigrations --check --dry-run   # models and migrations match
 python manage.py test                               # or: python manage.py test <app>.tests.test_<use_case>
@@ -114,10 +118,10 @@ python manage.py spectacular --validate --fail-on-warn --file /dev/null
 
 - When you move or rename files, search for stale imports and paths, including in `README.md`, `docs/` and `config/settings.py`.
 - Never delete a file before its replacement passes the tests.
+- Code style is Ruff's: don't hand-format, and don't silence a lint rule inline (`# noqa`) without saying why. A complexity error (`C901`, over 6 branches) means the function needs splitting or flattening, not a higher limit.
 - Never commit `config/.env`. When you add a setting, add it to `config/.env.example` and the README's environment table.
 
 ## 8. Open questions (ask the team before assuming)
 
-- No code formatter or linter is configured yet (some lines exceed 100 characters). Don't reformat whole files until one is chosen.
 - Admin sign-in, MFA, the admin panel's cookie handling and the devices screen aren't built yet (`docs/authentication.md`, "Open items").
 - The permission codes in `accounts/seeds/permissions.py` are a draft awaiting review; they aren't seeded yet.

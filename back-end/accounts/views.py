@@ -189,4 +189,3 @@ class OnboardingView(APIView):
             role_code=data["role"],
         )
         return Response(resources.UserResource(request.user).data)
-

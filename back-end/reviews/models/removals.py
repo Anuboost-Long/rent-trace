@@ -7,21 +7,15 @@ from .targets import ReviewTarget
 
 
 class RemovalRequestItem(EventRecord):
-    request = models.ForeignKey(
-        ReviewRequest, models.PROTECT, related_name="removal_items"
-    )
-    target = models.ForeignKey(
-        ReviewTarget, models.PROTECT, related_name="removal_items"
-    )
+    request = models.ForeignKey(ReviewRequest, models.PROTECT, related_name="removal_items")
+    target = models.ForeignKey(ReviewTarget, models.PROTECT, related_name="removal_items")
     include_descendants = models.BooleanField(default=True)
     requested_reason = models.TextField(null=True, blank=True)
 
     class Meta:
         db_table = "removal_request_items"
         constraints = [
-            models.UniqueConstraint(
-                fields=["request", "target"], name="uq_removal_request_items"
-            ),
+            models.UniqueConstraint(fields=["request", "target"], name="uq_removal_request_items"),
         ]
 
 
@@ -32,12 +26,8 @@ class RemovalEffectType(models.TextChoices):
 
 
 class RemovalEffect(EventRecord):
-    request = models.ForeignKey(
-        ReviewRequest, models.PROTECT, related_name="removal_effects"
-    )
-    target = models.ForeignKey(
-        ReviewTarget, models.PROTECT, related_name="removal_effects"
-    )
+    request = models.ForeignKey(ReviewRequest, models.PROTECT, related_name="removal_effects")
+    target = models.ForeignKey(ReviewTarget, models.PROTECT, related_name="removal_effects")
     effect = models.TextField(choices=RemovalEffectType)
     reason = models.TextField()
 

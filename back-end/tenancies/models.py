@@ -60,9 +60,7 @@ class Tenancy(MutableRecord):
 
 class TenancyParty(MutableRecord):
     tenancy = models.ForeignKey(Tenancy, models.PROTECT, related_name="parties")
-    tenant = models.ForeignKey(
-        "accounts.User", models.PROTECT, related_name="tenancy_memberships"
-    )
+    tenant = models.ForeignKey("accounts.User", models.PROTECT, related_name="tenancy_memberships")
     is_primary = models.BooleanField(default=False)
     joined_at = models.DateField()
     left_at = models.DateField(null=True, blank=True)
@@ -101,9 +99,7 @@ class TenancyArea(MutableRecord):
         db_table = "tenancy_areas"
         constraints = [
             *MutableRecord.Meta.constraints,
-            models.UniqueConstraint(
-                fields=["tenancy", "unit_area"], name="uq_tenancy_areas"
-            ),
+            models.UniqueConstraint(fields=["tenancy", "unit_area"], name="uq_tenancy_areas"),
         ]
 
 
@@ -142,14 +138,10 @@ class TenancyInvitation(MutableRecord):
             ),
             models.UniqueConstraint(
                 fields=["tenancy", "email_normalized"],
-                condition=Q(
-                    accepted_at__isnull=True, revoked_at__isnull=True, is_deleted=False
-                ),
+                condition=Q(accepted_at__isnull=True, revoked_at__isnull=True, is_deleted=False),
                 name="uq_tenancy_invitations_pending",
             ),
         ]
         indexes = [
-            models.Index(
-                fields=["email_normalized"], name="ix_tenancy_invitations_email"
-            ),
+            models.Index(fields=["email_normalized"], name="ix_tenancy_invitations_email"),
         ]

@@ -28,7 +28,13 @@ class AuthApiTestCase(APITestCase):
             return self.client.post(path, data, format="json", **kwargs)
 
     def sign_up(self, email="ann@example.com", password=PASSWORD, role="TENANT", **extra):
-        payload = {"email": email, "password": password, "first_name": "Ann", "last_name": "Lee", "role": role}
+        payload = {
+            "email": email,
+            "password": password,
+            "first_name": "Ann",
+            "last_name": "Lee",
+            "role": role,
+        }
         return self.post("/api/auth/sign-up/", {**payload, **extra})
 
     def last_link_token(self):

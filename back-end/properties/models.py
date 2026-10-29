@@ -30,12 +30,8 @@ class Property(MutableRecord):
     postcode = models.CharField(max_length=20)
     country = models.CharField(max_length=100, default="Australia")
     property_type = models.CharField(max_length=50)
-    property_status = models.TextField(
-        choices=PropertyStatus, default=PropertyStatus.ACTIVE
-    )
-    listing_status = models.TextField(
-        choices=ListingStatus, default=ListingStatus.DRAFT
-    )
+    property_status = models.TextField(choices=PropertyStatus, default=PropertyStatus.ACTIVE)
+    listing_status = models.TextField(choices=ListingStatus, default=ListingStatus.DRAFT)
     public_description = models.TextField(null=True, blank=True)
     private_notes = models.TextField(null=True, blank=True)
 
@@ -47,17 +43,13 @@ class Property(MutableRecord):
             enum_check("properties", "listing_status", ListingStatus),
         ]
         indexes = [
-            models.Index(
-                fields=["listing_status", "is_deleted"], name="ix_properties_listing"
-            ),
+            models.Index(fields=["listing_status", "is_deleted"], name="ix_properties_listing"),
         ]
 
 
 class PropertyOwner(MutableRecord):
     property = models.ForeignKey(Property, models.PROTECT, related_name="owners")
-    owner = models.ForeignKey(
-        "accounts.User", models.PROTECT, related_name="property_ownerships"
-    )
+    owner = models.ForeignKey("accounts.User", models.PROTECT, related_name="property_ownerships")
     is_primary_owner = models.BooleanField(default=False)
     ownership_percentage = models.DecimalField(
         max_digits=5, decimal_places=2, null=True, blank=True
@@ -107,9 +99,7 @@ class PropertyUnit(MutableRecord):
     unit_type = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)
     is_public = models.BooleanField(default=False)
-    occupancy_status = models.TextField(
-        choices=OccupancyStatus, default=OccupancyStatus.VACANT
-    )
+    occupancy_status = models.TextField(choices=OccupancyStatus, default=OccupancyStatus.VACANT)
 
     class Meta(MutableRecord.Meta):
         db_table = "property_units"

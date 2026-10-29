@@ -42,26 +42,31 @@ class MaintenanceIssue(MutableRecord):
         "properties.PropertyUnit", models.PROTECT, related_name="maintenance_issues"
     )
     unit_area = models.ForeignKey(
-        "properties.UnitArea", models.PROTECT, null=True, blank=True, related_name="maintenance_issues"
+        "properties.UnitArea",
+        models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="maintenance_issues",
     )
     tenancy = models.ForeignKey(
-        "tenancies.Tenancy", models.PROTECT, null=True, blank=True, related_name="maintenance_issues"
+        "tenancies.Tenancy",
+        models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="maintenance_issues",
     )
     service_category = models.ForeignKey(
         "providers.ServiceCategory",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="maintenance_issues",
     )
     title = models.CharField(max_length=200)
     description = models.TextField()
     priority = models.TextField(choices=MaintenancePriority)
-    status = models.TextField(
-        choices=MaintenanceStatus, default=MaintenanceStatus.REPORTED
-    )
-    reported_by = models.ForeignKey(
-        "accounts.User", models.PROTECT, related_name="reported_issues"
-    )
+    status = models.TextField(choices=MaintenanceStatus, default=MaintenanceStatus.REPORTED)
+    reported_by = models.ForeignKey("accounts.User", models.PROTECT, related_name="reported_issues")
     reporter_side = models.TextField(choices=PartySide)
     reported_at = models.DateTimeField()
     acknowledged_at = models.DateTimeField(null=True, blank=True)
@@ -100,9 +105,7 @@ class MaintenanceIssue(MutableRecord):
 
 
 class MaintenanceIssueFile(LinkRecord):
-    maintenance_issue = models.ForeignKey(
-        MaintenanceIssue, models.PROTECT, related_name="files"
-    )
+    maintenance_issue = models.ForeignKey(MaintenanceIssue, models.PROTECT, related_name="files")
     file = models.ForeignKey(
         "files.File", models.PROTECT, related_name="maintenance_issue_attachments"
     )
@@ -119,9 +122,7 @@ class MaintenanceIssueFile(LinkRecord):
 
 class MaintenanceIssueRead(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    maintenance_issue = models.ForeignKey(
-        MaintenanceIssue, models.PROTECT, related_name="reads"
-    )
+    maintenance_issue = models.ForeignKey(MaintenanceIssue, models.PROTECT, related_name="reads")
     user = models.ForeignKey(
         "accounts.User", models.PROTECT, related_name="maintenance_issue_reads"
     )
@@ -129,7 +130,8 @@ class MaintenanceIssueRead(models.Model):
     notification = models.ForeignKey(
         "notifications.Notification",
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="maintenance_issue_reads",
     )
 
@@ -183,7 +185,8 @@ class MaintenanceStatusHistory(EventRecord):
     closure_proposal = models.ForeignKey(
         MaintenanceClosureProposal,
         models.PROTECT,
-        null=True, blank=True,
+        null=True,
+        blank=True,
         related_name="status_events",
     )
     reason = models.TextField()

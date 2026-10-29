@@ -49,9 +49,7 @@ class User(MutableRecord):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=30, null=True, blank=True)
-    account_status = models.TextField(
-        choices=AccountStatus, default=AccountStatus.ACTIVE
-    )
+    account_status = models.TextField(choices=AccountStatus, default=AccountStatus.ACTIVE)
     is_top_level_admin = models.BooleanField(default=False)
     last_login_at = models.DateTimeField(null=True, blank=True)
 
@@ -75,8 +73,7 @@ class User(MutableRecord):
                 name="ck_users_auth_subject",
             ),
             models.CheckConstraint(
-                condition=~Q(auth_method=AuthMethod.GOOGLE)
-                | Q(email_verified_at__isnull=False),
+                condition=~Q(auth_method=AuthMethod.GOOGLE) | Q(email_verified_at__isnull=False),
                 name="ck_users_google_verified",
             ),
         ]
@@ -151,12 +148,13 @@ class Ban(MutableRecord):
             nonblank_check("ban_list", "reason"),
             models.CheckConstraint(
                 condition=Q(ban_type=BanType.ACCOUNT, user__isnull=False, value__isnull=True)
-                | Q(user__isnull=True, value=Lower(Trim("value")))
-                & ~Q(ban_type=BanType.ACCOUNT),
+                | Q(user__isnull=True, value=Lower(Trim("value"))) & ~Q(ban_type=BanType.ACCOUNT),
                 name="ck_ban_list_target",
             ),
             models.CheckConstraint(
-                condition=Q(lifted_at__isnull=True, lifted_by__isnull=True, lift_reason__isnull=True)
+                condition=Q(
+                    lifted_at__isnull=True, lifted_by__isnull=True, lift_reason__isnull=True
+                )
                 | Q(lifted_at__isnull=False, lifted_by__isnull=False, lift_reason__isnull=False)
                 & ~Q(Exact(Trim("lift_reason"), "")),
                 name="ck_ban_list_lift",

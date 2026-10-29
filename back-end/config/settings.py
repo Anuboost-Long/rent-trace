@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -158,9 +159,7 @@ AUTH_LINK_BASE_URL = env("AUTH_LINK_BASE_URL", default="renttrace://auth")
 SUPABASE_URL = env("SUPABASE_URL", default="")
 SUPABASE_PUBLISHABLE_KEY = env("SUPABASE_PUBLISHABLE_KEY", default="")
 
-EMAIL_BACKEND = env(
-    "EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
-)
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="RentTrace <no-reply@renttrace.local>")
 
 SPECTACULAR_SETTINGS = {

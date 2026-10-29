@@ -15,7 +15,9 @@ class SignInWithGoogleTests(AuthApiTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.data["needs_onboarding"])
         user = User.objects.get()
-        self.assertEqual((user.auth_subject, user.first_name, user.last_name), (subject, "Gina", "Mary Park"))
+        self.assertEqual(
+            (user.auth_subject, user.first_name, user.last_name), (subject, "Gina", "Mary Park")
+        )
         self.assertIsNotNone(user.email_verified_at)
 
         self.authorize(response.data["access_token"])

@@ -22,10 +22,10 @@ Run everything from the `back-end/` folder.
 ```bash
 cd back-end
 
-# 1. Python environment and packages
+# 1. Python environment and packages (requirements-dev.txt = app packages + Ruff)
 python3.14 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
 # 2. Environment file
 cp config/.env.example config/.env
@@ -90,7 +90,19 @@ PostgreSQL uses host port **5433**, not the usual 5432, so it doesn't clash with
 | Open a SQL shell         | `docker compose exec postgres psql -U renttrace -d renttrace`                               |
 | Open a Redis shell       | `docker compose exec redis redis-cli`                                                       |
 
-## 5. Database migrations
+## 5. Formatting and lint
+
+The code is formatted and linted with [Ruff](https://docs.astral.sh/ruff/). Settings are in `pyproject.toml`: 100-character lines, sorted imports, Django checks, and a complexity limit that keeps functions flat.
+
+| Task | Command |
+|---|---|
+| Format everything | `ruff format .` |
+| Lint (auto-fix what's safe) | `ruff check . --fix` |
+| Check without changing files, as CI would | `ruff format --check . && ruff check .` |
+
+Run both before committing. For format-on-save, install the **Ruff** extension in VS Code or PyCharm; it picks up `pyproject.toml` automatically.
+
+## 6. Database migrations
 
 | Task                                                       | Command                                             |
 | ---------------------------------------------------------- | --------------------------------------------------- |
@@ -103,7 +115,7 @@ Once a migration is committed, never edit or delete it. Change the model and cre
 
 Some apps have two initial migrations (`0001` and `0002`). That's expected: their tables link to other apps that link back, so Django adds those cross-links in a second step.
 
-## 6. Environment variables (`config/.env`)
+## 7. Environment variables (`config/.env`)
 
 These are required: Django won't start if one is missing.
 
@@ -129,7 +141,7 @@ Optional, with defaults (see `config/.env.example`):
 
 `config/.env` is git-ignored. Never commit it. When you add a new variable, add it to `config/.env.example` too.
 
-## 7. Auth API and tests
+## 8. Auth API and tests
 
 All auth endpoints live under `/api/auth/`. Each one is a controller in `accounts/views.py` that calls one use case in `accounts/services/` (for example `sign_in/` → `services/sign_in_with_password.py`). Every other endpoint requires `Authorization: Bearer <access_token>`.
 
@@ -160,7 +172,7 @@ python manage.py test accounts   # just auth
 python manage.py test accounts.tests.test_sign_up   # one use case
 ```
 
-## 8. Project layout
+## 9. Project layout
 
 ```
 back-end/
@@ -193,7 +205,7 @@ back-end/
 └── docker-compose.yml
 ```
 
-## 9. Further reading
+## 10. Further reading
 
 | Document                                                                            | Contents                                                                                                                         |
 | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
@@ -203,13 +215,13 @@ back-end/
 | `accounts/seeds/permissions.py`                                                     | Draft permission codes per role (not yet seeded)                                                                                 |
 | Spec v3 (`RentTrace_Database_Structure_and_Processes_v3.md`, kept outside the repo) | The original database design; the docs above note where it has changed                                                           |
 
-## 10. Switching to Supabase
+## 11. Switching to Supabase
 
 1. In the Supabase dashboard, make sure the project is active, then open **Connect** and copy the **Session pooler** values. They work over IPv4. Don't use the Transaction pooler (port 6543) for migrations.
 2. In `config/.env`, replace the database block with the Supabase one from `.env.example` and set `DB_SSLMODE=require`.
 3. Check what's already in that database before running `python manage.py migrate`: Supabase projects come with their own schemas.
 
-## 11. Troubleshooting
+## 12. Troubleshooting
 
 | Problem                                                   | Fix                                                                                                                         |
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
@@ -217,5 +229,5 @@ back-end/
 | `Bind for 0.0.0.0:5433 failed: port is already allocated` | Something else uses the port. Change `"5433:5432"` in `docker-compose.yml` and `DB_PORT` in `.env` to a free port.          |
 | `connection refused` on port 5433 or 6379                 | The containers aren't running. Run `docker compose up -d --wait`.                                                           |
 | `ImproperlyConfigured: Set the X environment variable`    | `config/.env` is missing that variable. Compare it with `config/.env.example`.                                              |
-| `failed to resolve host '...supabase.co'`                 | The Supabase project is paused or the host is wrong, or your network has no IPv6. Use the Session pooler host (section 10). |
-| `ModuleNotFoundError`                                     | The virtual environment isn't active. Run `source .venv/bin/activate`, then `pip install -r requirements.txt`.              |
+| `failed to resolve host '...supabase.co'`                 | The Supabase project is paused or the host is wrong, or your network has no IPv6. Use the Session pooler host (section 11). |
+| `ModuleNotFoundError`                                     | The virtual environment isn't active. Run `source .venv/bin/activate`, then `pip install -r requirements-dev.txt`.              |

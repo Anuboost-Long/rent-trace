@@ -6,7 +6,6 @@ from accounts.models import AuthSession, RefreshToken, User
 from accounts.security import tokens
 from accounts.services.shared.account_rules import has_active_role
 
-
 SESSION_LIFETIME = timedelta(days=90)
 REFRESH_TOKEN_LIFETIME = timedelta(days=30)
 SESSION_ENDED = "Your session has ended. Sign in again."

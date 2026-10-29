@@ -39,12 +39,8 @@ class ServiceProvider(MutableRecord):
 
 
 class ServiceProviderCategory(MutableRecord):
-    service_provider = models.ForeignKey(
-        ServiceProvider, models.PROTECT, related_name="categories"
-    )
-    service_category = models.ForeignKey(
-        ServiceCategory, models.PROTECT, related_name="providers"
-    )
+    service_provider = models.ForeignKey(ServiceProvider, models.PROTECT, related_name="categories")
+    service_category = models.ForeignKey(ServiceCategory, models.PROTECT, related_name="providers")
 
     class Meta(MutableRecord.Meta):
         db_table = "service_provider_categories"

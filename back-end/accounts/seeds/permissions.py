@@ -42,7 +42,12 @@ PERMISSIONS = [
     ("maintenance.confirm_start", "Confirm work started", "maintenance", PARTIES),
     ("maintenance.propose_closure", "Propose closing an issue", "maintenance", PARTIES),
     ("maintenance.review_closure", "Approve or reject a closure", "maintenance", PARTIES),
-    ("maintenance.close_vacant", "Close directly with no current tenant", "maintenance", {LANDLORD}),
+    (
+        "maintenance.close_vacant",
+        "Close directly with no current tenant",
+        "maintenance",
+        {LANDLORD},
+    ),
     ("maintenance.record_assignment", "Record provider engagement", "maintenance", PARTIES),
     ("documents.view", "View documents", "documents", EVERYONE),
     ("documents.publish", "Upload document versions", "documents", {LANDLORD}),
