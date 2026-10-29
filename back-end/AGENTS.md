@@ -118,6 +118,7 @@ python manage.py spectacular --validate --fail-on-warn --file /dev/null
 
 - When you move or rename files, search for stale imports and paths, including in `README.md`, `docs/` and `config/settings.py`.
 - Never delete a file before its replacement passes the tests.
+- A pre-commit hook (`.pre-commit-config.yaml` at the repo root) runs Ruff and basic checks on every commit. Never bypass it with `git commit --no-verify`; fix what it reports. If the hook changes files, stage them and commit again. When bumping `ruff` in `requirements-dev.txt`, bump the hook's `rev` to the same version.
 - Code style is Ruff's: don't hand-format, and don't silence a lint rule inline (`# noqa`) without saying why. A complexity error (`C901`, over 6 branches) means the function needs splitting or flattening, not a higher limit.
 - Never commit `config/.env`. When you add a setting, add it to `config/.env.example` and the README's environment table.
 

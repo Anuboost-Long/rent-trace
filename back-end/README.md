@@ -22,10 +22,11 @@ Run everything from the `back-end/` folder.
 ```bash
 cd back-end
 
-# 1. Python environment and packages (requirements-dev.txt = app packages + Ruff)
+# 1. Python environment and packages (requirements-dev.txt = app packages + Ruff + pre-commit)
 python3.14 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements-dev.txt
+pre-commit install   # format and lint automatically on every git commit
 
 # 2. Environment file
 cp config/.env.example config/.env
@@ -100,7 +101,11 @@ The code is formatted and linted with [Ruff](https://docs.astral.sh/ruff/). Sett
 | Lint (auto-fix what's safe) | `ruff check . --fix` |
 | Check without changing files, as CI would | `ruff format --check . && ruff check .` |
 
-Run both before committing. For format-on-save, install the **Ruff** extension in VS Code or PyCharm; it picks up `pyproject.toml` automatically.
+**These run automatically on every commit** once you've run `pre-commit install` (first-time setup, step 1). The hook is configured in `.pre-commit-config.yaml` at the repository root and only checks `back-end/` files. It runs Ruff (lint with safe fixes, then format) plus basic checks: trailing whitespace, end of file, merge-conflict markers, valid YAML and TOML, large files, private keys.
+
+If the hook fixes something, the commit stops so you can see the changes: run `git add` on the fixed files and commit again. To run the hook on everything by hand: `pre-commit run --all-files` (from the repository root).
+
+For format-on-save, install the **Ruff** extension in VS Code or PyCharm; it picks up `pyproject.toml` automatically.
 
 ## 6. Database migrations
 
