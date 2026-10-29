@@ -27,9 +27,9 @@ environ.Env.read_env(BASE_DIR / "config" / ".env")
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DJANGO_DEBUG")
+DEBUG = env.bool("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
 
 # Application definition
@@ -37,6 +37,18 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
+    "accounts",
+    "properties",
+    "tenancies",
+    "files",
+    "conditions",
+    "reviews",
+    "maintenance",
+    "documents",
+    "providers",
+    "communications",
+    "notifications",
+    "history",
 ]
 
 MIDDLEWARE = [
@@ -69,8 +81,20 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("DB_NAME"),
+        "USER": env("DB_USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT"),
+        "OPTIONS": {"sslmode": env("DB_SSLMODE")},
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": env("REDIS_URL"),
     }
 }
 
