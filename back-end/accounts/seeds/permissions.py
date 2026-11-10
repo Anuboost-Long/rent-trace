@@ -11,11 +11,23 @@ ROLES = [
 PARTIES = {LANDLORD, TENANT}
 EVERYONE = {ADMIN, LANDLORD, TENANT}
 
+# The data migration accounts/migrations/0003_seed_permissions.py holds a frozen copy of this list.
+# Changing a code here needs a new migration; it does not change what the old one did.
 PERMISSIONS = [
     ("accounts.update_profile", "Update own profile", "accounts", EVERYONE),
+    ("accounts.view", "View user accounts", "accounts", {ADMIN}),
+    ("accounts.create", "Create user accounts", "accounts", {ADMIN}),
+    ("accounts.update", "Edit user accounts", "accounts", {ADMIN}),
     ("accounts.manage", "Suspend and reactivate accounts", "accounts", {ADMIN}),
+    ("accounts.delete", "Delete user accounts", "accounts", {ADMIN}),
     ("access.manage", "Grant and revoke roles and permissions", "access", {ADMIN}),
+    ("bans.view", "View the ban list", "bans", {ADMIN}),
+    ("bans.manage", "Lift bans", "bans", {ADMIN}),
+    ("tokens.view", "View signed-in sessions (access tokens)", "tokens", {ADMIN}),
+    ("tokens.revoke", "Revoke signed-in sessions", "tokens", {ADMIN}),
     ("access.view_hidden_records", "View hidden records", "access", set()),
+    ("properties.admin_view", "View properties as an admin", "properties", {ADMIN}),
+    ("properties.admin_manage", "Set up and edit properties for landlords", "properties", {ADMIN}),
     ("properties.view", "View private property details", "properties", EVERYONE),
     ("properties.create", "Create properties", "properties", {LANDLORD}),
     ("properties.update", "Edit property and unit details", "properties", {LANDLORD}),

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import F, Q
+from django.db.models import F, Prefetch, Q
 from django.db.models.functions import Lower, Trim
 from django.db.models.lookups import Exact
 
@@ -34,7 +34,46 @@ class UserQuerySet(models.QuerySet):
         return self.filter(auth_method=AuthMethod.GOOGLE)
 
     def not_deleted(self):
-        return self.filter(is_deleted=False)
+        return self.filter(deleted_at__isnull=True)
+
+    def search(self, text):
+        matches = self
+        for term in text.split():
+            matches = matches.filter(
+                Q(email__icontains=term)
+                | Q(first_name__icontains=term)
+                | Q(last_name__icontains=term)
+            )
+        return matches
+
+    def with_role(self, role_code):
+        return self.filter(
+            role_bridges__is_active=True,
+            role_bridges__role__is_active=True,
+            role_bridges__role__code=role_code,
+        )
+
+    def with_any_role(self, role_ids):
+        return self.filter(
+            role_bridges__is_active=True, role_bridges__role_id__in=role_ids
+        ).distinct()
+
+    def with_status(self, account_status):
+        return self.filter(account_status=account_status)
+
+    def with_active_roles(self):
+        from accounts.models.access import UserRoleBridge
+
+        active_bridges = UserRoleBridge.objects.active().select_related("role")
+        return self.prefetch_related(
+            Prefetch("role_bridges", queryset=active_bridges, to_attr="active_role_bridges")
+        )
+
+    def newest_first(self):
+        return self.order_by("-created_at", "-id")
+
+    def super_admins(self):
+        return self.filter(is_top_level_admin=True)
 
     def unverified(self):
         return self.filter(email_verified_at__isnull=True)
@@ -113,7 +152,7 @@ class BanType(models.TextChoices):
 
 class BanQuerySet(models.QuerySet):
     def active(self, now):
-        return self.filter(lifted_at__isnull=True, is_deleted=False).filter(
+        return self.filter(lifted_at__isnull=True, deleted_at__isnull=True).filter(
             Q(expires_at__isnull=True) | Q(expires_at__gt=now)
         )
 
@@ -126,6 +165,34 @@ class BanQuerySet(models.QuerySet):
 
     def for_account(self, user):
         return self.filter(ban_type=BanType.ACCOUNT, user=user)
+
+    def with_people(self):
+        return self.select_related("user", "created_by", "lifted_by")
+
+    def with_type(self, ban_type):
+        return self.filter(ban_type=ban_type)
+
+    def with_status(self, status, now):
+        if status == "ACTIVE":
+            return self.active(now)
+        if status == "LIFTED":
+            return self.filter(lifted_at__isnull=False)
+        return self.filter(lifted_at__isnull=True, expires_at__lte=now)
+
+    def search(self, text):
+        matches = self
+        for term in text.split():
+            matches = matches.filter(
+                Q(value__icontains=term)
+                | Q(reason__icontains=term)
+                | Q(user__email__icontains=term)
+                | Q(user__first_name__icontains=term)
+                | Q(user__last_name__icontains=term)
+            )
+        return matches
+
+    def newest_first(self):
+        return self.order_by("-created_at", "-id")
 
 
 class Ban(MutableRecord):
@@ -165,12 +232,12 @@ class Ban(MutableRecord):
             ),
             models.UniqueConstraint(
                 fields=["ban_type", "value"],
-                condition=Q(lifted_at__isnull=True, is_deleted=False, user__isnull=True),
+                condition=Q(lifted_at__isnull=True, deleted_at__isnull=True, user__isnull=True),
                 name="uq_ban_list_current_identity",
             ),
             models.UniqueConstraint(
                 fields=["user"],
-                condition=Q(lifted_at__isnull=True, is_deleted=False, user__isnull=False),
+                condition=Q(lifted_at__isnull=True, deleted_at__isnull=True, user__isnull=False),
                 name="uq_ban_list_current_account",
             ),
         ]

@@ -55,6 +55,30 @@ class AuthSessionQuerySet(models.QuerySet):
     def open(self, now):
         return self.filter(revoked_at__isnull=True, expires_at__gt=now)
 
+    def with_user(self):
+        return self.select_related("user")
+
+    def with_status(self, status, now):
+        if status == "ACTIVE":
+            return self.open(now)
+        if status == "REVOKED":
+            return self.filter(revoked_at__isnull=False)
+        return self.filter(revoked_at__isnull=True, expires_at__lte=now)
+
+    def search(self, text):
+        matches = self
+        for term in text.split():
+            matches = matches.filter(
+                Q(user__email__icontains=term)
+                | Q(user__first_name__icontains=term)
+                | Q(user__last_name__icontains=term)
+                | Q(device_name__icontains=term)
+            )
+        return matches
+
+    def newest_first(self):
+        return self.order_by("-created_at", "-id")
+
     def for_access_token(self, session_id, user_id):
         return self.select_related("user").filter(session_id=session_id, user_id=user_id)
 
@@ -100,6 +124,11 @@ class AuthSession(models.Model):
         ]
 
 
+class UserMfaQuerySet(models.QuerySet):
+    def confirmed(self):
+        return self.filter(confirmed_at__isnull=False)
+
+
 class UserMfa(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -108,6 +137,8 @@ class UserMfa(models.Model):
     confirmed_at = models.DateTimeField(null=True, blank=True)
     last_used_step = models.PositiveBigIntegerField(null=True, blank=True)
 
+    objects = UserMfaQuerySet.as_manager()
+
     class Meta:
         db_table = "user_mfa"
         constraints = [
@@ -115,11 +146,18 @@ class UserMfa(models.Model):
         ]
 
 
+class MfaBackupCodeQuerySet(models.QuerySet):
+    def unused(self):
+        return self.filter(used_at__isnull=True)
+
+
 class MfaBackupCode(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, models.PROTECT, related_name="mfa_backup_codes")
     code_hash = models.CharField(max_length=255)
     used_at = models.DateTimeField(null=True, blank=True)
+
+    objects = MfaBackupCodeQuerySet.as_manager()
 
     class Meta:
         db_table = "mfa_backup_codes"

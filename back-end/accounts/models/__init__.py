@@ -4,6 +4,8 @@ from .access import (
     HiddenRecordsMode,
     Permission,
     Role,
+    RoleChangeHistory,
+    RoleKind,
     RolePermissionBridge,
     UserPermissionBridge,
     UserRoleBridge,
