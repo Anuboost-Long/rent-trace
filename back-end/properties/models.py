@@ -43,7 +43,7 @@ class Property(MutableRecord):
             enum_check("properties", "listing_status", ListingStatus),
         ]
         indexes = [
-            models.Index(fields=["listing_status", "is_deleted"], name="ix_properties_listing"),
+            models.Index(fields=["listing_status", "deleted_at"], name="ix_properties_listing"),
         ]
 
 
@@ -71,12 +71,12 @@ class PropertyOwner(MutableRecord):
             ),
             models.UniqueConstraint(
                 fields=["property", "owner"],
-                condition=Q(valid_to__isnull=True, is_deleted=False),
+                condition=Q(valid_to__isnull=True, deleted_at__isnull=True),
                 name="uq_current_property_owner",
             ),
             models.UniqueConstraint(
                 fields=["property"],
-                condition=Q(is_primary_owner=True, valid_to__isnull=True, is_deleted=False),
+                condition=Q(is_primary_owner=True, valid_to__isnull=True, deleted_at__isnull=True),
                 name="uq_current_primary_owner",
             ),
         ]
@@ -118,3 +118,46 @@ class UnitArea(MutableRecord):
 
     class Meta(MutableRecord.Meta):
         db_table = "unit_areas"
+
+
+class PropertyFileKind(models.TextChoices):
+    PHOTO = "PHOTO"
+    DOCUMENT = "DOCUMENT"
+
+
+class PropertyFile(MutableRecord):
+    property = models.ForeignKey(Property, models.PROTECT, related_name="files")
+    property_unit = models.ForeignKey(
+        PropertyUnit, models.PROTECT, null=True, blank=True, related_name="files"
+    )
+    file = models.OneToOneField("files.File", models.PROTECT, related_name="property_file")
+    kind = models.TextField(choices=PropertyFileKind)
+    caption = models.CharField(max_length=200, null=True, blank=True)
+    is_cover = models.BooleanField(default=False)
+    sort_order = models.IntegerField(default=0)
+
+    class Meta(MutableRecord.Meta):
+        db_table = "property_files"
+        constraints = [
+            *MutableRecord.Meta.constraints,
+            enum_check("property_files", "kind", PropertyFileKind),
+            models.CheckConstraint(
+                condition=Q(is_cover=False) | Q(kind=PropertyFileKind.PHOTO),
+                name="ck_property_files_cover_is_photo",
+            ),
+            models.UniqueConstraint(
+                fields=["property"],
+                condition=Q(is_cover=True, deleted_at__isnull=True, property_unit__isnull=True),
+                name="uq_property_files_one_cover",
+            ),
+            models.UniqueConstraint(
+                fields=["property_unit"],
+                condition=Q(is_cover=True, deleted_at__isnull=True, property_unit__isnull=False),
+                name="uq_property_files_one_unit_cover",
+            ),
+        ]
+        indexes = [
+            models.Index(
+                fields=["property", "property_unit", "kind"], name="ix_property_files_scope"
+            )
+        ]
