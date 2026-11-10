@@ -9,9 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
+    "clsx": "^2.1.1",
+    "jotai": "^3.0.2",
+    "lucide-react": "^1.70.0",
     "next": "16.4.2",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "react-qr-code": "^2.2.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
