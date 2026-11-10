@@ -1,0 +1,95 @@
+import {
+  handleGetPermissions,
+  handleGetUserPermissions,
+} from "@/api/services/access/serve-action";
+import { handleGetUser } from "@/api/services/users/serve-action";
+import Breadcrumbs from "@/components/layout/breadcrumbs";
+import ContentSkeleton from "@/components/layout/content-skeleton";
+import { StatusLabel } from "@/constants/roles";
+import { Route } from "@/constants/web-routes";
+import { formatDate } from "@/utils/format-date";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+
+import UserActions from "../user-actions";
+import UserPermissionsSection from "./user-permissions";
+
+export default function UserDetailPage({
+  params,
+}: PageProps<"/admin/users/[id]">) {
+  return (
+    <Suspense fallback={<ContentSkeleton />}>
+      <UserDetail params={params} />
+    </Suspense>
+  );
+}
+
+async function UserDetail({
+  params,
+}: Readonly<Pick<PageProps<"/admin/users/[id]">, "params">>) {
+  const { id } = await params;
+  const [{ data: user, error }, access, catalogue] = await Promise.all([
+    handleGetUser(id),
+    handleGetUserPermissions(id),
+    handleGetPermissions(),
+  ]);
+  if (error?.status === 404) notFound();
+  if (error) {
+    return (
+      <p role="alert" className="text-red-600">
+        {error.message}
+      </p>
+    );
+  }
+
+  const details: [string, string][] = [
+    ["Email", user.email],
+    [
+      "Role",
+      user.role_names.join(", ") +
+        (user.is_top_level_admin ? " (super admin)" : ""),
+    ],
+    ["Status", StatusLabel[user.account_status]],
+    ["Phone", user.phone_number ?? "—"],
+    [
+      "Sign-in method",
+      user.auth_method === "GOOGLE" ? "Google" : "Email and password",
+    ],
+    ["Email verified", formatDate(user.email_verified_at)],
+    ["Last sign-in", formatDate(user.last_login_at)],
+    ["Joined", formatDate(user.created_at)],
+  ];
+
+  return (
+    <>
+      <Breadcrumbs
+        trail={[
+          { label: "Users", href: Route.admin.users },
+          { label: `${user.first_name} ${user.last_name}` },
+        ]}
+      />
+      <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-semibold">
+          {user.first_name} {user.last_name}
+        </h1>
+        <UserActions user={user} variant="full" />
+      </div>
+      <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        {details.map(([label, value]) => (
+          <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">
+            <dt className="text-sm text-foreground/70">{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+      {access.data && catalogue.data && (
+        <UserPermissionsSection
+          userId={user.id}
+          name={user.first_name}
+          data={access.data}
+          allPermissions={catalogue.data}
+        />
+      )}
+    </>
+  );
+}
