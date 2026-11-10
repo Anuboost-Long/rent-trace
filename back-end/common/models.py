@@ -33,7 +33,6 @@ class MutableRecord(models.Model):
         "accounts.User", models.PROTECT, null=True, blank=True, related_name="+"
     )
     row_version = models.PositiveBigIntegerField(default=1)
-    is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
     deleted_by = models.ForeignKey(
         "accounts.User", models.PROTECT, null=True, blank=True, related_name="+"
@@ -45,11 +44,6 @@ class MutableRecord(models.Model):
             models.CheckConstraint(
                 condition=Q(row_version__gte=1),
                 name="ck_%(app_label)s_%(class)s_row_version",
-            ),
-            models.CheckConstraint(
-                condition=Q(is_deleted=True, deleted_at__isnull=False)
-                | Q(is_deleted=False, deleted_at__isnull=True),
-                name="ck_%(app_label)s_%(class)s_deleted_at",
             ),
         ]
 

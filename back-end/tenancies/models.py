@@ -75,12 +75,12 @@ class TenancyParty(MutableRecord):
             ),
             models.UniqueConstraint(
                 fields=["tenancy", "tenant"],
-                condition=Q(left_at__isnull=True, is_deleted=False),
+                condition=Q(left_at__isnull=True, deleted_at__isnull=True),
                 name="uq_current_tenancy_party",
             ),
             models.UniqueConstraint(
                 fields=["tenancy"],
-                condition=Q(is_primary=True, left_at__isnull=True, is_deleted=False),
+                condition=Q(is_primary=True, left_at__isnull=True, deleted_at__isnull=True),
                 name="uq_current_primary_tenant",
             ),
         ]
@@ -138,7 +138,9 @@ class TenancyInvitation(MutableRecord):
             ),
             models.UniqueConstraint(
                 fields=["tenancy", "email_normalized"],
-                condition=Q(accepted_at__isnull=True, revoked_at__isnull=True, is_deleted=False),
+                condition=Q(
+                    accepted_at__isnull=True, revoked_at__isnull=True, deleted_at__isnull=True
+                ),
                 name="uq_tenancy_invitations_pending",
             ),
         ]

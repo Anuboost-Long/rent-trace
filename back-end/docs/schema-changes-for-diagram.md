@@ -17,7 +17,7 @@ The schema goes from **53 to 61 tables**:
 
 - Every table has `id BIGINT` identity primary key (not repeated below).
 - **Field sets:** draw them as a note or stereotype on the table, not as repeated columns.
-  - **M** (mutable): `created_at`, `created_by_id → users`, `updated_at`, `updated_by_id → users`, `row_version`, `is_deleted`, `deleted_at`, `deleted_by_id → users`
+  - **M** (mutable): `created_at`, `created_by_id → users`, `updated_at`, `updated_by_id → users`, `row_version`, `deleted_at`, `deleted_by_id → users`
   - **E** (append-only event): `created_at`, `created_by_id → users`, `correlation_id UUID`
   - **C** (catalogue): `created_at`, `updated_at`, `is_active`
   - **Operational:** only `created_at` and/or `updated_at`, as listed per table.
@@ -76,6 +76,21 @@ Add `on_behalf_of_id → users` (nullable) to each, and draw it as a second rela
 - `maintenance_status_history`
 
 It records the user a super admin acted for, and must differ from the row's actor.
+
+### Roles and permissions: custom admin roles (overrides spec v3)
+
+Spec v3 says the only roles are ADMIN, LANDLORD and TENANT. That is replaced: admins can create more admin-side roles, give a role one parent to inherit from, and give a person several admin roles.
+
+| Table         | Column          | Type                      | Note                                                             |
+| ------------- | --------------- | ------------------------- | ---------------------------------------------------------------- |
+| `roles`       | `kind`          | `TEXT enum(PARTY, ADMIN)` | **New.** TENANT and LANDLORD are PARTY, the rest ADMIN           |
+| `roles`       | `is_system`     | `BOOLEAN DEFAULT false`   | **New.** ADMIN, LANDLORD, TENANT: can't be deactivated           |
+| `roles`       | `parent_id`     | FK `roles` NULL           | **New.** Inherits the parent's permissions. CHECK: not itself    |
+| `permissions` | `is_admin_only` | `BOOLEAN DEFAULT false`   | **New.** Only admin-kind roles and admin-side people can hold it |
+
+New table `role_change_history` (event): `role_id` FK `roles`, `action` TEXT, `before_values` JSONB, `after_values` JSONB, `reason` TEXT (not blank), `created_by_id` FK `users`, `correlation_id` UUID. Relationship: `roles ||--o{ role_change_history`.
+
+Relationship added: `roles ||--o{ roles` (parent, one level of inheritance per row, at most 5 levels deep).
 
 ## 3. New tables
 
