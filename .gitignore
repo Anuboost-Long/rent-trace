@@ -1,1 +1,7 @@
 .DS_Store
+
+# Daily log files
+/back-end/Log/
+
+# Uploaded files
+/back-end/media/
