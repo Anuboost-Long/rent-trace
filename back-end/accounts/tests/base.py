@@ -11,6 +11,7 @@ from rest_framework.test import APITestCase
 from accounts.models import User
 
 PASSWORD = "correct horse battery"
+TEST_API_KEY = "test-api-key"
 LOCAL_CACHE = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
 
 
@@ -18,10 +19,12 @@ LOCAL_CACHE = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemC
     CACHES=LOCAL_CACHE,
     SUPABASE_URL="https://example.supabase.co",
     SUPABASE_PUBLISHABLE_KEY="test-key",
+    API_KEY=TEST_API_KEY,
 )
 class AuthApiTestCase(APITestCase):
     def setUp(self):
         cache.clear()
+        self.client.defaults["HTTP_X_API_KEY"] = TEST_API_KEY
 
     def post(self, path, data=None, **kwargs):
         with self.captureOnCommitCallbacks(execute=True):

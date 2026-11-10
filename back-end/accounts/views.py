@@ -5,7 +5,8 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from accounts import dtos, resources, services
-from accounts.security import tokens
+from accounts.security import signing_keys, tokens
+from accounts.security.permissioned_view import PermissionedView
 from accounts.security.throttles import EmailPerHourThrottle, EmailPerMinuteThrottle
 
 SIGN_UP_SENT = "Check your email to finish signing up."
@@ -35,6 +36,7 @@ def _signed_in_response(signed_in):
                 "expires_in": int(tokens.ACCESS_TOKEN_LIFETIME.total_seconds()),
                 "refresh_token": signed_in.refresh_token,
                 "needs_onboarding": signed_in.needs_onboarding,
+                "mfa_status": signed_in.mfa_status,
                 "user": signed_in.user,
             }
         ).data
@@ -151,6 +153,22 @@ class ResetPasswordView(PublicView):
         return _message("Your password is changed. Sign in with your new password.")
 
 
+class BootstrapAdminView(PublicView):
+    throttle_scope = "bootstrap_admin"
+
+    @extend_schema(request=dtos.BootstrapAdminDto, responses={201: resources.MessageResource})
+    def post(self, request):
+        data = _validated(dtos.BootstrapAdminDto, request)
+        services.bootstrap_admin(
+            secret=data["secret"],
+            email=data["email"],
+            password=data["password"],
+            first_name=data["first_name"],
+            last_name=data["last_name"],
+        )
+        return _message("Super admin created. Sign in with this account.", status=201)
+
+
 class SignOutView(APIView):
     @extend_schema(request=None, responses={204: None})
     def post(self, request):
@@ -172,10 +190,84 @@ class ChangePasswordView(APIView):
         return _message("Your password is changed.")
 
 
-class MeView(APIView):
-    @extend_schema(responses=resources.UserResource)
+class SigningKeyView(PublicView):
+    throttle_scope = "signing_keys"
+
+    @extend_schema(responses=resources.SigningKeyResource)
     def get(self, request):
-        return Response(resources.UserResource(request.user).data)
+        key = signing_keys.generate_random_key()
+        response = Response(
+            resources.SigningKeyResource(
+                {
+                    "key": key,
+                    "length_bytes": len(key.encode()),
+                    "how_to_use": "Set JWT_SIGNING_KEY to this value in config/.env and restart "
+                    "the server. Everyone has to sign in again.",
+                }
+            ).data
+        )
+        response["Cache-Control"] = "no-store"
+        return response
+
+
+class MeView(APIView):
+    @extend_schema(responses=resources.MeResource)
+    def get(self, request):
+        return Response(resources.MeResource(request.user, context={"session": request.auth}).data)
+
+
+class ProfileView(PermissionedView):
+    required_permissions = {"PATCH": "accounts.update_profile"}
+
+    @extend_schema(
+        operation_id="auth_profile_update",
+        request=dtos.UpdateProfileDto,
+        responses=resources.MeResource,
+    )
+    def patch(self, request):
+        changes = _validated(dtos.UpdateProfileDto, request)
+        user = services.update_profile(user=request.user, changes=changes)
+        return Response(resources.MeResource(user, context={"session": request.auth}).data)
+
+
+class MfaView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "mfa"
+
+
+class EnrolMfaView(MfaView):
+    @extend_schema(request=None, responses=resources.MfaEnrolmentResource)
+    def post(self, request):
+        secret, uri = services.enrol_mfa(user=request.user)
+        response = Response(
+            resources.MfaEnrolmentResource({"secret": secret, "provisioning_uri": uri}).data
+        )
+        response["Cache-Control"] = "no-store"
+        return response
+
+
+class ConfirmMfaView(MfaView):
+    @extend_schema(request=dtos.MfaCodeDto, responses=resources.MfaBackupCodesResource)
+    def post(self, request):
+        codes = services.confirm_mfa(
+            user=request.user,
+            session=request.auth,
+            code=_validated(dtos.MfaCodeDto, request)["code"],
+        )
+        response = Response(resources.MfaBackupCodesResource({"backup_codes": codes}).data)
+        response["Cache-Control"] = "no-store"
+        return response
+
+
+class VerifyMfaView(MfaView):
+    @extend_schema(request=dtos.MfaCodeDto, responses=resources.MessageResource)
+    def post(self, request):
+        services.verify_mfa(
+            user=request.user,
+            session=request.auth,
+            code=_validated(dtos.MfaCodeDto, request)["code"],
+        )
+        return _message("Two-step verification complete.")
 
 
 class OnboardingView(APIView):

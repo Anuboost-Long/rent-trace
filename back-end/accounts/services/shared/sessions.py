@@ -5,6 +5,7 @@ from datetime import timedelta
 from accounts.models import AuthSession, RefreshToken, User
 from accounts.security import tokens
 from accounts.services.shared.account_rules import has_active_role
+from accounts.services.shared.mfa import mfa_status
 
 SESSION_LIFETIME = timedelta(days=90)
 REFRESH_TOKEN_LIFETIME = timedelta(days=30)
@@ -24,6 +25,7 @@ class SignedIn:
     access_token: str
     refresh_token: str
     needs_onboarding: bool
+    mfa_status: str
 
 
 def revoke_sessions(user, now, keep=None):
@@ -62,4 +64,5 @@ def issue_session_tokens(session, now):
         access_token=tokens.issue_access_token(session),
         refresh_token=raw,
         needs_onboarding=not has_active_role(session.user),
+        mfa_status=mfa_status(session),
     )

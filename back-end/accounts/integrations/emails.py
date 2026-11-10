@@ -1,32 +1,41 @@
 import logging
 
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
 
+from accounts.integrations import email_layout
 from accounts.models import AuthMethod
 
 logger = logging.getLogger(__name__)
 
 
-def _send(user, subject, body):
+def _send(user, subject, heading, paragraphs, button=None, footnote=""):
+    paragraphs = [f"Hi {user.first_name},", *paragraphs]
+    text_parts = [*paragraphs, *([f"{button[0]}:\n{button[1]}"] if button else []), footnote]
     try:
-        send_mail(subject, body, None, [user.email])
+        message = EmailMultiAlternatives(
+            subject, "\n\n".join(filter(None, text_parts)), None, [user.email]
+        )
+        message.attach_alternative(
+            email_layout.render(heading, paragraphs, button, footnote), "text/html"
+        )
+        message.send()
     except Exception:
         logger.exception("Auth email '%s' to user %s failed", subject, user.pk)
 
 
-def _link(path, raw_token):
-    return f"{settings.AUTH_LINK_BASE_URL}/{path}?token={raw_token}"
+def _link(base_url, path, raw_token):
+    return f"{base_url}/{path}?token={raw_token}"
 
 
 def send_verification(user, raw_token):
     _send(
         user,
         "Verify your RentTrace email",
-        f"Hi {user.first_name},\n\n"
-        f"Open this link to verify your email and finish signing up:\n"
-        f"{_link('verify-email', raw_token)}\n\n"
-        "The link expires in 24 hours. If you didn't sign up, ignore this email.",
+        "Verify your email",
+        ["Confirm your email address to finish signing up."],
+        button=("Verify email", _link(settings.WEB_APP_URL, "verify-email", raw_token)),
+        footnote="The link expires in 24 hours. If you didn't sign up, ignore this email.",
     )
 
 
@@ -39,10 +48,12 @@ def send_already_registered(user):
     _send(
         user,
         "You already have a RentTrace account",
-        f"Hi {user.first_name},\n\n"
-        f"Someone tried to sign up with this email, but it already has an account.\n"
-        f"{method}.\n\n"
-        "If this wasn't you, you can ignore this email.",
+        "You already have an account",
+        [
+            "Someone tried to sign up with this email, but it already has an account.",
+            f"{method}.",
+        ],
+        footnote="If this wasn't you, you can ignore this email.",
     )
 
 
@@ -50,10 +61,13 @@ def send_password_reset(user, raw_token):
     _send(
         user,
         "Reset your RentTrace password",
-        f"Hi {user.first_name},\n\n"
-        f"Open this link to choose a new password:\n"
-        f"{_link('reset-password', raw_token)}\n\n"
-        "The link expires in 1 hour. If you didn't ask for this, ignore this email; "
+        "Reset your password",
+        ["We received a request to reset your password."],
+        button=(
+            "Choose a new password",
+            _link(settings.AUTH_LINK_BASE_URL, "reset-password", raw_token),
+        ),
+        footnote="The link expires in 1 hour. If you didn't ask for this, ignore this email; "
         "your password stays the same.",
     )
 
@@ -66,8 +80,11 @@ def send_wrong_method(user, attempted_method):
     _send(
         user,
         "Sign-in attempt on your RentTrace account",
-        f"Hi {user.first_name},\n\n"
-        f"Someone tried to sign in to your account {attempt}, but your account doesn't use that method.\n"
-        f"{fix}.\n\n"
-        "If this wasn't you, you can ignore this email.",
+        "Sign-in attempt on your account",
+        [
+            f"Someone tried to sign in to your account {attempt}, "
+            "but your account doesn't use that method.",
+            f"{fix}.",
+        ],
+        footnote="If this wasn't you, you can ignore this email.",
     )

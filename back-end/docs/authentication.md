@@ -103,6 +103,7 @@ Then read the claims:
   1. Marks the presented token `used_at`.
   2. Issues a new token in the same session.
   3. If an **already used** token is presented, treat it as stolen and set `revoked_at` on the whole session.
+- **Admin screens:** `GET /api/tokens/` lists sessions and `POST /api/tokens/<id>/revoke/` ends one (writes `ADMIN_REVOKED_SESSION` on the person). The list shows `ip_address`, so it needs `tokens.view` (admins handling accounts, as the privacy rule below says).
 - **Revoking sessions:**
   - Sign-out revokes that session.
   - Suspension or an account ban revokes all of the user's sessions.
@@ -118,7 +119,7 @@ Then read the claims:
 | After the session ends                      | Sign in again                     | Sign in again, **including MFA**                        |
 
 - **Claims:** `sub` = user id, `sid` = `session_id`, `iss` = `renttrace-api`, `aud` = `renttrace-mobile` or `renttrace-admin`, plus `iat` and `exp`. Reject a token whose `aud` doesn't match the app calling, so a mobile token can't be used on the admin panel.
-- **Signing:** HS256 with `JWT_SIGNING_KEY`. Put a `kid` in the token header; when rotating, keep the previous key valid for 15 minutes (one access-token lifetime).
+- **Signing:** HS256 with `JWT_SIGNING_KEY` (at least 32 bytes; `manage.py check` warns otherwise). Generate or change it with `python manage.py generate_jwt_key` (random, or `--from-words` with a label per environment). Put a `kid` in the token header. Today a change signs everyone out; to rotate without that, keep the previous key valid for 15 minutes (one access-token lifetime), which isn't built yet.
 - **Library:** PyJWT directly. `djangorestframework-simplejwt` brings its own token tables, which would duplicate `auth_sessions` and `refresh_tokens`.
 
 ### Where clients keep tokens
@@ -255,10 +256,14 @@ One row per `email_normalized`, keyed by email rather than user. Unknown emails 
 - Lifting a ban keeps the row and sets `lifted_at`, `lifted_by` and `lift_reason`.
 - One current ban per identity or account. To extend an expired ban, update `expires_at` on the existing row, or lift it before adding a new one.
 - Record account bans in `account_access_history`.
+- **Lifting from the admin panel:** `POST /api/bans/<id>/lift/` (permission `bans.manage`) needs a reason, refuses a ban that already ended, and writes `ADMIN_LIFTED_BAN` on the person for account bans. Creating bans from the panel is not built yet.
 
 ## 8. Roles and permissions
 
 - **Roles** come through `user_role_bridge` → `role_permission_bridge` → `permissions`. Every link has `is_active`: revoke by setting it to false, and reactivate the same row.
+- **Role kinds:** TENANT and LANDLORD are `PARTY` roles; ADMIN and any custom role are `ADMIN` kind. A person holds exactly one party role, or one or more admin-kind roles, never a mix. "Admin-side" means holding any active admin-kind role; MFA, the admin area and the admin-only permissions all follow that, not the role code ADMIN.
+- **Custom roles and inheritance:** admins create admin-kind roles, choose their permissions and one optional parent of the same kind. A role holds its own permissions plus its parent's, up to 5 levels deep; an inactive role contributes nothing and stops the chain. Built-in roles can't be deactivated or given a parent. A role with active children can't be deactivated. Hidden-record access can never be put on a role.
+- **One rule for every write:** you can't give or act on what you don't hold. Creating or editing a role needs the role's current and new effective permissions to be a subset of yours; assigning a role needs its effective set ⊆ yours; granting needs the permission in your set; acting on an admin-side person needs their effective set ⊆ yours. Peers with equal sets can manage each other. Nobody changes their own roles or grants. The super admin passes all of these. Role changes are recorded in `role_change_history`.
 - **Individual grants** (`user_permission_bridge`) are special cases added to one user on top of their roles, with a required `reason`. Granting a role does **not** copy its permissions into grants.
 - **Effective permissions:**
   - the user is active, not deleted and has no active ban;
@@ -266,28 +271,31 @@ One row per `email_normalized`, keyed by email rather than user. Unknown emails 
 - **Super admin** is `users.is_top_level_admin`, not a role. Super admins also hold ADMIN.
   - They may do every action, including party actions such as creating a property for a landlord.
   - Records show the super admin as the actor. The person they acted for goes in `on_behalf_of` on `business_change_history`, `review_status_history` and `maintenance_status_history`.
-  - Only a super admin may set `is_top_level_admin` or `on_behalf_of`.
+  - Only a super admin may set `is_top_level_admin` or `on_behalf_of`. The first super admin is created once by `POST /api/auth/bootstrap-admin/`, which needs `ADMIN_BOOTSTRAP_SECRET` from `config/.env`; it answers 409 once any super admin exists, and records `BOOTSTRAP_SUPER_ADMIN` in `account_access_history`.
+- **Creating accounts** (`POST /api/users/` with `roles`): any admin with `accounts.create` may create tenant or landlord accounts; admin-side accounts also need `access.manage` and the new person's roles must be ⊆ the creator's permissions. `is_top_level_admin` is never set there; bootstrap is the only way. The admin chooses a starting password and the account is created verified (no email), so an admin is told whether an email is already taken. Invite emails are a follow-up.
+- **Managing accounts** (`PATCH`, activate, deactivate and `DELETE` on `/api/users/<id>/`): acting on an admin-side person needs their effective permissions to be a subset of yours (the super admin always passes). Nobody can deactivate or delete their own account or the super admin. Deactivating or deleting ends all the person's sessions. Every change writes an `account_access_history` row (`ADMIN_UPDATED_ACCOUNT`, `ADMIN_DEACTIVATED_ACCOUNT`, `ADMIN_ACTIVATED_ACCOUNT`, `ADMIN_DELETED_ACCOUNT`) with the admin as actor. A deleted account's email stays reserved.
 - **`access.view_hidden_records`** never comes from a role or from super admin status alone. It needs `access_policy` ≠ `DENY_ALL`, plus `is_top_level_admin`, plus an active individual grant.
-- **Permission codes:** see `accounts/seeds/permissions.py` (draft, pending review).
+- **Permission codes:** see `accounts/seeds/permissions.py`. They are seeded by migration `0003_seed_permissions` (a frozen copy), but the list is still a draft pending review.
+- **The check** (`services/shared/permissions.py`): a super admin holds every active code except `access.view_hidden_records`, which also needs a non-DENY_ALL access policy and an individual grant. Everyone else holds the codes from an active role (active user-role link, role, role-permission link and permission) plus active individual grants. A suspended, deleted or banned account holds nothing. The `users` and `access` endpoints check one code per HTTP method.
+- **Granting rules:** nobody changes their own grants; you can only grant what you hold; only the super admin grants `access.view_hidden_records`; permissions flagged `is_admin_only` can only go to admin-side people, so no one reaches admin endpoints without MFA.
 
-## 9. MFA for Admin and super admin
+## 9. MFA for Admin
 
-Required for every user with an active ADMIN role or `is_top_level_admin`. A super admin can do everything, so a stolen password alone must not be enough.
+Required for every user with an active ADMIN role who is not a super admin. **Decision: a super admin doesn't need MFA.** Any ADMIN, super admin included, may still enrol. Once MFA is confirmed, every new session of that user must verify a code.
 
-- **Enrol:**
-  1. Generate a TOTP secret.
-  2. Store it **encrypted** in `user_mfa.secret_encrypted`, using an app-level key (for example Fernet with `MFA_ENCRYPTION_KEY` in `.env`). It has to be encrypted, not hashed, because the code check needs the original secret.
-  3. Show the QR code.
-  4. Set `confirmed_at` once the first code is entered correctly.
-  5. Generate about 10 backup codes, show them once, and store each with `make_password`.
-- **Sign in:**
-  1. After the password or Google step, ask for a code.
-  2. Accept it only if its time step is newer than `last_used_step`, so a code can't be replayed, then update `last_used_step`.
-  3. Set `auth_sessions.mfa_verified_at`.
-  4. A backup code works once (`used_at`).
-- **Enforcement:** admin routes require `mfa_verified_at` on the current session. An Admin without confirmed MFA can only reach the enrolment screen.
-- **Google admins too:** Google's own 2-step verification isn't visible to us, so Google-signed-in admins also use our MFA.
-- **Reset:** a lost device is reset by a super admin. That deletes the `user_mfa` and backup-code rows (they are credentials, not business records), revokes the user's sessions, and is recorded in `account_access_history`.
+- **Status:** `mfa_status` comes back on sign-in, refresh and `GET me/`: `NOT_REQUIRED`, `ENROL` (required, not set up), `VERIFY` (set up, this session not verified yet) or `VERIFIED`. It is worked out per session from `auth_sessions.mfa_verified_at`, which survives refresh.
+- **Enrol** (`POST mfa/enrol/`, ADMIN role only):
+  1. Generates a TOTP secret and stores it **encrypted** in `user_mfa.secret_encrypted` (Fernet, key `MFA_ENCRYPTION_KEY`). It's encrypted, not hashed, because the code check needs the original.
+  2. Returns the secret and an `otpauth://` link for the QR code (`no-store`). Calling it again before confirming returns the same secret, so a refresh doesn't break a scan in progress.
+  3. Answers 409 once MFA is confirmed, so a password-only session can't swap in a new device.
+- **Confirm** (`POST mfa/confirm/`): the first correct code sets `confirmed_at`, verifies this session and returns 10 backup codes, once.
+- **Verify** (`POST mfa/verify/`): a TOTP code or a backup code verifies the session. A backup code works once (`used_at`).
+- **Replay rule:** a code is accepted for the previous, current or next 30-second step, but only if that step is newer than `last_used_step`, which is then updated.
+- **Backup codes:** 10 random 10-character codes, stored with `make_password` (about 0.1 s each, so confirming takes about 1 s and a backup-code attempt up to about 1 s).
+- **Throttle:** the three endpoints share a `mfa` rate of 5 per minute per user.
+- **Enforcement:** `security/mfa_permission.MfaCompleted` denies a session whose status is `ENROL` or `VERIFY`. The MFA endpoints don't use it. **No admin API endpoint exists yet**, so server-side enforcement starts when admin endpoints add it; until then the Next app gates `/admin` by redirecting to `/auth/mfa`.
+- **No key, no MFA:** an empty or malformed `MFA_ENCRYPTION_KEY` makes the MFA endpoints answer 503.
+- **Reset:** a lost device is reset by a super admin (not built yet): delete the `user_mfa` and backup-code rows, revoke the user's sessions and record it in `account_access_history`.
 
 ## 10. Deferred
 
@@ -304,7 +312,8 @@ Required for every user with an active ADMIN role or `is_top_level_admin`. A sup
 - [ ] Cap on the sign-in lock? Doubling has no limit: guess 15 locks about 3.5 days, guess 20 about 227 days. Suggested cap: 24 hours.
 - [ ] Confirm the Supabase project's signing setup (JWKS or JWT secret) and add the Supabase keys to `.env`.
 - [ ] Update spec v3 §3 and §14, which still say we store no credentials.
-- [ ] Add `MFA_ENCRYPTION_KEY` to `.env` and the `cryptography` package to `requirements.txt` when MFA is built.
+- [x] `MFA_ENCRYPTION_KEY` and the `cryptography` package are added for MFA.
+- [ ] MFA reset by a super admin, and regenerating backup codes.
 - [ ] Add `PyJWT` to `requirements.txt` and `expo-secure-store` to the mobile app when auth is built.
 - [ ] Run a Redis server for local development and provision one for production; set `REDIS_URL` for each.
 - [ ] Recovery path for users who lose access to their Google account (Admin-assisted).
