@@ -31,6 +31,8 @@ Every app looks like `accounts/`. Main files sit at the top; helpers sit in fold
 Rules:
 
 - **No `serializers.py`, `services.py` or `tests.py` single files.** Use the folders above.
+- A path that serves two methods (`GET users/` and `POST users/`) uses one view class with one service call per method (`users/views.py`).
+- List endpoints use `common/pagination.py` (`PagePagination`): page-number envelope `count / page / page_size / total_pages / results`. Read related rows with a named `with_…` prefetch so a page costs a fixed number of queries.
 - Each package `__init__.py` re-exports its public names, so callers write `services.sign_up(...)`, `dtos.SignUpDto` and `resources.UserResource`.
 - Django's "views" are the **controllers** (Django calls MVC "MVT"). Controllers only validate the DTO, call one service and return a resource. No business logic in views.
 - Helpers in `services/shared/` don't get a leading underscore, because other files import them. A leading underscore means "private to this file".
@@ -54,7 +56,7 @@ Services must read like sentences. Write the Django lookup syntax (`field__looku
 # models/users.py
 class BanQuerySet(models.QuerySet):
     def active(self, now):
-        return self.filter(lifted_at__isnull=True, is_deleted=False).filter(
+        return self.filter(lifted_at__isnull=True, deleted_at__isnull=True).filter(
             Q(expires_at__isnull=True) | Q(expires_at__gt=now)
         )
 
@@ -100,6 +102,7 @@ Ban.objects.active(now).for_identity(email_normalized).exists()
 
 - Never reveal whether an email has an account: sign-in, sign-up and reset replies are the same in every case. The account owner learns the details by email.
 - Store tokens only as SHA-256 hashes, and passwords only through `make_password`.
+- `GET /api/auth/signing-key/` only **generates** a fresh random value (no auth, `no-store`, rate-limited). No endpoint may ever return, accept or change the **live** `JWT_SIGNING_KEY`: whoever holds it can forge tokens for any user. Change the live key in `.env`, or with `python manage.py generate_jwt_key --write`. The `accounts.W001` check must stay quiet.
 - Never put credentials or tokens in logs, `business_events` payloads or responses (other than the one response that issues them).
 - Every protected request re-checks the session (not revoked or expired) and the account (active, not deleted, not banned). That's `security/authentication.py`.
 
@@ -124,5 +127,8 @@ python manage.py spectacular --validate --fail-on-warn --file /dev/null
 
 ## 8. Open questions (ask the team before assuming)
 
-- Admin sign-in, MFA, the admin panel's cookie handling and the devices screen aren't built yet (`docs/authentication.md`, "Open items").
-- The permission codes in `accounts/seeds/permissions.py` are a draft awaiting review; they aren't seeded yet.
+- Admin MFA enrol/confirm/verify is built, but no admin API endpoint enforces it yet (`security/mfa_permission.MfaCompleted` is ready to use). MFA reset, the admin panel's cookie handling and the devices screen aren't built yet (`docs/authentication.md`, "Open items").
+- The permission codes in `accounts/seeds/permissions.py` are now seeded by `accounts/migrations/0003_seed_permissions.py` (a frozen copy), but the list is still a draft awaiting team review. Changing a code needs a new migration.
+- Roles: TENANT, LANDLORD (kind PARTY) and ADMIN are built in. Admins create more **admin-kind** roles in the `access` app; a role can inherit from one parent. A person is either one party role or one or more admin-kind roles. "Is this an admin?" always means `is_admin_side(user)` (holds any active admin-kind role), never `has_role(user, "ADMIN")`.
+- New permission codes are added through `POST /api/access/permissions/` (or a seed migration for ones the code already checks). The permission catalogue has no history table, so edits to a permission are not audited.
+- One rule governs every role and grant write: you can't give or act on what you don't hold (`accounts/services/shared/privileges.py`). Role changes are recorded in `role_change_history`.

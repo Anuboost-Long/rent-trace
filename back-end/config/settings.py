@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import sys
 from pathlib import Path
 
 import environ
@@ -39,6 +40,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "accounts",
+    "users",
+    "access",
+    "bans",
+    "tokens",
+    "locations",
     "properties",
     "tenancies",
     "files",
@@ -53,11 +59,47 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "common.middleware.RequestLogMiddleware",
+    "common.middleware.ApiKeyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+LOG_LEVEL = env("LOG_LEVEL", default="INFO")
+LOG_DIR = env("LOG_DIR", default=str(BASE_DIR / "Log" / "Debug"))
+LOG_TO_FILE = bool(LOG_DIR) and "test" not in sys.argv
+LOG_HANDLERS = ["console", "file"] if LOG_TO_FILE else ["console"]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "plain": {"format": "%(asctime)s %(levelname)-7s %(name)s: %(message)s"},
+        "file": {"format": "[%(asctime)s %(levelname)s] %(name)s: %(message)s"},
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "plain"},
+        **(
+            {
+                "file": {
+                    "class": "common.daily_file_handler.DailyFileHandler",
+                    "directory": LOG_DIR,
+                    "prefix": "renttrace-debug",
+                    "formatter": "file",
+                }
+            }
+            if LOG_TO_FILE
+            else {}
+        ),
+    },
+    "loggers": {
+        "renttrace.requests": {"handlers": LOG_HANDLERS, "level": LOG_LEVEL, "propagate": False},
+        "django.request": {"handlers": LOG_HANDLERS, "level": "ERROR", "propagate": False},
+        "accounts": {"handlers": LOG_HANDLERS, "level": LOG_LEVEL, "propagate": False},
+    },
+}
 
 ROOT_URLCONF = "config.urls"
 
@@ -116,6 +158,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_ROOT = env("MEDIA_ROOT", default=str(BASE_DIR / "media"))
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -136,6 +179,9 @@ REST_FRAMEWORK = {
         "sign_in": "20/min",
         "refresh": "60/min",
         "email_links": "20/hour",
+        "signing_keys": "30/hour",
+        "bootstrap_admin": "5/hour",
+        "mfa": "5/min",
     },
 }
 
@@ -153,18 +199,34 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 JWT_SIGNING_KEY = env("JWT_SIGNING_KEY")
+API_KEY = env("API_KEY", default="")
 
 AUTH_LINK_BASE_URL = env("AUTH_LINK_BASE_URL", default="renttrace://auth")
+WEB_APP_URL = env("WEB_APP_URL", default="http://localhost:3000")
+
+MFA_ENCRYPTION_KEY = env("MFA_ENCRYPTION_KEY", default="")
+ADMIN_BOOTSTRAP_SECRET = env("ADMIN_BOOTSTRAP_SECRET", default="")
 
 SUPABASE_URL = env("SUPABASE_URL", default="")
 SUPABASE_PUBLISHABLE_KEY = env("SUPABASE_PUBLISHABLE_KEY", default="")
 
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="RentTrace <no-reply@renttrace.local>")
+GMAIL_CLIENT_ID = env("GMAIL_CLIENT_ID", default="")
+GMAIL_CLIENT_SECRET = env("GMAIL_CLIENT_SECRET", default="")
+GMAIL_REFRESH_TOKEN = env("GMAIL_REFRESH_TOKEN", default="")
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Rent Trace API",
     "DESCRIPTION": "API for managing rental properties, leases, charges, and payments.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {"apiKey": {"type": "apiKey", "in": "header", "name": "X-API-Key"}}
+    },
+    "SECURITY": [{"apiKey": []}],
+    "ENUM_NAME_OVERRIDES": {
+        "SelfServiceRoleEnum": "accounts.dtos.fields.SELF_SERVICE_ROLES",
+        "AuthMethodEnum": "accounts.models.AuthMethod",
+    },
 }

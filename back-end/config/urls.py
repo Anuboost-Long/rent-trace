@@ -20,6 +20,13 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 urlpatterns = [
     path("api/auth/", include("accounts.urls")),
+    path("api/users/", include("users.urls")),
+    path("api/access/", include("access.urls")),
+    path("api/bans/", include("bans.urls")),
+    path("api/tokens/", include("tokens.urls")),
+    path("api/locations/", include("locations.urls")),
+    path("api/properties/", include("properties.urls")),
+    path("api/landlord/properties/", include("properties.landlord_urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
