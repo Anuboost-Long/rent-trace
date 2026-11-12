@@ -78,11 +78,13 @@ the invited person joins when they accept.
   page never says "joined" before both have said yes.
 - **Landlord and admin** (tenancy page): tenant requests are marked as asked by a tenant,
   show what is still pending, and have Approve and Decline.
-- **The tenant's People section** (on their tenancy page) is one grouped list: you, your
-  housemates, then an "Invites" group of pending and finished invitations. The count ("2 of 4")
-  sits in the header beside an **Invite housemate** button, which is disabled with "This place is
-  full" when the unit is at its limit and hidden for a tenancy that has ended. The button opens a
-  small dialog with one field; sending closes it and shows "Invite sent to … We've told your
+- **The tenant's People section** (on their tenancy page) is a light list with hairlines and no box:
+  you, your housemates, then an "Invites" group of pending and finished invitations. Each person has
+  a monogram; a **dashed** outline means invited but not yet a member. The count ("2 of 4") sits in
+  the header beside a filled **Invite housemate** button, which is disabled with "This place is
+  full" when the unit is at its limit and hidden for a tenancy that has ended. When you live alone
+  with no invites, one plain sentence explains how to add someone (no second button). The button
+  opens a small dialog with one field; sending closes it and shows "Invite sent to … We've told your
   landlord too." Each open invite shows its two approvals as two marked steps, "Landlord approved /
   Waiting for your landlord" and "They accepted / Waiting for them", and when it expires; finished
   ones show a single status.
