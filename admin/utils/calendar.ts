@@ -35,6 +35,40 @@ export const addMonths = (iso: string, months: number) => {
 
 export const monthStart = (iso: string) => `${iso.slice(0, 7)}-01`;
 
+export const yearOf = (iso: string) => Number(iso.slice(0, 4));
+
+export const monthOf = (iso: string) => Number(iso.slice(5, 7)) - 1;
+
+export const withYearMonth = (iso: string, year: number, month: number) => {
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return isoOf(Date.UTC(year, month, Math.min(Number(iso.slice(8)), lastDay)));
+};
+
+export const lastDayOfMonth = (year: number, month: number) =>
+  isoOf(Date.UTC(year, month + 1, 0));
+
+export const YEARS_PER_PAGE = 12;
+
+export const yearPageStart = (year: number) => year - (year % YEARS_PER_PAGE);
+
+const shortMonthFormat = new Intl.DateTimeFormat("en-GB", {
+  month: "short",
+  timeZone: "UTC",
+});
+
+const longMonthFormat = new Intl.DateTimeFormat("en-GB", {
+  month: "long",
+  timeZone: "UTC",
+});
+
+export const LONG_MONTHS = Array.from({ length: 12 }, (_, month) =>
+  longMonthFormat.format(new Date(Date.UTC(2000, month, 1))),
+);
+
+export const SHORT_MONTHS = Array.from({ length: 12 }, (_, month) =>
+  shortMonthFormat.format(new Date(Date.UTC(2000, month, 1))),
+);
+
 export const monthWeeks = (iso: string): CalendarDay[][] => {
   const first = monthStart(iso);
   const mondayOffset = (new Date(utcTime(first)).getUTCDay() + 6) % 7;
