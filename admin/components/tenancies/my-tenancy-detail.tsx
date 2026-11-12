@@ -1,4 +1,5 @@
 import { handleGetMyTenancy } from "@/api/services/tenancies/serve-action";
+import TenantConditions from "@/components/conditions/tenant-conditions";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import ContentSkeleton from "@/components/layout/content-skeleton";
 import { TenantTenancyStatusLabel } from "@/constants/tenancies";
@@ -92,6 +93,8 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
         canInvite={tenancy.is_current}
         maxPeople={tenancy.max_occupants}
       />
+
+      <TenantConditions notes={tenancy.unit_conditions} />
 
       <TermHistory changes={tenancy.term_history} />
     </>

@@ -69,6 +69,10 @@ export const EndPoints = {
     },
   },
   overview: byEndpoint("overview/"),
+  conditions: {
+    list: byEndpoint("landlord/conditions/"),
+    detail: (id: number) => byEndpoint(`landlord/conditions/${id}/`),
+  },
   maintenance: {
     list: byEndpoint("maintenance/"),
     detail: (id: number | string) => byEndpoint(`maintenance/${id}/`),

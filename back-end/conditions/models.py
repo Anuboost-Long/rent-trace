@@ -38,6 +38,7 @@ class ConditionRecord(MutableRecord):
     accepted_version = models.ForeignKey(
         "ConditionVersion", models.PROTECT, null=True, blank=True, related_name="+"
     )
+    is_shown_to_tenants = models.BooleanField(default=False)
 
     class Meta(MutableRecord.Meta):
         db_table = "condition_records"

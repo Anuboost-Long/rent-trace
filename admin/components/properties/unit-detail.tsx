@@ -1,4 +1,6 @@
+import { handleGetConditions } from "@/api/services/conditions/serve-action";
 import { handleGetProperty } from "@/api/services/properties/serve-action";
+import UnitConditions from "@/components/conditions/unit-conditions";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import ContentSkeleton from "@/components/layout/content-skeleton";
 import { PropertyAccess, PropertyRoutes } from "@/constants/properties";
@@ -39,6 +41,8 @@ async function UnitDetail({ audience, params }: UnitDetailProp) {
   );
   if (!unit) notFound();
 
+  const conditions =
+    audience === "landlord" ? await handleGetConditions(unit.id) : null;
   const unitFiles = property.files.filter((file) => file.unit_id === unit.id);
   const showsPropertyPhotos =
     !unitFiles.some((file) => file.kind === "PHOTO") &&
@@ -64,6 +68,9 @@ async function UnitDetail({ audience, params }: UnitDetailProp) {
           This unit has no photos yet, so the property&apos;s photos are shown
           for it.
         </p>
+      )}
+      {conditions?.data && (
+        <UnitConditions unitId={unit.id} notes={conditions.data} />
       )}
       <PropertyFilesSection
         audience={audience}

@@ -26,9 +26,10 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Tenancy terms](tenancy-terms.md)                    | Built; tenant side not yet walked through           |
 | [Rent change approval](rent-change-approval.md)       | Built; tenant side not yet walked through           |
 | [Maintenance](maintenance.md)                         | Built; not yet seen in a browser                    |
+| [Unit conditions](unit-conditions.md)                 | Built; tenant side not yet seen in a browser        |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
 
-Not yet built: conditions, reviews, documents and providers. Their tables exist in the
+Not yet built: reviews, documents and providers. Their tables exist in the
 back end but they have no API or screens.

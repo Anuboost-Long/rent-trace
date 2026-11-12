@@ -1,3 +1,5 @@
+import type { TenantCondition } from "@/types/conditions/models";
+
 export type TenancyAudience = "admin" | "landlord";
 
 export type TenancyStatus =
@@ -197,6 +199,7 @@ export type HousemateRequest = {
 export type MyTenancyDetail = MyTenancy & {
   housemates: Housemate[];
   housemate_requests: HousemateRequest[];
+  unit_conditions: TenantCondition[];
   pending_change: TermChange | null;
   term_history: TermChange[];
 };

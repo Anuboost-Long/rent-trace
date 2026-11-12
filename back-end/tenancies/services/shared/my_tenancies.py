@@ -1,5 +1,6 @@
 from django.db.models import Prefetch
 
+from conditions.models import ConditionRecord, ConditionRecordType
 from properties.models import PropertyOwner
 from tenancies.models import (
     Tenancy,
@@ -40,6 +41,17 @@ def my_tenancies(user):
                 to_attr="visible_term_changes",
             ),
             Prefetch("parties", queryset=housemates.order_by("id"), to_attr="housemates"),
+            Prefetch(
+                "property_unit__condition_records",
+                queryset=ConditionRecord.objects.filter(
+                    record_type=ConditionRecordType.BASELINE,
+                    is_shown_to_tenants=True,
+                    deleted_at__isnull=True,
+                )
+                .select_related("accepted_version")
+                .order_by("id"),
+                to_attr="shown_conditions",
+            ),
             Prefetch("property_unit__property__owners", queryset=owners, to_attr="current_owners"),
             Prefetch(
                 "invitations",

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from conditions.resources import TenantConditionResource
 from tenancies.models import TermChangeStatus
 from tenancies.resources.housemate_request import HousemateRequestResource
 from tenancies.resources.my_tenancy import MyTenancyResource
@@ -12,6 +13,11 @@ class MyTenancyDetailResource(MyTenancyResource):
         source="my_requests", many=True, help_text="Only the requests this tenant made."
     )
 
+    unit_conditions = TenantConditionResource(
+        source="property_unit.shown_conditions",
+        many=True,
+        help_text="Condition notes the landlord chose to show tenants of this unit.",
+    )
     pending_change = serializers.SerializerMethodField(
         help_text="A rent or bond increase waiting for your answer, or null."
     )
@@ -24,6 +30,7 @@ class MyTenancyDetailResource(MyTenancyResource):
             *MyTenancyResource.Meta.fields,
             "housemates",
             "housemate_requests",
+            "unit_conditions",
             "pending_change",
             "term_history",
         ]
