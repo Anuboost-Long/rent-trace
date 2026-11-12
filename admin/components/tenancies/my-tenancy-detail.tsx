@@ -8,8 +8,8 @@ import { formatMoney, formatRent } from "@/utils/rent";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import HousemateRequests from "./housemate-requests";
 import { periodText, placeName } from "./my-tenancy-card";
+import TenancyPeople from "./tenancy-people";
 
 type MyTenancyDetailProp = Readonly<{ params: Promise<{ id: string }> }>;
 
@@ -44,12 +44,6 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
       : []),
     ["Landlord", tenancy.landlord ?? "—"],
     [
-      "People",
-      tenancy.max_occupants
-        ? `${tenancy.people_count} of ${tenancy.max_occupants}`
-        : String(tenancy.people_count),
-    ],
-    [
       "Rent",
       tenancy.rent_amount && tenancy.rent_frequency
         ? formatRent(tenancy.rent_amount, tenancy.rent_frequency)
@@ -82,38 +76,12 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
         ))}
       </dl>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold">Housemates</h2>
-        {tenancy.housemates.length === 0 ? (
-          <p className="mt-2 text-foreground/70">
-            No one else is on this tenancy.
-          </p>
-        ) : (
-          <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
-            {tenancy.housemates.map((mate) => (
-              <li
-                key={`${mate.first_name}-${mate.last_name}`}
-                className="flex justify-between gap-4 p-4"
-              >
-                <span>
-                  {mate.first_name} {mate.last_name}
-                </span>
-                {mate.is_primary && (
-                  <span className="text-sm text-foreground/60">
-                    Primary tenant
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <HousemateRequests
+      <TenancyPeople
         tenancyId={tenancy.id}
+        youArePrimary={tenancy.is_primary}
+        housemates={tenancy.housemates}
         requests={tenancy.housemate_requests}
-        canAsk={tenancy.is_current}
-        peopleCount={tenancy.people_count}
+        canInvite={tenancy.is_current}
         maxPeople={tenancy.max_occupants}
       />
     </>
