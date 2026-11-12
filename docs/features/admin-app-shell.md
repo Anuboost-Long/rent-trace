@@ -26,6 +26,14 @@ navigation and permissions, built from shared components.
   dialog, loading host, modal, spinner and skeletons.
 - **Loading:** a global loading state (`useLoading`, `api/services/loading/`)
   plus route-level `loading.tsx` skeletons.
+- **Loading skeletons** match the page they stand in for (`components/layout/page-skeletons.tsx`):
+  `ListSkeleton` (filter bar and rows), `DetailSkeleton` (breadcrumb, title, label/value rows, a
+  people section), `FormSkeleton` (labelled fields and a button), `DashboardSkeleton`,
+  `CardsSkeleton` and `HomePanelSkeleton` (tenant pages). Where a page already shows its title
+  outside the loading boundary the skeleton has no title of its own; pages that load whole
+  (detail and edit pages) include one. The generic `ContentSkeleton` is only for route-level
+  `loading.tsx` files, where the page shape is not known. Public site skeletons live in
+  `components/site/skeletons.tsx` (home, results grid, listing detail).
 - **API layer:** `api/api-config.ts`, `api-helper.ts` and one `serve-action.ts`
   per area; the API key and tokens stay on the server. Server-side errors are
   normalised in `utils/server-side-error-handler.ts`, and an invalid API key is

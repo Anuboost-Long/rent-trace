@@ -1,7 +1,7 @@
 import { handleGetRoles } from "@/api/services/access/serve-action";
 import { handleGetUser } from "@/api/services/users/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { BUILT_IN_PARTY_ROLES } from "@/constants/roles";
 import { Route } from "@/constants/web-routes";
 import { notFound } from "next/navigation";
@@ -13,7 +13,7 @@ export default function EditUserPage({
   params,
 }: PageProps<"/admin/users/[id]/edit">) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<FormSkeleton withHeader />}>
       <EditUser params={params} />
     </Suspense>
   );

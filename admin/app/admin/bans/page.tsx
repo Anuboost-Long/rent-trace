@@ -1,7 +1,7 @@
 import { handleGetBans } from "@/api/services/bans/serve-action";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { BanStatusLabel, BanTypeLabel } from "@/constants/security";
 import { Route } from "@/constants/web-routes";
 import type { Ban } from "@/types/security/models";
@@ -30,7 +30,7 @@ export default function BansPage({
         </div>
         <CreateBanButton />
       </div>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <BanList searchParams={searchParams} />
       </Suspense>
     </>

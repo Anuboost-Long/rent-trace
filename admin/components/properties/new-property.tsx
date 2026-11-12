@@ -1,6 +1,6 @@
 import { handleGetOwnerOptions } from "@/api/services/properties/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { PropertyRoutes } from "@/constants/properties";
 import type { PropertyAudience } from "@/types/properties/models";
 import { Suspense } from "react";
@@ -27,7 +27,7 @@ export default function NewPropertyPage({ audience }: NewPropertyProp) {
       />
       <h1 className="mt-4 text-2xl font-semibold">New property</h1>
       <p className="mt-1 mb-6 text-foreground/70">{COPY[audience]}</p>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<FormSkeleton />}>
         <NewProperty audience={audience} />
       </Suspense>
     </div>

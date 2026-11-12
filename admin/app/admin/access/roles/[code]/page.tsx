@@ -5,7 +5,7 @@ import {
 } from "@/api/services/access/serve-action";
 import { handleGetAllUsers } from "@/api/services/users/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -18,7 +18,7 @@ export default function EditRolePage({
 }: PageProps<"/admin/access/roles/[code]">) {
   return (
     <>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<FormSkeleton withHeader />}>
         <EditRole params={params} />
       </Suspense>
     </>

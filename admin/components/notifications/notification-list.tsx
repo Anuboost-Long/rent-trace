@@ -1,6 +1,6 @@
 import { handleGetNotifications } from "@/api/services/notifications/serve-action";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import type { Audience } from "@/constants/audience";
 import {
   notificationHref,
@@ -32,7 +32,7 @@ export default function NotificationListPage({
   searchParams,
 }: NotificationListProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<ListSkeleton withHeader />}>
       <NotificationList audience={audience} searchParams={searchParams} />
     </Suspense>
   );

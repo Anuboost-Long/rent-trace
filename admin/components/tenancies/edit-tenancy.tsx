@@ -1,6 +1,6 @@
 import { handleGetTenancy } from "@/api/services/tenancies/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { TenancyRoutes } from "@/constants/tenancies";
 import type { TenancyAudience } from "@/types/tenancies/models";
 import { notFound } from "next/navigation";
@@ -15,7 +15,7 @@ type EditTenancyProp = Readonly<{
 
 export default function EditTenancyPage(props: EditTenancyProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<FormSkeleton withHeader />}>
       <EditTenancy {...props} />
     </Suspense>
   );

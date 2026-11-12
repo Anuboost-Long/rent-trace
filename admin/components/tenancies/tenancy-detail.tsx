@@ -2,7 +2,7 @@ import { handleGetTenancy } from "@/api/services/tenancies/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { PropertyRoutes } from "@/constants/properties";
 import {
   TenancyAccess,
@@ -19,9 +19,9 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import InvitationsSection from "./invitations-section";
+import TenancyActions from "./tenancy-actions";
 import TermChangePanel from "./term-change-panel";
 import TermHistory from "./term-history";
-import TenancyActions from "./tenancy-actions";
 
 type TenancyDetailProp = Readonly<{
   audience: TenancyAudience;
@@ -30,7 +30,7 @@ type TenancyDetailProp = Readonly<{
 
 export default function TenancyDetailPage(props: TenancyDetailProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<DetailSkeleton />}>
       <TenancyDetail {...props} />
     </Suspense>
   );

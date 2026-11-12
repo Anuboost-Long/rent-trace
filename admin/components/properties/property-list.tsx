@@ -3,7 +3,7 @@ import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import {
   PropertyAccess,
   PropertyRoutes,
@@ -91,7 +91,7 @@ export default function PropertyListPage({
           </ButtonLink>
         </Can>
       </div>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <PropertyList audience={audience} searchParams={searchParams} />
       </Suspense>
     </>

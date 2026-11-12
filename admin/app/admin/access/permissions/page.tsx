@@ -2,7 +2,7 @@ import { handleGetPermissions } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import DataTable, { type Column } from "@/components/common/table/data-table";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
 import type { PermissionItem } from "@/types/access/models";
 import { Plus } from "lucide-react";
@@ -23,7 +23,7 @@ export default function PermissionsPage() {
           </ButtonLink>
         </Can>
       </div>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <Permissions />
       </Suspense>
     </>

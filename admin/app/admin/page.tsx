@@ -1,5 +1,5 @@
-import ContentSkeleton from "@/components/layout/content-skeleton";
 import PageHeader from "@/components/layout/page-header";
+import { DashboardSkeleton } from "@/components/layout/page-skeletons";
 import { Suspense } from "react";
 
 import Dashboard from "./dashboard";
@@ -19,7 +19,7 @@ export default async function Page({ searchParams }: PageProps<"/admin">) {
         initialView={view === "dashboard" ? "dashboard" : "menu"}
         menu={<MenuGrid />}
         dashboard={
-          <Suspense fallback={<ContentSkeleton />}>
+          <Suspense fallback={<DashboardSkeleton />}>
             <Dashboard />
           </Suspense>
         }

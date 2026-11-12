@@ -4,7 +4,7 @@ import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { BUILT_IN_PARTY_ROLES, StatusLabel } from "@/constants/roles";
 import { Route } from "@/constants/web-routes";
 import type { UserSummary } from "@/types/users/models";
@@ -31,7 +31,7 @@ export default function UsersPage({ searchParams }: PageProps<"/admin/users">) {
           </ButtonLink>
         </Can>
       </div>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <UsersList searchParams={searchParams} />
       </Suspense>
     </>

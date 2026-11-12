@@ -4,8 +4,8 @@ import Pagination from "@/components/common/table/pagination";
 import ContactCard from "@/components/contact-requests/contact-card";
 import RequestActions from "@/components/contact-requests/request-actions";
 import RequestsFilter from "@/components/contact-requests/requests-filter";
-import ContentSkeleton from "@/components/layout/content-skeleton";
 import PageHeader from "@/components/layout/page-header";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { ContactRequestStatusLabel } from "@/constants/contact-requests";
 import { Route } from "@/constants/web-routes";
 import type { TenantContactRequest } from "@/types/contact-requests/models";
@@ -80,7 +80,7 @@ export default function Page({ searchParams }: PageProps<"/tenant/requests">) {
         title="Contact requests"
         description="Places you've asked a landlord about. Their details appear once they accept."
       />
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <Requests searchParams={searchParams} />
       </Suspense>
     </>

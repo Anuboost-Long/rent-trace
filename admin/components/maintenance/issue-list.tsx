@@ -1,7 +1,7 @@
 import { handleGetIssues } from "@/api/services/maintenance/serve-action";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import {
   IssuePriorityLabel,
   IssueRoutes,
@@ -72,7 +72,7 @@ export default function IssueListBody({
   searchParams,
 }: IssueListProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<ListSkeleton />}>
       <IssueList audience={audience} searchParams={searchParams} />
     </Suspense>
   );

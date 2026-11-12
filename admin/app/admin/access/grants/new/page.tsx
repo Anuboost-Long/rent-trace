@@ -1,7 +1,7 @@
 import { handleGetPermissions } from "@/api/services/access/serve-action";
 import { handleGetAllUsers } from "@/api/services/users/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -27,7 +27,7 @@ export default function NewGrantPage({
         Give one person a permission on top of what their roles already give
         them. A reason is required and is kept in their history.
       </p>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<FormSkeleton />}>
         <NewGrant searchParams={searchParams} />
       </Suspense>
     </div>

@@ -1,6 +1,6 @@
 import { handleGetIssue } from "@/api/services/maintenance/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import {
   ClosureOutcomeLabel,
   IssuePriorityLabel,
@@ -22,7 +22,7 @@ type IssueDetailProp = Readonly<{
 
 export default function IssueDetailPage(props: IssueDetailProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<DetailSkeleton />}>
       <IssueDetail {...props} />
     </Suspense>
   );

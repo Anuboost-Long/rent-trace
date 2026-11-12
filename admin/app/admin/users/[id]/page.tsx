@@ -4,7 +4,7 @@ import {
 } from "@/api/services/access/serve-action";
 import { handleGetUser } from "@/api/services/users/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { StatusLabel } from "@/constants/roles";
 import { Route } from "@/constants/web-routes";
 import { formatDate } from "@/utils/format-date";
@@ -18,7 +18,7 @@ export default function UserDetailPage({
   params,
 }: PageProps<"/admin/users/[id]">) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<DetailSkeleton />}>
       <UserDetail params={params} />
     </Suspense>
   );

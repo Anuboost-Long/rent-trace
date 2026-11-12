@@ -1,6 +1,6 @@
 import { handleGetProperty } from "@/api/services/properties/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { PropertyRoutes } from "@/constants/properties";
 import type { PropertyAudience } from "@/types/properties/models";
 import { propertyTitle } from "@/utils/property-address";
@@ -16,7 +16,7 @@ type EditPropertyProp = Readonly<{
 
 export default function EditPropertyPage(props: EditPropertyProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<FormSkeleton withHeader />}>
       <EditProperty {...props} />
     </Suspense>
   );

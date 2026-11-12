@@ -1,7 +1,7 @@
 import { handleGetTokens } from "@/api/services/tokens/serve-action";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { TokenStatusLabel } from "@/constants/security";
 import { Route } from "@/constants/web-routes";
 import type { AccessToken } from "@/types/security/models";
@@ -27,7 +27,7 @@ export default function TokensPage({
           away.
         </p>
       </div>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <TokenList searchParams={searchParams} />
       </Suspense>
     </>

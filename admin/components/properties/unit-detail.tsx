@@ -2,7 +2,7 @@ import { handleGetConditions } from "@/api/services/conditions/serve-action";
 import { handleGetProperty } from "@/api/services/properties/serve-action";
 import UnitConditions from "@/components/conditions/unit-conditions";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { PropertyAccess, PropertyRoutes } from "@/constants/properties";
 import type { PropertyAudience } from "@/types/properties/models";
 import { propertyTitle } from "@/utils/property-address";
@@ -19,7 +19,7 @@ type UnitDetailProp = Readonly<{
 
 export default function UnitDetailPage(props: UnitDetailProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<DetailSkeleton />}>
       <UnitDetail {...props} />
     </Suspense>
   );

@@ -2,7 +2,7 @@ import { handleGetProperty } from "@/api/services/properties/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import {
   PropertyAccess,
   PropertyRoutes,
@@ -33,7 +33,7 @@ type PropertyDetailProp = Readonly<{
 
 export default function PropertyDetailPage(props: PropertyDetailProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<DetailSkeleton />}>
       <PropertyDetail {...props} />
     </Suspense>
   );

@@ -6,7 +6,7 @@ import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
 import type { GrantListItem } from "@/types/access/models";
 import { formatDate } from "@/utils/format-date";
@@ -33,7 +33,7 @@ export default function GrantsPage({
           </ButtonLink>
         </Can>
       </div>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <Grants searchParams={searchParams} />
       </Suspense>
     </>

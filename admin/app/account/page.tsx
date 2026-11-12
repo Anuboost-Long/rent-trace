@@ -1,6 +1,6 @@
 import { handleGetMe } from "@/api/services/auth/serve-action";
-import ContentSkeleton from "@/components/layout/content-skeleton";
 import PageHeader from "@/components/layout/page-header";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { formatDate } from "@/utils/format-date";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -17,7 +17,7 @@ export default function AccountPage() {
         title="Account"
         description="Your details and how you sign in."
       />
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<FormSkeleton />}>
         <Account />
       </Suspense>
     </div>

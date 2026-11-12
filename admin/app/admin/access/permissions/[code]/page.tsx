@@ -1,7 +1,7 @@
 import { handleGetPermissionHolders } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
 import { formatDate } from "@/utils/format-date";
 import { UserPlus } from "lucide-react";
@@ -17,7 +17,7 @@ export default function PermissionDetailPage({
 }: PageProps<"/admin/access/permissions/[code]">) {
   return (
     <>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<DetailSkeleton />}>
         <PermissionDetail params={params} />
       </Suspense>
     </>

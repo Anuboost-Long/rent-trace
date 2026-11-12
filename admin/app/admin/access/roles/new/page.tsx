@@ -3,7 +3,7 @@ import {
   handleGetRoles,
 } from "@/api/services/access/serve-action";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -22,7 +22,7 @@ export default function NewRolePage() {
         ]}
       />
       <h1 className="mt-4 mb-6 text-2xl font-semibold">New role</h1>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<FormSkeleton />}>
         <NewRole />
       </Suspense>
     </>

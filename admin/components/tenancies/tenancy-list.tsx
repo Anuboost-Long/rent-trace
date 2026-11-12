@@ -3,7 +3,7 @@ import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { ListSkeleton } from "@/components/layout/page-skeletons";
 import {
   TenancyAccess,
   TenancyRoutes,
@@ -79,7 +79,7 @@ export default function TenancyListPage({
           </ButtonLink>
         </Can>
       </div>
-      <Suspense fallback={<ContentSkeleton />}>
+      <Suspense fallback={<ListSkeleton />}>
         <TenancyList audience={audience} searchParams={searchParams} />
       </Suspense>
     </>
