@@ -98,3 +98,14 @@ def tenancy_cancelled(tenancy, tenants):
     _tell_tenants(
         tenancy, tenants, Kind.TENANCY_CANCELLED, "Your tenancy was cancelled", "was cancelled"
     )
+
+
+def terms_changed(tenancy, tenants):
+    """Tells the tenants the terms moved. The text carries no amounts; they open the tenancy."""
+    notify(
+        tenants,
+        kind=Kind.TENANCY_TERMS_CHANGED,
+        title="The terms of your tenancy changed",
+        body=f"The dates, rent or bond for your tenancy at {place_name(tenancy)} changed. Open it to see the new terms.",
+        subject_id=tenancy.pk,
+    )

@@ -34,11 +34,13 @@ export const TenancyRoutes = {
     list: Route.admin.tenancies,
     create: Route.admin.tenancy_new,
     detail: Route.admin.tenancy,
+    edit: Route.admin.tenancy_edit,
   },
   landlord: {
     list: Route.landlord.tenancies,
     create: Route.landlord.tenancy_new,
     detail: Route.landlord.tenancy,
+    edit: Route.landlord.tenancy_edit,
   },
 } as const;
 

@@ -2,8 +2,10 @@ from datetime import timedelta
 
 from rest_framework.exceptions import NotFound, ValidationError
 
-from tenancies.models import TenancyParty
+from tenancies.models import Tenancy, TenancyParty, TenancyStatus
 from tenancies.services.shared.invitations import live_tenancies
+
+UNIT_BUSY = "This unit already has an active tenancy in that period."
 
 
 def lock_tenancy(tenancy_id, owned_by):
@@ -45,3 +47,14 @@ def release_tenants(parties, today, actor):
         party.updated_by = actor
         party.row_version += 1
         party.save()
+
+
+def check_unit_is_free(tenancy):
+    busy = (
+        Tenancy.objects.live()
+        .filter(property_unit=tenancy.property_unit, status=TenancyStatus.ACTIVE)
+        .exclude(pk=tenancy.pk)
+        .overlapping(tenancy.start_date, tenancy.end_date)
+    )
+    if busy.exists():
+        raise ValidationError({"status": UNIT_BUSY})

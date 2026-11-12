@@ -48,5 +48,5 @@ Statuses are `DRAFT` (set up, invitations out), `ACTIVE`, `ENDED` and `CANCELLED
 
 - `PENDING` ("starting soon") is not used; a future-dated active tenancy simply shows as
   current from the day it is started.
-- Editing a tenancy's dates, notes, rent and bond.
+- Editing a tenancy's dates, notes, rent and bond is built; see [Tenancy terms](tenancy-terms.md).
 - Tenants leaving on their own, or a landlord removing one tenant from a running tenancy.

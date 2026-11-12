@@ -57,6 +57,10 @@ export type TenancyDetail = PlaceRef & {
   start_date: string;
   end_date: string | null;
   notes: string | null;
+  rent_amount: string | null;
+  rent_frequency: string | null;
+  bond_amount: string | null;
+  currency: string;
   tenants: Tenant[];
   invitations: Invitation[];
 };
@@ -75,12 +79,18 @@ export type TenancyFilters = {
   page?: number;
 };
 
-export type CreateTenancyBody = {
-  property_unit_id: number;
+export type TenancyTerms = {
   start_date: string;
-  end_date?: string;
-  notes?: string;
+  end_date: string | null;
+  notes: string | null;
+  rent_amount: string | null;
+  rent_frequency: string | null;
+  bond_amount: string | null;
 };
+
+export type CreateTenancyBody = TenancyTerms & { property_unit_id: number };
+
+export type UpdateTenancyBody = TenancyTerms;
 
 export type InviteTenantBody = { email: string; is_primary: boolean };
 

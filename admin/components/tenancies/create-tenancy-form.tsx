@@ -1,16 +1,14 @@
 "use client";
 import Button from "@/components/common/button";
 import ComboboxInput from "@/components/common/inputs/combobox-input";
-import DateInput from "@/components/common/inputs/date-input";
 import SelectInput from "@/components/common/inputs/select-input";
-import TextArea from "@/components/common/inputs/text-area-input";
 import useCreateTenancy, {
   findProperties,
   type InitialProperty,
 } from "@/hooks/form/useCreateTenancy";
 import type { TenancyAudience } from "@/types/tenancies/models";
-import { addDays } from "@/utils/calendar";
-import { useState } from "react";
+
+import TenancyTermsFields, { readTerms } from "./tenancy-terms-fields";
 
 type CreateTenancyFormProp = Readonly<{
   audience: TenancyAudience;
@@ -22,19 +20,14 @@ export default function CreateTenancyForm({
   initial,
 }: CreateTenancyFormProp) {
   const tenancy = useCreateTenancy(audience, initial);
-  const [startDate, setStartDate] = useState("");
   const fields = tenancy.error?.fields ?? {};
+  const unit = tenancy.units.find((item) => String(item.id) === tenancy.unitId);
 
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        const form = new FormData(event.currentTarget);
-        tenancy.createTenancy({
-          start_date: String(form.get("start_date")),
-          end_date: String(form.get("end_date") ?? "") || undefined,
-          notes: String(form.get("notes") ?? "").trim() || undefined,
-        });
+        tenancy.createTenancy(readTerms(new FormData(event.currentTarget)));
       }}
       className="flex flex-col gap-4"
     >
@@ -69,22 +62,13 @@ export default function CreateTenancyForm({
             ]}
           />
         ))}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <DateInput
-          label="Start date"
-          name="start_date"
-          required
-          onValueChange={setStartDate}
-          error={fields.start_date}
-        />
-        <DateInput
-          label="End date (optional)"
-          name="end_date"
-          min={startDate ? addDays(startDate, 1) : undefined}
-          error={fields.end_date}
-        />
-      </div>
-      <TextArea label="Notes (optional)" name="notes" error={fields.notes} />
+      <TenancyTermsFields
+        defaults={{
+          rent_amount: unit?.rent_amount ?? null,
+          rent_frequency: unit?.rent_frequency ?? null,
+        }}
+        errors={fields}
+      />
       {tenancy.error && Object.keys(fields).length === 0 && (
         <p role="alert" className="text-sm text-red-600">
           {tenancy.error.message}
@@ -93,7 +77,7 @@ export default function CreateTenancyForm({
       <Button
         type="submit"
         pending={tenancy.pending}
-        disabled={tenancy.unitId === "" || startDate === ""}
+        disabled={tenancy.unitId === ""}
       >
         {tenancy.pending ? "Creating tenancy…" : "Create tenancy"}
       </Button>

@@ -41,5 +41,6 @@ site layout they browse in (see [Tenant area](tenant-area.md)), instead of an em
 
 ## Not done
 
-- Rent payments, bond records and condition reports: no tables are in use yet.
+- Rent payments, bond lodgement and condition reports: no tables are in use yet. The rent and
+  bond shown are the terms the landlord set ([Tenancy terms](tenancy-terms.md)).
 - Ending a tenancy or leaving one (see [Admin tenancies](admin-tenancies.md)).

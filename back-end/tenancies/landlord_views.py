@@ -33,7 +33,15 @@ class LandlordTenanciesView(LandlordScope, views.TenanciesView):
 
 
 class LandlordTenancyDetailView(LandlordScope, views.TenancyDetailView):
-    required_permissions = {"GET": "tenancies.view"}
+    required_permissions = {"GET": "tenancies.view", "PATCH": "tenancies.update"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_update",
+        request=dtos.UpdateTenancyDto,
+        responses=resources.TenancyDetailResource,
+    )
+    def patch(self, request, tenancy_id):
+        return super().patch(request, tenancy_id)
 
 
 class LandlordInvitationsView(LandlordScope, views.InvitationsView):

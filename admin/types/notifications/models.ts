@@ -12,7 +12,8 @@ export type NotificationKind =
   | "TENANCY_CANCELLED"
   | "TENANCY_HOUSEMATE_REQUESTED"
   | "TENANCY_HOUSEMATE_APPROVED"
-  | "TENANCY_HOUSEMATE_DECLINED";
+  | "TENANCY_HOUSEMATE_DECLINED"
+  | "TENANCY_TERMS_CHANGED";
 
 export type AppNotification = {
   id: number;

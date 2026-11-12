@@ -45,5 +45,5 @@ by email. A tenant who gets the email can accept from a page in the app.
 - A tenant who has no account yet must sign up and verify first; the sign-up flow
   does not carry them back to the accept link, so they open the email link again.
 - No preview of the invitation before accepting; the page only asks to accept.
-- Edit a tenancy's dates and notes; rent and bond. Start, end and cancel are built; see
-  [Tenancy lifecycle](tenancy-lifecycle.md).
+- Start, end and cancel are built ([Tenancy lifecycle](tenancy-lifecycle.md)), and so are editing
+  dates, notes, rent and bond ([Tenancy terms](tenancy-terms.md)).

@@ -1,11 +1,19 @@
 import { handleGetTenancy } from "@/api/services/tenancies/serve-action";
+import ButtonLink from "@/components/common/button-link";
+import Can from "@/components/common/can";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import ContentSkeleton from "@/components/layout/content-skeleton";
 import { PropertyRoutes } from "@/constants/properties";
-import { TenancyRoutes, TenancyStatusLabel } from "@/constants/tenancies";
+import {
+  TenancyAccess,
+  TenancyRoutes,
+  TenancyStatusLabel,
+} from "@/constants/tenancies";
 import { Route } from "@/constants/web-routes";
 import type { TenancyAudience } from "@/types/tenancies/models";
 import { formatDate } from "@/utils/format-date";
+import { formatMoney, formatRent } from "@/utils/rent";
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -59,7 +67,17 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
     ],
     ["Starts", formatDate(tenancy.start_date)],
     ["Ends", tenancy.end_date ? formatDate(tenancy.end_date) : "Open-ended"],
-    ["Notes", tenancy.notes ?? "—"],
+    [
+      "Rent",
+      tenancy.rent_amount && tenancy.rent_frequency
+        ? formatRent(tenancy.rent_amount, tenancy.rent_frequency)
+        : "Not set",
+    ],
+    [
+      "Bond",
+      tenancy.bond_amount ? formatMoney(tenancy.bond_amount) : "Not set",
+    ],
+    ["Notes", tenancy.notes ?? "None"],
   ];
 
   return (
@@ -72,11 +90,25 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
       />
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold">{tenancy.reference_no}</h1>
-        <TenancyActions
-          audience={audience}
-          tenancyId={tenancy.id}
-          status={tenancy.status}
-        />
+        <div className="flex flex-wrap items-center gap-2">
+          {tenancy.status !== "ENDED" && tenancy.status !== "CANCELLED" && (
+            <Can permission={TenancyAccess[audience].update}>
+              <ButtonLink
+                href={TenancyRoutes[audience].edit(tenancy.id)}
+                variant="quiet"
+                className="gap-2"
+              >
+                <Pencil aria-hidden className="size-4" />
+                Edit tenancy
+              </ButtonLink>
+            </Can>
+          )}
+          <TenancyActions
+            audience={audience}
+            tenancyId={tenancy.id}
+            status={tenancy.status}
+          />
+        </div>
       </div>
       <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
         {details.map(([label, value]) => (

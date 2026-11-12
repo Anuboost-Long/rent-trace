@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
+from tenancies.dtos.terms_fields import TermsFieldsDto
 
-class CreateTenancyDto(serializers.Serializer):
+
+class CreateTenancyDto(TermsFieldsDto):
     property_unit_id = serializers.IntegerField()
     start_date = serializers.DateField()
     end_date = serializers.DateField(required=False, allow_null=True)

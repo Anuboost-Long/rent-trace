@@ -23,6 +23,9 @@ const DESTINATIONS: Partial<
   TENANCY_STARTED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
   TENANCY_ENDED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
   TENANCY_CANCELLED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
+  TENANCY_TERMS_CHANGED: {
+    tenant: (id) => (id ? Route.tenant.tenancy(id) : null),
+  },
   TENANCY_HOUSEMATE_REQUESTED: {
     landlord: (id) => (id ? Route.landlord.tenancy(id) : null),
     admin: (id) => (id ? Route.admin.tenancy(id) : null),

@@ -37,6 +37,6 @@ by email, from their own area. The tenant accepts from the emailed link
 
 ## Not done
 
-- Edit a tenancy's dates and notes; rent and bond. Start, end and cancel are built; see
-  [Tenancy lifecycle](tenancy-lifecycle.md).
+- Start, end and cancel are built ([Tenancy lifecycle](tenancy-lifecycle.md)), and so are editing
+  dates, notes, rent and bond ([Tenancy terms](tenancy-terms.md)).
 - Removing a tenant who has already joined.

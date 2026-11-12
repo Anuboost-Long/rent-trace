@@ -16,6 +16,7 @@ import type {
   TenancyDetail,
   TenancyFilters,
   TenancyPage,
+  UpdateTenancyBody,
 } from "@/types/tenancies/models";
 import { handleSSRActionError } from "@/utils/server-side-error-handler";
 
@@ -209,6 +210,23 @@ export const handleWithdrawHousemate = async (
         invitationId,
       ),
       method: "POST",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleUpdateTenancy = async (
+  id: number,
+  body: UpdateTenancyBody,
+  audience: TenancyAudience = "admin",
+) => {
+  try {
+    const data = await ApiServiceServer<TenancyDetail>({
+      url: apiFor(audience).detail(id),
+      method: "PATCH",
+      data: body,
     });
     return { data, error: null };
   } catch (error) {

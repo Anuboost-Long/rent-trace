@@ -60,11 +60,20 @@ class TenanciesView(TenancyScope, PermissionedView):
 
 
 class TenancyDetailView(TenancyScope, PermissionedView):
-    required_permissions = {"GET": "tenancies.admin_view"}
+    required_permissions = {"GET": "tenancies.admin_view", "PATCH": "tenancies.admin_manage"}
 
     @extend_schema(responses=resources.TenancyDetailResource)
     def get(self, request, tenancy_id):
         return Response(detail(tenancy_id, self.owned_by(request)))
+
+    @extend_schema(request=dtos.UpdateTenancyDto, responses=resources.TenancyDetailResource)
+    def patch(self, request, tenancy_id):
+        changes = validated(dtos.UpdateTenancyDto, request.data)
+        owned_by = self.owned_by(request)
+        services.update_tenancy(
+            actor=request.user, tenancy_id=tenancy_id, changes=changes, owned_by=owned_by
+        )
+        return Response(detail(tenancy_id, owned_by))
 
 
 class InvitationsView(TenancyScope, PermissionedView):
