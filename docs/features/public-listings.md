@@ -1,10 +1,14 @@
 # Public listings
 
-## Status — 12 November 2026
+## Status — 13 November 2026
 
 Built. Back-end tests (`listings/tests/test_public_listings_api.py`) pass in the full
 back-end run of 12 November 2026 (444 tests). The site screens were opened in Chrome only
 as far as the home page; the browse and detail pages have not been walked through.
+The 13 November home page rework (below) is type-checked and linted. It was viewed in Chrome as
+the landlord account: the hero and newest-rental band at desktop width, and the whole page at
+phone width. The new sections (type links, record, closing panel) are not yet seen at desktop
+width, and the tenant-only parts are not yet seen.
 
 ## Goal
 
@@ -41,6 +45,23 @@ and the shown units' photos together, for the gallery.
 Site, in the admin app's `(site)` route group:
 
 - `/` — home with hero photos and the search form.
+  - Short headline, then the search as one wide row (state, suburb, type, search), and
+    quick links by property type under it that open the results filtered to that type.
+  - **Newest rental**: one large cover photo with its title, place, type and "From" rent over
+    it, linking to the listing. The newest listing that has a cover photo.
+  - **New on RentTrace**: the other latest listings as cards (up to four).
+  - **Browse by suburb**: up to eight places with listings, most first, each linking to the
+    results filtered to that suburb.
+  - **A record both sides can see**: what RentTrace keeps for a tenancy (rent and bond
+    changes the tenants approve, condition notes the landlord chooses to show, maintenance
+    closed only when both sides agree, housemates the landlord approves). Plain text, no
+    numbers or statistics.
+  - The closing block is a light-on-dark (inverted) panel with the two paths: finding a
+    place, and renting out a property (or, for a tenant, "Already renting?").
+  - No stock photos: only real listing covers are shown.
+  - A signed-in **tenant** sees "Welcome back, <first name>" with a link to their tenancy,
+    no "no account needed" line, and an "Already renting?" card with a link to `/tenant`
+    in place of the landlord card, which had no action for them.
 - `/properties` — results with filters and skeletons while loading.
 - `/properties/<id>` — detail with a photo gallery and an "Available units"
   list, each unit with its own rent and photos.

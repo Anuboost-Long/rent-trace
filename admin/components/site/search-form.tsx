@@ -15,7 +15,7 @@ export default function SearchForm({ places }: SearchFormProp) {
   return (
     <Form
       action={Route.listings}
-      className="grid gap-3 rounded-2xl border border-foreground/15 p-3 sm:grid-cols-2 sm:items-end"
+      className="grid gap-3 rounded-2xl border border-foreground/15 p-3 sm:grid-cols-2 sm:items-end lg:grid-cols-[repeat(3,minmax(0,1fr))_max-content]"
     >
       <PlaceFields places={places} />
       <SelectInput

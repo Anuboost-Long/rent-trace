@@ -6,7 +6,7 @@ import RequestContactForm from "@/components/contact-requests/request-contact-fo
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { listingPhotoUrl } from "@/components/site/listing-card";
 import ListingGallery from "@/components/site/listing-gallery";
-import { CardGridSkeleton } from "@/components/site/skeletons";
+import { ListingDetailSkeleton } from "@/components/site/skeletons";
 import { audienceFor } from "@/constants/audience";
 import { OPEN_REQUEST_STATUSES } from "@/constants/contact-requests";
 import {
@@ -28,7 +28,7 @@ export const metadata: Metadata = { title: "Rental · RentTrace" };
 export default function ListingPage({ params }: PageProps<"/properties/[id]">) {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6">
-      <Suspense fallback={<CardGridSkeleton count={2} />}>
+      <Suspense fallback={<ListingDetailSkeleton />}>
         <Listing params={params} />
       </Suspense>
     </div>
