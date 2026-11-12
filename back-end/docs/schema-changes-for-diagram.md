@@ -262,3 +262,28 @@ Rename entries 5, 6, 7 and 2 as in section 1, then append:
 59. `user_mfa`
 60. `mfa_backup_codes`
 61. `tenancy_invitations`
+
+## 7. Notifications become a general inbox
+
+`notifications` was built for the review engine: every row hung off a `business_events` row,
+which needs a review target. Contact requests and tenancy invitations have no review target,
+so the table now also holds notifications with no event.
+
+- `event_id` is now nullable. `uq_notifications_recipient` (event, recipient) is unchanged;
+  rows with no event are not limited by it.
+- New `kind` (text, checked against the `NotificationKind` list). Existing and
+  review-engine rows use `REVIEW_EVENT`.
+- New nullable `subject_id` (bigint): the id of the thing the notification is about, read
+  together with `kind` (a contact request, an invitation, or a tenancy). No foreign key,
+  because it points at different tables.
+
+```mermaid
+erDiagram
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    BUSINESS_EVENTS |o--o{ NOTIFICATIONS : "optional source"
+    NOTIFICATIONS {
+        bigint event_id "now nullable"
+        text kind "new"
+        bigint subject_id "new, nullable"
+    }
+```

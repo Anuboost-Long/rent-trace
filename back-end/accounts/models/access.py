@@ -229,12 +229,22 @@ class AccessPolicy(MutableRecord):
         ]
 
 
+class AccountAccessHistoryQuerySet(models.QuerySet):
+    def with_people(self):
+        return self.select_related("user", "created_by")
+
+    def newest_first(self):
+        return self.order_by("-created_at", "-id")
+
+
 class AccountAccessHistory(EventRecord):
     user = models.ForeignKey(User, models.PROTECT, related_name="access_history")
     action = models.TextField()
     before_values = models.JSONField()
     after_values = models.JSONField()
     reason = models.TextField()
+
+    objects = AccountAccessHistoryQuerySet.as_manager()
 
     class Meta:
         db_table = "account_access_history"

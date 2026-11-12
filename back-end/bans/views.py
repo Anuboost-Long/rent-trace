@@ -13,7 +13,7 @@ def _validated(dto_class, data):
 
 
 class BansView(PermissionedView):
-    required_permissions = {"GET": "bans.view"}
+    required_permissions = {"GET": "bans.view", "POST": "bans.manage"}
 
     @extend_schema(
         operation_id="bans_list",
@@ -28,6 +28,16 @@ class BansView(PermissionedView):
         paginator = PagePagination()
         page = paginator.paginate_queryset(bans, request, view=self)
         return paginator.get_paginated_response(resources.BanResource(page, many=True).data)
+
+    @extend_schema(
+        operation_id="bans_create",
+        request=dtos.CreateBanDto,
+        responses={201: resources.BanResource},
+    )
+    def post(self, request):
+        data = _validated(dtos.CreateBanDto, request.data)
+        ban = services.create_ban(actor=request.user, **data)
+        return Response(resources.BanResource(ban).data, status=201)
 
 
 class LiftBanView(PermissionedView):

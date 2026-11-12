@@ -43,8 +43,10 @@ INSTALLED_APPS = [
     "users",
     "access",
     "bans",
+    "overview",
     "tokens",
     "locations",
+    "listings",
     "properties",
     "tenancies",
     "files",
@@ -182,6 +184,7 @@ REST_FRAMEWORK = {
         "signing_keys": "30/hour",
         "bootstrap_admin": "5/hour",
         "mfa": "5/min",
+        "public_browse": "240/min",
     },
 }
 
@@ -228,5 +231,6 @@ SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
         "SelfServiceRoleEnum": "accounts.dtos.fields.SELF_SERVICE_ROLES",
         "AuthMethodEnum": "accounts.models.AuthMethod",
+        "TenancyStatusEnum": "tenancies.models.TenancyStatus",
     },
 }

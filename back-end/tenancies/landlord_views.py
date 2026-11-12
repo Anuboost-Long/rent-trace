@@ -1,0 +1,48 @@
+from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import BasePermission
+
+from accounts.security.permissioned_view import PermissionedView
+from accounts.services.shared.account_rules import has_role
+from tenancies import dtos, resources, views
+
+
+class IsLandlord(BasePermission):
+    message = "Only landlords can use this."
+
+    def has_permission(self, request, view):
+        return has_role(request.user, "LANDLORD")
+
+
+class LandlordScope(views.TenancyScope):
+    permission_classes = [*PermissionedView.permission_classes, IsLandlord]
+
+    def owned_by(self, request):
+        return request.user
+
+
+class LandlordTenanciesView(LandlordScope, views.TenanciesView):
+    required_permissions = {"GET": "tenancies.view", "POST": "tenancies.create"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_list",
+        parameters=[dtos.TenancyListQueryDto],
+        responses=resources.TenancyPageResource,
+    )
+    def get(self, request):
+        return super().get(request)
+
+
+class LandlordTenancyDetailView(LandlordScope, views.TenancyDetailView):
+    required_permissions = {"GET": "tenancies.view"}
+
+
+class LandlordInvitationsView(LandlordScope, views.InvitationsView):
+    required_permissions = {"POST": "tenancies.manage_parties"}
+
+
+class LandlordResendInvitationView(LandlordScope, views.ResendInvitationView):
+    required_permissions = {"POST": "tenancies.manage_parties"}
+
+
+class LandlordRevokeInvitationView(LandlordScope, views.RevokeInvitationView):
+    required_permissions = {"POST": "tenancies.manage_parties"}

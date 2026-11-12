@@ -150,3 +150,8 @@ class LandlordPropertyFileDetailView(LandlordScope, file_views.PropertyFileDetai
 
 class LandlordPropertyFileContentView(LandlordScope, file_views.PropertyFileContentView):
     required_permissions = {"GET": "properties.view"}
+
+
+class LandlordListingStatusView(LandlordScope, file_views.ListingStatusView):
+    required_permissions = {"POST": "properties.publish"}
+    as_admin = False

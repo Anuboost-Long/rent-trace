@@ -1,4 +1,5 @@
 from properties.dtos.add_property_file import AddPropertyFileDto
+from properties.dtos.change_listing import ChangeListingDto
 from properties.dtos.create_property import CreatePropertyDto
 from properties.dtos.owner_option_query import OwnerOptionQueryDto
 from properties.dtos.property_fields import PropertyFieldsDto

@@ -91,3 +91,20 @@ class PropertyFileContentView(PropertyFilesBase):
         )
         response["Cache-Control"] = CONTENT_CACHE
         return response
+
+
+class ListingStatusView(PropertyFilesBase):
+    required_permissions = {"POST": "properties.admin_manage"}
+    as_admin = True
+
+    @extend_schema(request=dtos.ChangeListingDto, responses=resources.PropertyDetailResource)
+    def post(self, request, property_id):
+        data = _validated(dtos.ChangeListingDto, request.data)
+        changed = services.change_listing_status(
+            actor=request.user,
+            property_id=property_id,
+            listing_status=data["listing_status"],
+            owned_by=self.scope(request),
+            as_admin=self.as_admin,
+        )
+        return Response(resources.PropertyDetailResource(changed).data)

@@ -36,6 +36,9 @@ class UserQuerySet(models.QuerySet):
     def not_deleted(self):
         return self.filter(deleted_at__isnull=True)
 
+    def verified(self):
+        return self.filter(email_verified_at__isnull=False)
+
     def search(self, text):
         matches = self
         for term in text.split():

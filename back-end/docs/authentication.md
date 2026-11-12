@@ -256,7 +256,7 @@ One row per `email_normalized`, keyed by email rather than user. Unknown emails 
 - Lifting a ban keeps the row and sets `lifted_at`, `lifted_by` and `lift_reason`.
 - One current ban per identity or account. To extend an expired ban, update `expires_at` on the existing row, or lift it before adding a new one.
 - Record account bans in `account_access_history`.
-- **Lifting from the admin panel:** `POST /api/bans/<id>/lift/` (permission `bans.manage`) needs a reason, refuses a ban that already ended, and writes `ADMIN_LIFTED_BAN` on the person for account bans. Creating bans from the panel is not built yet.
+- **Lifting from the admin panel:** `POST /api/bans/<id>/lift/` (permission `bans.manage`) needs a reason, refuses a ban that already ended, and writes `ADMIN_LIFTED_BAN` on the person for account bans. `POST /api/bans/` (permission `bans.manage`) creates one; see `docs/features/bans-and-sessions.md`.
 
 ## 8. Roles and permissions
 

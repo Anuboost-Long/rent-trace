@@ -1,0 +1,5 @@
+from tenancies.resources.invitation import InvitationResource
+from tenancies.resources.my_invitation import MyInvitationResource
+from tenancies.resources.tenancy_detail import TenancyDetailResource
+from tenancies.resources.tenancy_page import TenancyPageResource
+from tenancies.resources.tenancy_summary import TenancySummaryResource

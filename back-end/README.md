@@ -221,6 +221,19 @@ Needs an admin who has finished two-step verification. All under `/api/propertie
 
 Property and unit changes are stamped with `created_by`, `updated_by` and `row_version`. They aren't written to `business_change_history` yet, because that table hangs off the review engine.
 
+### Public listings (no sign-in)
+
+Anyone can browse, so these endpoints need only the API key. They are under `/api/public/listings/`, rate limited, and return public fields only: no street address, owners, private notes, private units, documents or sign-in details. A property appears only when its owner or an admin has set the listing to `AVAILABLE` or `PARTIALLY_AVAILABLE`, it is active, and at least one unit is public.
+
+| Endpoint                     | What it does                                                                                                                                                                                                                                                                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /`                      | Paginated listings with cover photo, suburb, "from" rent and unit count. Query: `q`, `state`, `suburb`, `type`, `min_rent`, `max_rent` (per week, monthly and fortnightly rents are converted), `sort` (`newest`, `rent_low`, `rent_high`; unpriced last), `page`, `page_size` (max 48) |
+| `GET places/`                | Every state and suburb that currently has a listing, with a count, for search pickers                                                                                                                                                                                                   |
+| `GET <id>/`                  | One listing: public description, public units with rent, and photos (property and public-unit photos)                                                                                                                                                                                   |
+| `GET <id>/photos/<file_id>/` | A public photo's bytes. Documents and photos of private units are a 404                                                                                                                                                                                                                 |
+
+Landlords and admins control a listing with `POST listing/` on the property (`/api/landlord/properties/<id>/listing/` needs `properties.publish`; `/api/properties/<id>/listing/` needs `properties.admin_manage`) with `listing_status`. To go live the property must be active and have a public unit. Landlords can't set `SUSPENDED` or `ARCHIVED` and can't change a suspended listing; admins can. Units now have an optional `rent_amount` with `rent_frequency` (`WEEKLY`, `FORTNIGHTLY` or `MONTHLY`); both or neither.
+
 ### Property photos and files
 
 Photos and PDF documents attached to a property, on both the admin routes (`/api/properties/<id>/files/`, needs `properties.admin_manage` to change, `properties.admin_view` to read) and the landlord routes (`/api/landlord/properties/<id>/files/`, needs `properties.update` / `properties.view`, own properties only). Files are stored with Django's default storage, which writes under `MEDIA_ROOT` (default `back-end/media`, git-ignored; back it up). To move to S3 or Supabase Storage later, change the storage backend in settings; the API doesn't change.
@@ -249,6 +262,65 @@ Needs a signed-in landlord. All under `/api/landlord/properties/`. Every endpoin
 | `POST <id>/units/`             | Add a unit                                                                                                                          |
 | `PATCH <id>/units/<unit_id>/`  | Edit a unit                                                                                                                         |
 | `DELETE <id>/units/<unit_id>/` | Remove a unit. 409 while it has a tenancy                                                                                           |
+
+### Tenancies and tenant invitations
+
+A landlord (or an admin) creates a tenancy on a unit and invites tenants to it by email. The invitee follows the emailed link, signs in with the same verified email, and joins. Rules and errors are in `docs/features/tenant-invitations.md` (at the repository root). Under `/api/landlord/tenancies/` (needs a landlord; only your own properties) and `/api/tenancies/` (admins, all properties), with the same paths:
+
+| Endpoint                                        | Landlord permission        | Admin permission         | What it does                                                                                                                                                |
+| ----------------------------------------------- | -------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /`                                         | `tenancies.view`           | `tenancies.admin_view`   | Tenancies, newest first, with place, status, dates, tenant count and pending invites. Query: `q`, `status`, `page`. Landlords see their own properties only |
+| `POST /`                                        | `tenancies.create`         | `tenancies.admin_manage` | Create a draft whole-unit tenancy: `property_unit_id`, `start_date`, optional `end_date`, `notes`                                                           |
+| `GET <id>/`                                     | `tenancies.view`           | `tenancies.admin_view`   | The tenancy with its unit, property, current tenants and invitations                                                                                        |
+| `POST <id>/invitations/`                        | `tenancies.manage_parties` | `tenancies.admin_manage` | Invite `email`, optionally `is_primary`. Valid for 7 days; the link is emailed after commit                                                                 |
+| `POST <id>/invitations/<invitation_id>/resend/` | `tenancies.manage_parties` | `tenancies.admin_manage` | New link and 7 more days for a pending or expired invite; the old link stops working                                                                        |
+| `POST <id>/invitations/<invitation_id>/revoke/` | `tenancies.manage_parties` | `tenancies.admin_manage` | End a pending or expired invite                                                                                                                             |
+
+Tenants use `/api/tenant/invitations/` and need `tenancies.accept_invitation`:
+
+| Endpoint            | What it does                                                     |
+| ------------------- | ---------------------------------------------------------------- |
+| `GET /`             | Pending invitations for the signed-in tenant's email (no tokens) |
+| `POST accept/`      | Accept with the `token` from the email                           |
+| `POST <id>/accept/` | Accept one from the list                                         |
+
+Accepting needs the account's verified email to equal the invited email; any other failure answers the same 400 so it doesn't reveal who was invited. 409 when the invite is for the primary tenant and the tenancy already has one.
+
+### Contact requests
+
+A tenant asks a landlord to get in touch about a listing. The landlord accepts or declines; on accept each side sees the other's name, email and phone. Rules are in `docs/features/contact-requests.md` (repository root).
+
+Tenants, under `/api/tenant/contact-requests/` (needs a tenant and `contact_requests.send`):
+
+| Endpoint            | What it does                                                                                                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /`            | Ask about a listed property: `listing_id`, optional `unit_id` (an available public unit), `message` (1 to 1000 characters). One open request per property, at most 10 waiting |
+| `GET /`             | Your requests, newest first. Query: `status`, `page`, `page_size`                                                                                                             |
+| `GET <id>/`         | One request. `landlord` holds name, email and phone only when it is `ACCEPTED`, otherwise `null`                                                                              |
+| `POST <id>/cancel/` | Withdraw a `PENDING` request                                                                                                                                                  |
+
+Landlords, under `/api/landlord/contact-requests/` (needs a landlord and `contact_requests.respond`; only properties you own):
+
+| Endpoint             | What it does                                                                   |
+| -------------------- | ------------------------------------------------------------------------------ |
+| `GET /`              | Requests for your properties. Query: `status`, `page`, `page_size`             |
+| `GET <id>/`          | One request. `tenant_contact` (email, phone) is set only once it is `ACCEPTED` |
+| `POST <id>/accept/`  | Accept a `PENDING` request; the tenant is emailed                              |
+| `POST <id>/decline/` | Decline a `PENDING` request; the tenant is emailed                             |
+| `POST <id>/revoke/`  | Take back an `ACCEPTED` request; the contact details are hidden again          |
+
+### Notifications (everyone signed in)
+
+An in-app inbox, so people can act without opening email. Rules, events and who is told are in `docs/features/notifications.md`. Every call is about the caller's own notifications; someone else's id is a 404. No permission code is needed beyond being signed in with two-step done.
+
+| Endpoint                               | What it does                                            |
+| -------------------------------------- | ------------------------------------------------------- |
+| `GET /api/notifications/`              | Newest first. Query: `unread=true`, `page`, `page_size` |
+| `GET /api/notifications/unread-count/` | `{"unread": n}`, for the bell                           |
+| `POST /api/notifications/<id>/read/`   | Mark one read (safe to repeat)                          |
+| `POST /api/notifications/read-all/`    | Mark every unread one read; returns `{"marked": n}`     |
+
+A row has `kind` and `subject_id` (what it is about) plus `title` and `body`; it never holds contact details or invitation links. The `notifications` table now also holds rows with no review event (see `docs/schema-changes-for-diagram.md` §7).
 
 ### Locations (signed in)
 
@@ -284,6 +356,10 @@ Needs the `access.manage` permission. Under `/api/access/`. One rule governs eve
 
 People get roles through `POST /api/users/` and `PATCH /api/users/<id>/` with `roles: [codes]`: one of TENANT or LANDLORD, or one or more admin roles. Role changes are recorded in `role_change_history`; grant changes in `account_access_history`. `GET auth/me/` returns the effective `permissions` and `is_admin`.
 
+### Overview (admins only)
+
+`GET /api/overview/` gives the admin dashboard its figures: users, properties and units, tenancies by status, tenancies ending within 60 days, invitations pending or expired, bans in force, and the latest account changes. Any admin may call it; each block is `null` unless the person holds the permission that shows it (`accounts.view`, `properties.admin_view`, `tenancies.admin_view`, `bans.view`). See `docs/features/admin-overview.md` at the repository root.
+
 ### Bans and access tokens (admins only)
 
 Both need two-step verification done plus the permission shown. Lists are paginated like the users list (`page`, `page_size`).
@@ -291,11 +367,12 @@ Both need two-step verification done plus the permission shown. Lists are pagina
 | Endpoint                        | Permission      | What it does                                                                                                                                                                  |
 | ------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `GET /api/bans/`                | `bans.view`     | Every ban, newest first, with `status` ACTIVE, EXPIRED or LIFTED. Query: `q`, `status`, `type`                                                                                |
+| `POST /api/bans/`               | `bans.manage`   | Ban an `EMAIL`, an `EMAIL_DOMAIN` or an `ACCOUNT`. `reason` is required; `expires_at` is optional. Account bans end that person's sessions and write their history            |
 | `POST /api/bans/<id>/lift/`     | `bans.manage`   | Lift an active ban. `reason` is required and kept on the ban. Lifting an account ban also writes the person's history                                                         |
 | `GET /api/tokens/`              | `tokens.view`   | Every signed-in session (what an access token belongs to): person, device, IP, last used, expiry, `status` ACTIVE, REVOKED or EXPIRED, and `is_current`. Query: `q`, `status` |
 | `POST /api/tokens/<id>/revoke/` | `tokens.revoke` | End a session: its access token stops working on the next request and its refresh token can't be used. You can't revoke the session you are using. Optional `reason`          |
 
-Acting on an admin's account bans or sessions follows the same rule as everything else: you can't act on someone who can do more than you can. There is no endpoint to create a ban yet.
+Acting on an admin's account bans or sessions follows the same rule as everything else: you can't act on someone who can do more than you can. `POST /api/bans/` creates one (see `docs/features/bans-and-sessions.md`).
 
 The full request and response shapes are in Swagger at `/api/docs/`. The rules behind them are in `docs/authentication.md`.
 
@@ -329,15 +406,17 @@ back-end/
 │   └── seeds/           Seed data drafts
 ├── properties/        Properties, owners, units, areas (admin API and landlord API)
 ├── locations/         Australian states and suburbs for address pickers
-├── tenancies/         Tenancies, tenants, covered areas, invitations
+├── listings/          Public browsing of listed properties (no sign-in)
+├── tenancies/         Tenancies, tenants, covered areas, invitations (invite API built)
+├── overview/          Figures for the admin dashboard (read-only)
 ├── files/             Uploaded file metadata
 ├── conditions/        Condition records and their versions
 ├── reviews/           Shared review engine: requests, decisions, disputes, removals
 ├── maintenance/       Maintenance issues and their status history
 ├── documents/         Documents and their versions
 ├── providers/         Service providers and categories
-├── communications/    Logged external communications
-├── notifications/     Business events, notifications, email delivery
+├── communications/    Logged external communications, and tenant contact requests
+├── notifications/     Business events, notifications (the in-app inbox is built), email delivery
 ├── history/           Change history and timeline
 ├── docs/              Design notes (see below)
 └── docker-compose.yml

@@ -92,6 +92,12 @@ class OccupancyStatus(models.TextChoices):
     UNAVAILABLE = "UNAVAILABLE"
 
 
+class RentFrequency(models.TextChoices):
+    WEEKLY = "WEEKLY"
+    FORTNIGHTLY = "FORTNIGHTLY"
+    MONTHLY = "MONTHLY"
+
+
 class PropertyUnit(MutableRecord):
     property = models.ForeignKey(Property, models.PROTECT, related_name="units")
     name = models.CharField(max_length=150)
@@ -100,12 +106,24 @@ class PropertyUnit(MutableRecord):
     description = models.TextField(null=True, blank=True)
     is_public = models.BooleanField(default=False)
     occupancy_status = models.TextField(choices=OccupancyStatus, default=OccupancyStatus.VACANT)
+    rent_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    rent_frequency = models.TextField(choices=RentFrequency, null=True, blank=True)
 
     class Meta(MutableRecord.Meta):
         db_table = "property_units"
         constraints = [
             *MutableRecord.Meta.constraints,
             enum_check("property_units", "occupancy_status", OccupancyStatus),
+            enum_check("property_units", "rent_frequency", RentFrequency),
+            models.CheckConstraint(
+                condition=Q(rent_amount__isnull=True) | Q(rent_amount__gt=0),
+                name="ck_property_units_rent_positive",
+            ),
+            models.CheckConstraint(
+                condition=(Q(rent_amount__isnull=True) & Q(rent_frequency__isnull=True))
+                | (Q(rent_amount__isnull=False) & Q(rent_frequency__isnull=False)),
+                name="ck_property_units_rent_pair",
+            ),
         ]
 
 

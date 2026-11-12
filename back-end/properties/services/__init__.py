@@ -1,4 +1,5 @@
 from properties.services.add_property_file import add_property_file
+from properties.services.change_listing_status import change_listing_status
 from properties.services.create_property import create_property
 from properties.services.create_unit import create_unit
 from properties.services.delete_property import delete_property

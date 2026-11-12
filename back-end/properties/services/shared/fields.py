@@ -6,6 +6,7 @@ OPTIONAL_TEXT = {
     "unit_number",
     "description",
     "caption",
+    "rent_frequency",
 }
 
 

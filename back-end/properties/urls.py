@@ -38,4 +38,9 @@ urlpatterns = [
         file_views.PropertyFileContentView.as_view(),
         name="property-unit-file-content",
     ),
+    path(
+        "<int:property_id>/listing/",
+        file_views.ListingStatusView.as_view(),
+        name="property-listing",
+    ),
 ]

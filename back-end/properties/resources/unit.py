@@ -14,4 +14,6 @@ class UnitResource(serializers.ModelSerializer):
             "description",
             "is_public",
             "occupancy_status",
+            "rent_amount",
+            "rent_frequency",
         ]

@@ -17,6 +17,17 @@ class DeliveryStatus(models.TextChoices):
     SUPPRESSED = "SUPPRESSED"
 
 
+class NotificationKind(models.TextChoices):
+    REVIEW_EVENT = "REVIEW_EVENT"
+    CONTACT_REQUEST_RECEIVED = "CONTACT_REQUEST_RECEIVED"
+    CONTACT_REQUEST_CANCELLED = "CONTACT_REQUEST_CANCELLED"
+    CONTACT_REQUEST_ACCEPTED = "CONTACT_REQUEST_ACCEPTED"
+    CONTACT_REQUEST_DECLINED = "CONTACT_REQUEST_DECLINED"
+    CONTACT_REQUEST_REVOKED = "CONTACT_REQUEST_REVOKED"
+    TENANCY_INVITATION_RECEIVED = "TENANCY_INVITATION_RECEIVED"
+    TENANCY_INVITATION_ACCEPTED = "TENANCY_INVITATION_ACCEPTED"
+
+
 class AttemptOutcome(models.TextChoices):
     SENT = "SENT"
     FAILED = "FAILED"
@@ -43,18 +54,36 @@ class BusinessEvent(EventRecord):
         db_table = "business_events"
 
 
+class NotificationQuerySet(models.QuerySet):
+    def for_recipient(self, user):
+        return self.filter(recipient=user)
+
+    def unread(self):
+        return self.filter(read_at__isnull=True)
+
+    def newest_first(self):
+        return self.order_by("-created_at", "-id")
+
+
 class Notification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     read_at = models.DateTimeField(null=True, blank=True)
-    event = models.ForeignKey(BusinessEvent, models.PROTECT, related_name="notifications")
+    event = models.ForeignKey(
+        BusinessEvent, models.PROTECT, null=True, blank=True, related_name="notifications"
+    )
+    kind = models.TextField(choices=NotificationKind, default=NotificationKind.REVIEW_EVENT)
+    subject_id = models.PositiveBigIntegerField(null=True, blank=True)
     recipient = models.ForeignKey("accounts.User", models.PROTECT, related_name="notifications")
     title = models.CharField(max_length=200)
     body = models.TextField()
     is_suppressed = models.BooleanField(default=False)
 
+    objects = NotificationQuerySet.as_manager()
+
     class Meta:
         db_table = "notifications"
         constraints = [
+            enum_check("notifications", "kind", NotificationKind),
             models.UniqueConstraint(
                 fields=["event", "recipient"], name="uq_notifications_recipient"
             ),

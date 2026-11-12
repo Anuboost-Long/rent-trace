@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import F, Q
+from django.db.models import Count, F, Prefetch, Q
 from django.db.models.functions import Lower, Trim
 
 from common.models import MutableRecord, enum_check
@@ -18,6 +18,59 @@ class TenancyStatus(models.TextChoices):
     CANCELLED = "CANCELLED"
 
 
+class TenancyQuerySet(models.QuerySet):
+    def live(self):
+        return self.filter(deleted_at__isnull=True)
+
+    def in_properties(self, properties):
+        return self.filter(property_unit__property__in=properties)
+
+    def with_status(self, status):
+        return self.filter(status=status)
+
+    def search(self, text):
+        matches = self
+        for term in text.split():
+            tenant_matches = TenancyParty.objects.current().filter(
+                Q(tenant__email__icontains=term)
+                | Q(tenant__first_name__icontains=term)
+                | Q(tenant__last_name__icontains=term)
+            )
+            matches = matches.filter(
+                Q(reference_no__icontains=term)
+                | Q(property_unit__name__icontains=term)
+                | Q(property_unit__property__property_name__icontains=term)
+                | Q(property_unit__property__address_line_1__icontains=term)
+                | Q(property_unit__property__suburb__icontains=term)
+                | Q(pk__in=tenant_matches.values("tenancy_id"))
+            )
+        return matches
+
+    def status_counts(self):
+        rows = self.order_by().values("status").annotate(total=Count("id"))
+        return {row["status"]: row["total"] for row in rows}
+
+    def ending_between(self, first_day, last_day):
+        return self.filter(end_date__gte=first_day, end_date__lte=last_day)
+
+    def newest_first(self):
+        return self.order_by("-created_at", "-id")
+
+    def with_parties_and_invitations(self):
+        return self.select_related("property_unit__property").prefetch_related(
+            Prefetch(
+                "parties",
+                queryset=TenancyParty.objects.current().select_related("tenant").order_by("id"),
+                to_attr="current_parties",
+            ),
+            Prefetch(
+                "invitations",
+                queryset=TenancyInvitation.objects.not_deleted().order_by("-id"),
+                to_attr="all_invitations",
+            ),
+        )
+
+
 class Tenancy(MutableRecord):
     property_unit = models.ForeignKey(
         "properties.PropertyUnit", models.PROTECT, related_name="tenancies"
@@ -32,6 +85,8 @@ class Tenancy(MutableRecord):
     bond_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     currency = models.CharField(max_length=3, default="AUD")
     notes = models.TextField(null=True, blank=True)
+
+    objects = TenancyQuerySet.as_manager()
 
     class Meta(MutableRecord.Meta):
         db_table = "tenancies"
@@ -58,12 +113,25 @@ class Tenancy(MutableRecord):
         ]
 
 
+class TenancyPartyQuerySet(models.QuerySet):
+    def current(self):
+        return self.filter(left_at__isnull=True, deleted_at__isnull=True)
+
+    def primary(self):
+        return self.filter(is_primary=True)
+
+    def with_tenant_email(self, email_normalized):
+        return self.filter(tenant__email_normalized=email_normalized)
+
+
 class TenancyParty(MutableRecord):
     tenancy = models.ForeignKey(Tenancy, models.PROTECT, related_name="parties")
     tenant = models.ForeignKey("accounts.User", models.PROTECT, related_name="tenancy_memberships")
     is_primary = models.BooleanField(default=False)
     joined_at = models.DateField()
     left_at = models.DateField(null=True, blank=True)
+
+    objects = TenancyPartyQuerySet.as_manager()
 
     class Meta(MutableRecord.Meta):
         db_table = "tenancy_parties"
@@ -103,6 +171,26 @@ class TenancyArea(MutableRecord):
         ]
 
 
+class TenancyInvitationQuerySet(models.QuerySet):
+    def not_deleted(self):
+        return self.filter(deleted_at__isnull=True)
+
+    def outstanding(self):
+        return self.not_deleted().filter(accepted_at__isnull=True, revoked_at__isnull=True)
+
+    def pending(self, now):
+        return self.outstanding().filter(expires_at__gt=now)
+
+    def expired(self, now):
+        return self.outstanding().filter(expires_at__lte=now)
+
+    def with_email(self, email_normalized):
+        return self.filter(email_normalized=email_normalized)
+
+    def matching(self, token_hash):
+        return self.filter(token_hash=token_hash)
+
+
 class TenancyInvitation(MutableRecord):
     tenancy = models.ForeignKey(Tenancy, models.PROTECT, related_name="invitations")
     email_normalized = models.CharField(max_length=255)
@@ -114,6 +202,8 @@ class TenancyInvitation(MutableRecord):
         "accounts.User", models.PROTECT, null=True, blank=True, related_name="accepted_invitations"
     )
     revoked_at = models.DateTimeField(null=True, blank=True)
+
+    objects = TenancyInvitationQuerySet.as_manager()
 
     class Meta(MutableRecord.Meta):
         db_table = "tenancy_invitations"

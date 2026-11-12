@@ -49,4 +49,9 @@ urlpatterns = [
         views.LandlordPropertyFileContentView.as_view(),
         name="landlord-property-unit-file-content",
     ),
+    path(
+        "<int:property_id>/listing/",
+        views.LandlordListingStatusView.as_view(),
+        name="landlord-property-listing",
+    ),
 ]
