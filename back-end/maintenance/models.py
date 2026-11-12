@@ -29,12 +29,40 @@ class ClosureOutcome(models.TextChoices):
     NOT_FIXED_NO_ACTION = "NOT_FIXED_NO_ACTION"
 
 
+class ClosureDecision(models.TextChoices):
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    WITHDRAWN = "WITHDRAWN"
+
+
 class MaintenanceTrigger(models.TextChoices):
     REPORT = "REPORT"
     OPPOSITE_OPEN = "OPPOSITE_OPEN"
     CONFIRM_START = "CONFIRM_START"
     APPROVED_CLOSURE = "APPROVED_CLOSURE"
     VACANT_OWNER_CLOSURE = "VACANT_OWNER_CLOSURE"
+
+
+class MaintenanceIssueQuerySet(models.QuerySet):
+    def not_closed(self):
+        return self.exclude(status=MaintenanceStatus.CLOSED)
+
+    def with_status(self, status):
+        return self.filter(status=status)
+
+    def in_tenancies(self, tenancies):
+        return self.filter(tenancy__in=tenancies)
+
+    def on_properties(self, properties):
+        return self.filter(property_unit__property__in=properties)
+
+    def with_details(self):
+        return self.select_related(
+            "property_unit__property", "reported_by", "open_closure_proposal__proposed_by"
+        )
+
+    def newest_first(self):
+        return self.order_by("-reported_at", "-id")
 
 
 class MaintenanceIssue(MutableRecord):
@@ -76,6 +104,15 @@ class MaintenanceIssue(MutableRecord):
     recurrence_of_issue = models.ForeignKey(
         "self", models.PROTECT, null=True, blank=True, related_name="recurrences"
     )
+    open_closure_proposal = models.OneToOneField(
+        "maintenance.MaintenanceClosureProposal",
+        models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="+",
+    )
+
+    objects = MaintenanceIssueQuerySet.as_manager()
 
     class Meta(MutableRecord.Meta):
         db_table = "maintenance_issues"
@@ -149,22 +186,48 @@ class MaintenanceClosureProposal(EventRecord):
         MaintenanceIssue, models.PROTECT, related_name="closure_proposals"
     )
     review_request = models.OneToOneField(
-        "reviews.ReviewRequest", models.PROTECT, related_name="closure_proposal"
+        "reviews.ReviewRequest",
+        models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="closure_proposal",
     )
     outcome = models.TextField(choices=ClosureOutcome)
     reason = models.TextField()
     proposed_by = models.ForeignKey(
         "accounts.User", models.PROTECT, related_name="closure_proposals"
     )
+    proposer_side = models.TextField(choices=PartySide, default=PartySide.TENANT)
     issue_row_version = models.BigIntegerField()
 
     class Meta:
         db_table = "maintenance_closure_proposals"
         constraints = [
             enum_check("maintenance_closure_proposals", "outcome", ClosureOutcome),
+            enum_check("maintenance_closure_proposals", "proposer_side", PartySide),
             models.CheckConstraint(
                 condition=~Q(reason=""), name="ck_maintenance_closure_proposals_reason"
             ),
+        ]
+
+
+class MaintenanceClosureResponse(EventRecord):
+    """How a closure proposal ended: approved, rejected, or withdrawn by its proposer. A proposal
+    with no response is still open."""
+
+    proposal = models.OneToOneField(
+        MaintenanceClosureProposal, models.PROTECT, related_name="response"
+    )
+    decision = models.TextField(choices=ClosureDecision)
+    responded_by = models.ForeignKey(
+        "accounts.User", models.PROTECT, related_name="closure_responses"
+    )
+    reason = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "maintenance_closure_responses"
+        constraints = [
+            enum_check("maintenance_closure_responses", "decision", ClosureDecision),
         ]
 
 

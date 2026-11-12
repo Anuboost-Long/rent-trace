@@ -25,10 +25,10 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Housemate invitations](housemate-invitations.md)    | Built, not yet walked through in a browser          |
 | [Tenancy terms](tenancy-terms.md)                    | Built; tenant side not yet walked through           |
 | [Rent change approval](rent-change-approval.md)       | Built; tenant side not yet walked through           |
+| [Maintenance](maintenance.md)                         | Built; not yet seen in a browser                    |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
 
-Not yet documented: maintenance, conditions, reviews, documents,
-providers, communications and notifications. Their tables exist in the back end
-but they have no API or screens.
+Not yet built: conditions, reviews, documents and providers. Their tables exist in the
+back end but they have no API or screens.

@@ -109,6 +109,7 @@ export const Navigation: Record<Audience, Navigation> = {
         href: Route.landlord.requests,
         icon: MessageSquare,
       },
+      { label: "Maintenance", href: Route.landlord.maintenance, icon: Wrench },
     ],
   },
   tenant: {

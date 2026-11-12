@@ -31,6 +31,6 @@ maintenance. It should feel like the rental site, not like the admin dashboard.
 
 ## Not done
 
-- Maintenance has no content yet (no API). Overview and Tenancies are built; see
-  [Tenant tenancies](tenant-tenancies.md).
+- Overview and Tenancies are built ([Tenant tenancies](tenant-tenancies.md)), and so is Maintenance
+  ([Maintenance](maintenance.md)).
 - Landlords still use the sidebar shell.

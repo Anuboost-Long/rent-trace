@@ -11,6 +11,7 @@ export const Route = {
     requests: "/tenant/requests",
     notifications: "/tenant/notifications",
     maintenance: "/tenant/maintenance",
+    issue: (id: number) => `/tenant/maintenance/${id}`,
   },
   landlord: {
     index: "/landlord",
@@ -25,6 +26,8 @@ export const Route = {
     tenancy: (id: number) => `/landlord/tenancies/${id}`,
     tenancy_edit: (id: number) => `/landlord/tenancies/${id}/edit`,
     requests: "/landlord/requests",
+    maintenance: "/landlord/maintenance",
+    issue: (id: number) => `/landlord/maintenance/${id}`,
     notifications: "/landlord/notifications",
   },
   admin: {

@@ -23,6 +23,25 @@ const DESTINATIONS: Partial<
   TENANCY_STARTED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
   TENANCY_ENDED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
   TENANCY_CANCELLED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
+  MAINTENANCE_REPORTED: {
+    landlord: (id) => (id ? Route.landlord.issue(id) : null),
+  },
+  MAINTENANCE_ACKNOWLEDGED: {
+    tenant: (id) => (id ? Route.tenant.issue(id) : null),
+  },
+  MAINTENANCE_STARTED: { tenant: (id) => (id ? Route.tenant.issue(id) : null) },
+  MAINTENANCE_CLOSURE_PROPOSED: {
+    tenant: (id) => (id ? Route.tenant.issue(id) : null),
+    landlord: (id) => (id ? Route.landlord.issue(id) : null),
+  },
+  MAINTENANCE_CLOSURE_REJECTED: {
+    tenant: (id) => (id ? Route.tenant.issue(id) : null),
+    landlord: (id) => (id ? Route.landlord.issue(id) : null),
+  },
+  MAINTENANCE_CLOSED: {
+    tenant: (id) => (id ? Route.tenant.issue(id) : null),
+    landlord: (id) => (id ? Route.landlord.issue(id) : null),
+  },
   TENANCY_TERMS_PROPOSED: {
     tenant: (id) => (id ? Route.tenant.tenancy(id) : null),
   },

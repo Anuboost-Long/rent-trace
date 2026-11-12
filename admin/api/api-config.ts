@@ -69,6 +69,14 @@ export const EndPoints = {
     },
   },
   overview: byEndpoint("overview/"),
+  maintenance: {
+    list: byEndpoint("maintenance/"),
+    detail: (id: number | string) => byEndpoint(`maintenance/${id}/`),
+    action: (id: number, path: string) =>
+      byEndpoint(`maintenance/${id}/${path}/`),
+    respond: (id: number, proposalId: number, answer: string) =>
+      byEndpoint(`maintenance/${id}/closure/${proposalId}/${answer}/`),
+  },
   notifications: {
     list: byEndpoint("notifications/"),
     unread_count: byEndpoint("notifications/unread-count/"),

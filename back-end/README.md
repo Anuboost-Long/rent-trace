@@ -329,6 +329,23 @@ Landlords, under `/api/landlord/contact-requests/` (needs a landlord and `contac
 | `POST <id>/decline/` | Decline a `PENDING` request; the tenant is emailed                             |
 | `POST <id>/revoke/`  | Take back an `ACCEPTED` request; the contact details are hidden again          |
 
+### Maintenance (tenants and landlords)
+
+Tenants report issues on their active tenancy; landlords acknowledge, start work and take part in closing. Closing needs the other side's approval. Rules, who may do what, and the permissions are in `docs/features/maintenance.md`. One API, scoped by who is asking (a tenant's tenancies, a landlord's properties; anything else is a 404; admins get 403 for now):
+
+| Endpoint | Needs | What it does |
+| -------- | ----- | ------------ |
+| `GET /api/maintenance/` | `maintenance.view` | Your issues, newest first. Query: `status`, `page`, `page_size` |
+| `POST /api/maintenance/` | `maintenance.report` | A current tenant of an active tenancy reports: `tenancy_id`, `title`, `description`, `priority` |
+| `GET /api/maintenance/<id>/` | `maintenance.view` | The issue with its status history and `actions`: what you can do now |
+| `POST <id>/acknowledge/` | `maintenance.confirm_start` | Landlord: "I've seen this" (reported to acknowledged) |
+| `POST <id>/start/` | `maintenance.confirm_start` | Landlord: work started (acknowledged to in progress) |
+| `POST <id>/closure/` | `maintenance.propose_closure` | Either side proposes closing: `outcome` (`FIXED` or `NOT_FIXED_NO_ACTION`) and `reason` |
+| `POST <id>/closure/withdraw/` | `maintenance.propose_closure` | The proposer takes it back |
+| `POST <id>/closure/<proposal_id>/approve/` | `maintenance.review_closure` | The other side approves; the issue closes |
+| `POST <id>/closure/<proposal_id>/reject/` | `maintenance.review_closure` | The other side rejects; the issue stays open |
+| `POST <id>/close/` | `maintenance.close_vacant` | Landlord closes directly when no tenant is left: `outcome`, `reason` |
+
 ### Notifications (everyone signed in)
 
 An in-app inbox, so people can act without opening email. Rules, events and who is told are in `docs/features/notifications.md`. Every call is about the caller's own notifications; someone else's id is a 404. No permission code is needed beyond being signed in with two-step done.

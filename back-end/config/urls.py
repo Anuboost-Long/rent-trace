@@ -25,6 +25,7 @@ urlpatterns = [
     path("api/bans/", include("bans.urls")),
     path("api/overview/", include("overview.urls")),
     path("api/notifications/", include("notifications.urls")),
+    path("api/maintenance/", include("maintenance.urls")),
     path("api/tokens/", include("tokens.urls")),
     path("api/locations/", include("locations.urls")),
     path("api/public/listings/", include("listings.urls")),

@@ -232,5 +232,8 @@ SPECTACULAR_SETTINGS = {
         "SelfServiceRoleEnum": "accounts.dtos.fields.SELF_SERVICE_ROLES",
         "AuthMethodEnum": "accounts.models.AuthMethod",
         "TenancyStatusEnum": "tenancies.models.TenancyStatus",
+        "MaintenanceStatusEnum": "maintenance.models.MaintenanceStatus",
+        "MaintenancePriorityEnum": "maintenance.models.MaintenancePriority",
+        "ClosureOutcomeEnum": "maintenance.models.ClosureOutcome",
     },
 }

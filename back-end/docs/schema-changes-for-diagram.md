@@ -338,3 +338,24 @@ erDiagram
 ```
 
 A new permission, `tenancies.approve_terms` (tenants), is seeded by `accounts/0010`.
+
+## 10. Maintenance closure without the review engine
+
+The closure flow was meant to run through the review engine (`review_requests`), which is not built.
+So that closing an issue can work now:
+
+- `maintenance_closure_proposals.review_request` is now optional (nullable, one-to-one when set).
+- `maintenance_closure_proposals.proposer_side` (`LANDLORD` or `TENANT`) records which side asked, so the
+  other side answers even if the proposer later leaves the tenancy or the property.
+- New `maintenance_closure_responses`: one row per proposal that has been answered, with the decision
+  (`APPROVED`, `REJECTED` or `WITHDRAWN`), who answered and an optional reason. A proposal with no
+  response is still open. This keeps proposals append-only.
+- New `maintenance_issues.open_closure_proposal` (one-to-one, nullable): the proposal waiting for an
+  answer. Being a single column, it makes "one open proposal per issue" a database rule.
+
+```mermaid
+erDiagram
+    MAINTENANCE_ISSUES |o--o| MAINTENANCE_CLOSURE_PROPOSALS : "open_closure_proposal"
+    MAINTENANCE_CLOSURE_PROPOSALS ||--o| MAINTENANCE_CLOSURE_RESPONSES : "answered by"
+    USERS ||--o{ MAINTENANCE_CLOSURE_RESPONSES : "responded_by"
+```
