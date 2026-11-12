@@ -2,6 +2,7 @@
 import { EndPoints } from "@/api/api-config";
 import { ApiServiceServer } from "@/api/api-helper";
 import {
+  ACCESS_COOKIE,
   clearSessionCookies,
   setSessionCookies,
 } from "@/api/services/auth/session-cookies";
@@ -85,7 +86,7 @@ export const handleGoogleSignIn = async (accessToken: string) => {
     });
     setSessionCookies(await cookies(), signedIn);
     return {
-      data: { needs_onboarding: signedIn.needs_onboarding },
+      data: { user: signedIn.user },
       error: null,
     };
   } catch (error) {
@@ -141,6 +142,18 @@ export const handleChangePassword = async (body: ChangePasswordBody) => {
     return { data, error: null };
   } catch (error) {
     return handleSSRActionError(error, { redirectOnUnauth: true });
+  }
+};
+
+export const handleGetViewer = async () => {
+  if (!(await cookies()).has(ACCESS_COOKIE)) return null;
+  try {
+    return await ApiServiceServer<Me>({
+      url: EndPoints.auth.me,
+      method: "GET",
+    });
+  } catch {
+    return null;
   }
 };
 

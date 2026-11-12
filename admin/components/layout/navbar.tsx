@@ -3,6 +3,9 @@ import { UserAtom } from "@/api/services/auth/jotai";
 import { handleSignOut } from "@/api/services/auth/serve-action";
 import Button from "@/components/common/button";
 import ButtonLink from "@/components/common/button-link";
+import NotificationBell from "@/components/notifications/notification-bell";
+import { audienceFor } from "@/constants/audience";
+import { NotificationsRoute } from "@/constants/notifications";
 import { Route } from "@/constants/web-routes";
 import { useAtomValue } from "jotai";
 import { LogOut, Menu, UserRound } from "lucide-react";
@@ -11,6 +14,7 @@ type NavbarProp = Readonly<{ onOpenMenu: () => void }>;
 
 export default function Navbar({ onOpenMenu }: NavbarProp) {
   const user = useAtomValue(UserAtom);
+  const audience = user && audienceFor(user);
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-foreground/15 px-4">
@@ -24,6 +28,7 @@ export default function Navbar({ onOpenMenu }: NavbarProp) {
         Menu
       </Button>
       <div className="ml-auto flex items-center gap-4">
+        {audience && <NotificationBell href={NotificationsRoute[audience]} />}
         {user && (
           <ButtonLink
             href={Route.account}

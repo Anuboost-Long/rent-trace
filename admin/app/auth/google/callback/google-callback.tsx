@@ -1,6 +1,7 @@
 "use client";
 import { handleGoogleSignIn } from "@/api/services/auth/serve-action";
 import AuthCard from "@/components/common/auth-card";
+import { homePathFor } from "@/constants/audience";
 import { Route } from "@/constants/web-routes";
 import { supabase } from "@/utils/supabase-client";
 import Link from "next/link";
@@ -32,9 +33,7 @@ export default function GoogleCallback() {
 
       const signedIn = await handleGoogleSignIn(data.session.access_token);
       if (signedIn.error) return signedIn.error.message;
-      router.replace(
-        signedIn.data.needs_onboarding ? Route.auth.onboarding : Route.home,
-      );
+      router.replace(homePathFor(signedIn.data.user));
     };
     finish().then((message) => message && setFailure(message));
   }, [router]);

@@ -2,9 +2,13 @@ export const Route = {
   home: "/",
   verify_email: "/verify-email",
   account: "/account",
+  listings: "/properties",
+  listing: (id: number) => `/properties/${id}`,
   tenant: {
     index: "/tenant",
     tenancies: "/tenant/tenancies",
+    requests: "/tenant/requests",
+    notifications: "/tenant/notifications",
     maintenance: "/tenant/maintenance",
   },
   landlord: {
@@ -16,9 +20,14 @@ export const Route = {
     unit: (id: number, unitId: number) =>
       `/landlord/properties/${id}/units/${unitId}`,
     tenancies: "/landlord/tenancies",
+    tenancy_new: "/landlord/tenancies/new",
+    tenancy: (id: number) => `/landlord/tenancies/${id}`,
+    requests: "/landlord/requests",
+    notifications: "/landlord/notifications",
   },
   admin: {
     index: "/admin",
+    notifications: "/admin/notifications",
     bans: "/admin/bans",
     tokens: "/admin/tokens",
     access: "/admin/access",
@@ -35,11 +44,15 @@ export const Route = {
     property_edit: (id: number) => `/admin/properties/${id}/edit`,
     unit: (id: number, unitId: number) =>
       `/admin/properties/${id}/units/${unitId}`,
+    tenancies: "/admin/tenancies",
+    tenancy_new: "/admin/tenancies/new",
+    tenancy: (id: number) => `/admin/tenancies/${id}`,
     users: "/admin/users",
     users_new: "/admin/users/new",
     user: (id: number) => `/admin/users/${id}`,
     user_edit: (id: number) => `/admin/users/${id}/edit`,
   },
+  invitation_accept: "/invitations/accept",
   auth: {
     sign_in: "/auth/sign-in",
     sign_up: "/auth/sign-up",

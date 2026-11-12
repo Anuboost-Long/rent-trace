@@ -1,0 +1,41 @@
+"use client";
+import Button from "@/components/common/button";
+import ButtonLink from "@/components/common/button-link";
+import { Route } from "@/constants/web-routes";
+import useAcceptInvitation from "@/hooks/form/useAcceptInvitation";
+
+export default function AcceptInvitation({
+  token,
+}: Readonly<{ token: string }>) {
+  const { pending, error, accepted, accept } = useAcceptInvitation(token);
+
+  if (accepted) {
+    return (
+      <div className="mt-4">
+        <p>
+          You&apos;ve joined {accepted.property_name}, {accepted.unit_name}.
+        </p>
+        <ButtonLink href={Route.tenant.tenancies} className="mt-6">
+          View your tenancies
+        </ButtonLink>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4">
+      <p className="text-foreground/70">
+        Sign in with the email this invitation was sent to, then accept it to
+        join the tenancy.
+      </p>
+      {error && (
+        <p role="alert" className="mt-4 text-sm text-red-600">
+          {error.message}
+        </p>
+      )}
+      <Button className="mt-6" onClick={accept} pending={pending}>
+        {pending ? "Joining…" : "Accept invitation"}
+      </Button>
+    </div>
+  );
+}

@@ -9,6 +9,7 @@ import {
   PropertyStatusLabel,
   PropertyTypeLabel,
 } from "@/constants/properties";
+import { TenancyAccess, TenancyRoutes } from "@/constants/tenancies";
 import type { PropertyAudience } from "@/types/properties/models";
 import { formatDate } from "@/utils/format-date";
 import {
@@ -16,11 +17,12 @@ import {
   ownerName,
   propertyTitle,
 } from "@/utils/property-address";
-import { Pencil } from "lucide-react";
+import { FilePlus2, Pencil } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import DeletePropertyButton from "./delete-property-button";
+import ListingSection from "./listing-section";
 import PropertyFilesSection from "./property-files-section";
 import UnitsSection from "./units-section";
 
@@ -84,6 +86,16 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
         <h1 className="text-2xl font-semibold">{title}</h1>
         <Can permission={access.update}>
           <div className="flex gap-2">
+            <Can permission={TenancyAccess[audience].create}>
+              <ButtonLink
+                href={`${TenancyRoutes[audience].create}?property=${property.id}`}
+                variant="quiet"
+                className="gap-2"
+              >
+                <FilePlus2 aria-hidden className="size-4" />
+                New tenancy
+              </ButtonLink>
+            </Can>
             <ButtonLink
               href={PropertyRoutes[audience].edit(property.id)}
               variant="quiet"
@@ -106,6 +118,11 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
           </div>
         ))}
       </dl>
+      <ListingSection
+        audience={audience}
+        propertyId={property.id}
+        status={property.listing_status}
+      />
       <PropertyFilesSection
         audience={audience}
         propertyId={property.id}

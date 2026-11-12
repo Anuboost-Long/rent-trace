@@ -36,15 +36,22 @@ export default function ConfirmDialog({
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const closeOnBackdropClick = (event: MouseEvent) => {
+      if (event.target === dialog && !pending) onCancel();
+    };
+    dialog.addEventListener("click", closeOnBackdropClick);
+    return () => dialog.removeEventListener("click", closeOnBackdropClick);
+  }, [pending, onCancel]);
+
   return (
     <dialog
       ref={dialogRef}
       onClose={onCancel}
-      onClick={(event) => {
-        if (event.target === event.currentTarget && !pending) onCancel();
-      }}
       aria-labelledby="confirm-title"
-      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-foreground/15 bg-background p-0 text-foreground backdrop:bg-black/40"
+      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-foreground/15 bg-background p-0 text-left text-foreground backdrop:bg-black/40"
     >
       <div className="p-6">
         <h2 id="confirm-title" className="text-lg font-semibold">

@@ -4,6 +4,7 @@ import {
   handleSignIn,
   handleSignUp,
 } from "@/api/services/auth/serve-action";
+import { homePathFor } from "@/constants/audience";
 import type { ActionResult, ApiFailure } from "@/types/api/common";
 import type { SignInBody, SignUpBody } from "@/types/auth/models";
 import { useRouter } from "next/navigation";
@@ -25,10 +26,10 @@ const useAuth = () => {
     return data;
   };
 
-  const signIn = async (body: SignInBody, redirectTo: string) => {
+  const signIn = async (body: SignInBody, redirectTo?: string) => {
     const user = await run(handleSignIn(body));
     if (!user) return;
-    router.replace(redirectTo);
+    router.replace(redirectTo ?? homePathFor(user));
   };
 
   const signUp = async (body: SignUpBody) => {

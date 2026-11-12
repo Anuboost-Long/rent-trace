@@ -14,6 +14,7 @@ import type {
   PropertyUnit,
 } from "@/types/properties/models";
 import { fileUrl } from "@/utils/property-files";
+import { formatRent } from "@/utils/rent";
 import { useAtomValue } from "jotai";
 import { ChevronRight, ImageIcon, Plus } from "lucide-react";
 import Image from "next/image";
@@ -128,6 +129,9 @@ export default function UnitsSection({
                     <span className="block text-sm text-foreground/70">
                       {UnitTypeLabel[unit.unit_type]} ·{" "}
                       {OccupancyLabel[unit.occupancy_status]}
+                      {unit.rent_amount &&
+                        unit.rent_frequency &&
+                        ` · ${formatRent(unit.rent_amount, unit.rent_frequency)}`}
                       {unit.is_public && " · Public"}
                     </span>
                     <span className="block text-sm text-foreground/60">

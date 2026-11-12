@@ -1,6 +1,6 @@
 "use client";
 import { handleCompleteOnboarding } from "@/api/services/auth/serve-action";
-import { Route } from "@/constants/web-routes";
+import { homePathFor } from "@/constants/audience";
 import type { ApiFailure } from "@/types/api/common";
 import type { OnboardingBody } from "@/types/auth/models";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ const useOnboarding = () => {
     const { data, error } = await handleCompleteOnboarding(body);
     setPending(false);
     setError(error);
-    if (data) router.replace(Route.home);
+    if (data) router.replace(homePathFor(data));
   };
 
   return { pending, error, complete };

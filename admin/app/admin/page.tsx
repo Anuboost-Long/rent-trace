@@ -1,7 +1,9 @@
+import ContentSkeleton from "@/components/layout/content-skeleton";
 import PageHeader from "@/components/layout/page-header";
+import { Suspense } from "react";
 
+import Dashboard from "./dashboard";
 import MenuGrid from "./menu-grid";
-import MockDashboard from "./mock-dashboard";
 import OverviewViews from "./overview-views";
 
 export default async function Page({ searchParams }: PageProps<"/admin">) {
@@ -16,7 +18,11 @@ export default async function Page({ searchParams }: PageProps<"/admin">) {
       <OverviewViews
         initialView={view === "dashboard" ? "dashboard" : "menu"}
         menu={<MenuGrid />}
-        dashboard={<MockDashboard />}
+        dashboard={
+          <Suspense fallback={<ContentSkeleton />}>
+            <Dashboard />
+          </Suspense>
+        }
       />
     </>
   );

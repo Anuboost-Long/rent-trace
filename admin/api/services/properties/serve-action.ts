@@ -225,3 +225,20 @@ export const handleDeletePropertyFile = async (
     return handleSSRActionError(error, redirectOnUnauth);
   }
 };
+
+export const handleChangeListingStatus = async (
+  audience: PropertyAudience,
+  propertyId: number | string,
+  listingStatus: string,
+) => {
+  try {
+    const data = await ApiServiceServer<PropertyDetail>({
+      url: `${apiFor(audience).detail(propertyId)}listing/`,
+      method: "POST",
+      data: { listing_status: listingStatus },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};

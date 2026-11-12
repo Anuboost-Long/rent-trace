@@ -76,3 +76,26 @@ export const ApiUploadServer = async <T>({
   if (!response.ok) throw new ApiRequestError(response.status, body);
   return body as T;
 };
+
+export const ApiPublicServer = async <T>({
+  url,
+  params,
+}: {
+  url: string;
+  params?: Record<string, string | number | undefined>;
+}) => {
+  const query = new URLSearchParams(
+    Object.entries(params ?? {}).flatMap(([key, value]) =>
+      value === undefined || value === "" ? [] : [[key, String(value)]],
+    ),
+  ).toString();
+
+  const response = await fetch(query ? `${url}?${query}` : url, {
+    cache: "no-store",
+    headers: { "X-API-Key": process.env.API_KEY ?? "" },
+  });
+
+  const body = await response.json().catch(() => null);
+  if (!response.ok) throw new ApiRequestError(response.status, body);
+  return body as T;
+};

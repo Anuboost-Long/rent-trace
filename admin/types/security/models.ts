@@ -42,3 +42,13 @@ export type ListFilters = {
   type?: string;
   page?: number;
 };
+
+export type CreatableBanType = Exclude<BanType, "PHONE">;
+
+export type CreateBanBody = {
+  ban_type: CreatableBanType;
+  value?: string;
+  user_id?: number;
+  reason: string;
+  expires_at?: string;
+};

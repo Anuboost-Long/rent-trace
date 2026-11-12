@@ -1,0 +1,17 @@
+export const ActivityLabel: Record<string, string> = {
+  ADMIN_CREATED_ACCOUNT: "created an account",
+  ADMIN_UPDATED_ACCOUNT: "edited an account",
+  ADMIN_ACTIVATED_ACCOUNT: "activated an account",
+  ADMIN_DEACTIVATED_ACCOUNT: "deactivated an account",
+  ADMIN_DELETED_ACCOUNT: "deleted an account",
+  ADMIN_BANNED_ACCOUNT: "banned an account",
+  ADMIN_LIFTED_BAN: "lifted a ban on an account",
+  ADMIN_GRANTED_PERMISSION: "granted a permission to",
+  ADMIN_REVOKED_PERMISSION: "revoked a permission from",
+  ADMIN_REVOKED_SESSION: "ended a session for",
+  UPDATED_OWN_PROFILE: "updated their profile",
+  CREATED_ROLE: "created a role for",
+  UPDATED_ROLE: "changed a role for",
+  BOOTSTRAP_SUPER_ADMIN: "became the super admin",
+  RECLAIM_UNVERIFIED: "re-registered an unverified email",
+};

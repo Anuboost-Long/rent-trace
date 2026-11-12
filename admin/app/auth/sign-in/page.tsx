@@ -1,6 +1,5 @@
 import AuthCard from "@/components/common/auth-card";
 import GoogleSignIn from "@/components/common/google-sign-in";
-import { Route } from "@/constants/web-routes";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -29,5 +28,5 @@ async function RedirectAwareForm({
     typeof redirect === "string" &&
     redirect.startsWith("/") &&
     !redirect.startsWith("//");
-  return <SignInForm redirectTo={isLocalPath ? redirect : Route.home} />;
+  return <SignInForm redirectTo={isLocalPath ? redirect : undefined} />;
 }

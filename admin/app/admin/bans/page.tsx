@@ -11,18 +11,24 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import BansFilter from "./bans-filter";
+import CreateBanButton from "./create-ban-button";
 import UnbanButton from "./unban-button";
 
 export const metadata: Metadata = { title: "Bans · RentTrace" };
 
-export default function BansPage({ searchParams }: PageProps<"/admin/bans">) {
+export default function BansPage({
+  searchParams,
+}: Readonly<PageProps<"/admin/bans">>) {
   return (
     <>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Bans</h1>
-        <p className="mt-1 text-foreground/70">
-          Emails, domains, phone numbers and accounts that are blocked.
-        </p>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Bans</h1>
+          <p className="mt-1 text-foreground/70">
+            Emails, domains, phone numbers and accounts that are blocked.
+          </p>
+        </div>
+        <CreateBanButton />
       </div>
       <Suspense fallback={<ContentSkeleton />}>
         <BanList searchParams={searchParams} />

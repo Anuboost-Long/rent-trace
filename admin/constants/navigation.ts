@@ -6,6 +6,7 @@ import {
   ShieldCheck,
   FileText,
   LayoutDashboard,
+  MessageSquare,
   Users,
   Wrench,
   type LucideIcon,
@@ -67,6 +68,14 @@ export const Navigation: Record<Audience, Navigation> = {
         description: "Set up properties for landlords",
       },
       {
+        label: "Tenancies",
+        href: Route.admin.tenancies,
+        icon: FileText,
+        permission: "tenancies.admin_view",
+        group: "Rentals",
+        description: "Tenancies and tenant invitations",
+      },
+      {
         label: "Bans",
         href: Route.admin.bans,
         icon: Ban,
@@ -95,6 +104,11 @@ export const Navigation: Record<Audience, Navigation> = {
       },
       { label: "Properties", href: Route.landlord.properties, icon: Building2 },
       { label: "Tenancies", href: Route.landlord.tenancies, icon: FileText },
+      {
+        label: "Contact requests",
+        href: Route.landlord.requests,
+        icon: MessageSquare,
+      },
     ],
   },
   tenant: {
@@ -107,6 +121,11 @@ export const Navigation: Record<Audience, Navigation> = {
         exact: true,
       },
       { label: "Tenancies", href: Route.tenant.tenancies, icon: FileText },
+      {
+        label: "Contact requests",
+        href: Route.tenant.requests,
+        icon: MessageSquare,
+      },
       { label: "Maintenance", href: Route.tenant.maintenance, icon: Wrench },
     ],
   },

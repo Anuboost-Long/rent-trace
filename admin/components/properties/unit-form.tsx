@@ -3,7 +3,11 @@ import CheckInput from "@/components/common/inputs/check-input";
 import SelectInput from "@/components/common/inputs/select-input";
 import TextAreaInput from "@/components/common/inputs/text-area-input";
 import TextInput from "@/components/common/inputs/text-input";
-import { labelOptions, UnitTypeLabel } from "@/constants/properties";
+import {
+  labelOptions,
+  RentFrequencyLabel,
+  UnitTypeLabel,
+} from "@/constants/properties";
 import type { ApiFailure } from "@/types/api/common";
 import type { PropertyUnit, UnitBody } from "@/types/properties/models";
 
@@ -33,6 +37,8 @@ export default function UnitForm({
           unit_type: String(form.get("unit_type")),
           description: String(form.get("description") ?? ""),
           is_public: form.get("is_public") === "on",
+          rent_amount: String(form.get("rent_amount") ?? "").trim() || null,
+          rent_frequency: String(form.get("rent_frequency") ?? "") || null,
         });
       }}
       className="mt-4 flex flex-col gap-4 rounded-xl border border-foreground/15 p-4"
@@ -68,6 +74,28 @@ export default function UnitForm({
         defaultValue={unit?.description ?? ""}
         error={error?.fields.description}
       />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <TextInput
+          label="Rent in dollars (optional)"
+          name="rent_amount"
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="0.01"
+          defaultValue={unit?.rent_amount ?? ""}
+          error={error?.fields.rent_amount}
+        />
+        <SelectInput
+          label="Rent is paid"
+          name="rent_frequency"
+          options={[
+            { value: "", label: "Not set" },
+            ...labelOptions(RentFrequencyLabel),
+          ]}
+          defaultValue={unit?.rent_frequency ?? ""}
+          error={error?.fields.rent_frequency}
+        />
+      </div>
       <CheckInput
         name="is_public"
         label="Show this unit publicly"

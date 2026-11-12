@@ -1,5 +1,5 @@
-import AudienceLayout from "@/components/layout/audience-layout";
+import TenantLayout from "@/components/layout/tenant-layout";
 
 export default function Layout({ children }: LayoutProps<"/tenant">) {
-  return <AudienceLayout audience="tenant">{children}</AudienceLayout>;
+  return <TenantLayout>{children}</TenantLayout>;
 }

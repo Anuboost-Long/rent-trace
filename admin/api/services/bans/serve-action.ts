@@ -2,7 +2,7 @@
 import { EndPoints } from "@/api/api-config";
 import { ApiServiceServer } from "@/api/api-helper";
 import type { Page } from "@/types/access/models";
-import type { Ban, ListFilters } from "@/types/security/models";
+import type { Ban, CreateBanBody, ListFilters } from "@/types/security/models";
 import { handleSSRActionError } from "@/utils/server-side-error-handler";
 
 const redirectOnUnauth = { redirectOnUnauth: true };
@@ -26,6 +26,19 @@ export const handleLiftBan = async (id: number, reason: string) => {
       url: EndPoints.bans.lift(id),
       method: "POST",
       data: { reason },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleCreateBan = async (body: CreateBanBody) => {
+  try {
+    const data = await ApiServiceServer<Ban>({
+      url: EndPoints.bans.list,
+      method: "POST",
+      data: body,
     });
     return { data, error: null };
   } catch (error) {

@@ -10,9 +10,20 @@ const propertyApi = (root: string) => ({
     byEndpoint(`${root}/${id}/units/${unitId}/`),
 });
 
+const tenancyApi = (root: string) => ({
+  list: byEndpoint(`${root}/`),
+  detail: (id: number | string) => byEndpoint(`${root}/${id}/`),
+  invitations: (id: number | string) =>
+    byEndpoint(`${root}/${id}/invitations/`),
+  invitation_action: (id: number, invitationId: number, action: string) =>
+    byEndpoint(`${root}/${id}/invitations/${invitationId}/${action}/`),
+});
+
 const propertyFiles = (root: string) => {
-  const files = (id: number | string, unitId?: number | string) =>
-    `${root}/${id}${unitId ? `/units/${unitId}` : ""}/files/`;
+  const files = (id: number | string, unitId?: number | string) => {
+    const unitPath = unitId ? "/units/" + unitId : "";
+    return `${root}/${id}${unitPath}/files/`;
+  };
   return {
     list: (id: number | string, unitId?: number | string) =>
       byEndpoint(files(id, unitId)),
@@ -30,9 +41,43 @@ const propertyFiles = (root: string) => {
 };
 
 export const EndPoints = {
+  listings: {
+    list: byEndpoint("public/listings/"),
+    places: byEndpoint("public/listings/places/"),
+    detail: (id: number | string) => byEndpoint(`public/listings/${id}/`),
+    photo: (id: number | string, fileId: number | string) =>
+      byEndpoint(`public/listings/${id}/photos/${fileId}/`),
+  },
   property_files: {
     admin: propertyFiles("properties"),
     landlord: propertyFiles("landlord/properties"),
+  },
+  contact_requests: {
+    tenant: {
+      list: byEndpoint("tenant/contact-requests/"),
+      cancel: (id: number) =>
+        byEndpoint(`tenant/contact-requests/${id}/cancel/`),
+    },
+    landlord: {
+      list: byEndpoint("landlord/contact-requests/"),
+      respond: (id: number, action: string) =>
+        byEndpoint(`landlord/contact-requests/${id}/${action}/`),
+    },
+  },
+  overview: byEndpoint("overview/"),
+  notifications: {
+    list: byEndpoint("notifications/"),
+    unread_count: byEndpoint("notifications/unread-count/"),
+    read_all: byEndpoint("notifications/read-all/"),
+    read: (id: number) => byEndpoint(`notifications/${id}/read/`),
+  },
+  tenancies: tenancyApi("tenancies"),
+  landlord_tenancies: tenancyApi("landlord/tenancies"),
+  tenant_invitations: {
+    list: byEndpoint("tenant/invitations/"),
+    accept_by_id: (id: number) =>
+      byEndpoint(`tenant/invitations/${id}/accept/`),
+    accept: byEndpoint("tenant/invitations/accept/"),
   },
   bans: {
     list: byEndpoint("bans/"),

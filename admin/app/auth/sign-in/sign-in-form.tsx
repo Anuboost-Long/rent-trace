@@ -10,7 +10,7 @@ const EMAIL_UNVERIFIED = 403;
 
 export default function SignInForm({
   redirectTo,
-}: Readonly<{ redirectTo: string }>) {
+}: Readonly<{ redirectTo?: string }>) {
   const formRef = useRef<HTMLFormElement>(null);
   const { pending, error, notice, signIn, resendVerification } = useAuth();
 

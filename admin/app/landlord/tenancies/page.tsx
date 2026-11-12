@@ -1,10 +1,10 @@
-import PageHeader from "@/components/layout/page-header";
+import TenancyListPage from "@/components/tenancies/tenancy-list";
+import type { Metadata } from "next";
 
-export default function Page() {
-  return (
-    <PageHeader
-      title="Tenancies"
-      description="Tenancies across your properties."
-    />
-  );
+export const metadata: Metadata = { title: "Tenancies · RentTrace" };
+
+export default function Page({
+  searchParams,
+}: Readonly<PageProps<"/landlord/tenancies">>) {
+  return <TenancyListPage audience="landlord" searchParams={searchParams} />;
 }

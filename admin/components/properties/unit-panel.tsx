@@ -10,6 +10,7 @@ import {
 } from "@/constants/properties";
 import useUnitActions from "@/hooks/form/useUnitActions";
 import type { PropertyAudience, PropertyUnit } from "@/types/properties/models";
+import { formatRent } from "@/utils/rent";
 import { useAtomValue } from "jotai";
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -41,6 +42,12 @@ export default function UnitPanel({
   const details: [string, string][] = [
     ["Type", UnitTypeLabel[unit.unit_type]],
     ["Unit number", unit.unit_number ?? "—"],
+    [
+      "Rent",
+      unit.rent_amount && unit.rent_frequency
+        ? formatRent(unit.rent_amount, unit.rent_frequency)
+        : "Not set",
+    ],
     ["Occupancy", OccupancyLabel[unit.occupancy_status]],
     ["Shown publicly", unit.is_public ? "Yes" : "No"],
     ["Description", unit.description ?? "—"],
