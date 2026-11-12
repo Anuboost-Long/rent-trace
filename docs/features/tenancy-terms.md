@@ -29,6 +29,9 @@ correct it later. Tenants see the terms on their tenancy page and are told when 
     tenancy), and a changed period must not overlap another active tenancy on the same unit.
   - An `ENDED` or `CANCELLED` tenancy can't be edited.
   - Notes are private to the landlord and admins; tenants never see them.
+- **A rent or bond increase does not apply straight away when the tenancy has tenants.** It waits
+  until every current tenant approves ([Rent and bond change approval](rent-change-approval.md)).
+  Dates, notes and any decrease apply at once.
 - When the **dates, rent or bond** change and the tenancy has current tenants, they are told in the
   app ("The terms of your tenancy at … changed"). The text carries no amounts. A notes-only change
   tells nobody.

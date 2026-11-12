@@ -15,6 +15,7 @@ import type {
   TenancyAudience,
   TenancyDetail,
   TenancyFilters,
+  TermChangeAnswer,
   TenancyPage,
   UpdateTenancyBody,
 } from "@/types/tenancies/models";
@@ -227,6 +228,42 @@ export const handleUpdateTenancy = async (
       url: apiFor(audience).detail(id),
       method: "PATCH",
       data: body,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleWithdrawTermChange = async (
+  tenancyId: number,
+  changeId: number,
+  audience: TenancyAudience = "admin",
+) => {
+  try {
+    const data = await ApiServiceServer<TenancyDetail>({
+      url: apiFor(audience).withdraw_terms(tenancyId, changeId),
+      method: "POST",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleRespondTermChange = async (
+  tenancyId: number,
+  changeId: number,
+  answer: TermChangeAnswer,
+) => {
+  try {
+    const data = await ApiServiceServer<MyTenancyDetail>({
+      url: EndPoints.tenant_tenancies.respond_terms(
+        tenancyId,
+        changeId,
+        answer,
+      ),
+      method: "POST",
     });
     return { data, error: null };
   } catch (error) {

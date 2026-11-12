@@ -19,6 +19,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import InvitationsSection from "./invitations-section";
+import TermChangePanel from "./term-change-panel";
+import TermHistory from "./term-history";
 import TenancyActions from "./tenancy-actions";
 
 type TenancyDetailProp = Readonly<{
@@ -110,6 +112,13 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
           />
         </div>
       </div>
+      {tenancy.pending_change && (
+        <TermChangePanel
+          audience={audience}
+          tenancyId={tenancy.id}
+          change={tenancy.pending_change}
+        />
+      )}
       <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
         {details.map(([label, value]) => (
           <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">
@@ -160,6 +169,8 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
         invitations={tenancy.invitations}
         closed={tenancy.status === "ENDED" || tenancy.status === "CANCELLED"}
       />
+
+      <TermHistory changes={tenancy.term_history} />
     </>
   );
 }

@@ -41,6 +41,12 @@ PERMISSIONS = [
     ("tenancies.admin_manage", "Set up tenancies and invite tenants", "tenancies", {ADMIN}),
     ("tenancies.accept_invitation", "Accept a tenancy invitation", "tenancies", {TENANT}),
     ("tenancies.invite_housemate", "Ask to add a housemate to your tenancy", "tenancies", {TENANT}),
+    (
+        "tenancies.approve_terms",
+        "Approve or decline a rent or bond increase",
+        "tenancies",
+        {TENANT},
+    ),
     ("contact_requests.send", "Ask a landlord for contact", "communications", {TENANT}),
     ("contact_requests.respond", "Answer contact requests", "communications", {LANDLORD}),
     ("files.upload", "Upload files", "files", PARTIES),

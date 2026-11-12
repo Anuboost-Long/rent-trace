@@ -105,3 +105,35 @@ class WithdrawHousemateView(TenantTenancyView):
             user=request.user, tenancy_id=tenancy_id, invitation_id=invitation_id
         )
         return Response(resources.HousemateRequestResource(invitation).data)
+
+
+class ApproveTermChangeView(TenantTenancyView):
+    required_permissions = {"POST": "tenancies.approve_terms"}
+
+    @extend_schema(
+        operation_id="tenant_tenancies_approve_terms",
+        request=None,
+        responses=resources.MyTenancyDetailResource,
+    )
+    def post(self, request, tenancy_id, change_id):
+        services.respond_to_term_change(
+            user=request.user, tenancy_id=tenancy_id, change_id=change_id, decision="APPROVED"
+        )
+        mine = services.get_my_tenancy(user=request.user, tenancy_id=tenancy_id)
+        return Response(resources.MyTenancyDetailResource(mine).data)
+
+
+class DeclineTermChangeView(TenantTenancyView):
+    required_permissions = {"POST": "tenancies.approve_terms"}
+
+    @extend_schema(
+        operation_id="tenant_tenancies_decline_terms",
+        request=None,
+        responses=resources.MyTenancyDetailResource,
+    )
+    def post(self, request, tenancy_id, change_id):
+        services.respond_to_term_change(
+            user=request.user, tenancy_id=tenancy_id, change_id=change_id, decision="DECLINED"
+        )
+        mine = services.get_my_tenancy(user=request.user, tenancy_id=tenancy_id)
+        return Response(resources.MyTenancyDetailResource(mine).data)

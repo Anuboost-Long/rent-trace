@@ -109,3 +109,35 @@ def terms_changed(tenancy, tenants):
         body=f"The dates, rent or bond for your tenancy at {place_name(tenancy)} changed. Open it to see the new terms.",
         subject_id=tenancy.pk,
     )
+
+
+def terms_proposed(tenancy, tenants):
+    """Tells the tenants a rent or bond increase needs their answer. No amounts in the text."""
+    notify(
+        tenants,
+        kind=Kind.TENANCY_TERMS_PROPOSED,
+        title="Your landlord proposed new rent or bond",
+        body=f"A change to the rent or bond for your tenancy at {place_name(tenancy)} needs your approval. Open it to review.",
+        subject_id=tenancy.pk,
+    )
+
+
+def terms_applied(tenancy, proposer, tenants):
+    notify(
+        [proposer] if proposer else [],
+        kind=Kind.TENANCY_TERMS_APPLIED,
+        title="Your rent or bond change was approved",
+        body=f"Every tenant approved the change for {place_name(tenancy)}. It now applies.",
+        subject_id=tenancy.pk,
+    )
+    terms_changed(tenancy, tenants)
+
+
+def terms_declined(tenancy, proposer, decliner):
+    notify(
+        [proposer] if proposer else [],
+        kind=Kind.TENANCY_TERMS_DECLINED,
+        title="A tenant declined your rent or bond change",
+        body=f"{_name(decliner)} declined the change for {place_name(tenancy)}. Nothing changed.",
+        subject_id=tenancy.pk,
+    )

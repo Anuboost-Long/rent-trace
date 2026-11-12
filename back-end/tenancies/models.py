@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Count, F, Prefetch, Q
 from django.db.models.functions import Lower, Trim
 
-from common.models import MutableRecord, enum_check
+from common.models import EventRecord, MutableRecord, enum_check
 
 
 class TenancyType(models.TextChoices):
@@ -70,6 +70,13 @@ class TenancyQuerySet(models.QuerySet):
                 "parties",
                 queryset=TenancyParty.objects.current().select_related("tenant").order_by("id"),
                 to_attr="current_parties",
+            ),
+            Prefetch(
+                "term_changes",
+                queryset=TenancyTermChange.objects.select_related("created_by")
+                .prefetch_related("decisions")
+                .order_by("-created_at", "-id"),
+                to_attr="all_term_changes",
             ),
             Prefetch(
                 "invitations",
@@ -281,4 +288,101 @@ class TenancyInvitation(MutableRecord):
         ]
         indexes = [
             models.Index(fields=["email_normalized"], name="ix_tenancy_invitations_email"),
+        ]
+
+
+class TermChangeStatus(models.TextChoices):
+    PENDING = "PENDING"
+    APPLIED = "APPLIED"
+    DECLINED = "DECLINED"
+    WITHDRAWN = "WITHDRAWN"
+    SUPERSEDED = "SUPERSEDED"
+    CLOSED = "CLOSED"
+
+
+class TermDecision(models.TextChoices):
+    APPROVED = "APPROVED"
+    DECLINED = "DECLINED"
+
+
+class TenancyTermChangeQuerySet(models.QuerySet):
+    def pending(self):
+        return self.filter(status=TermChangeStatus.PENDING)
+
+    def open(self, now):
+        return self.pending().filter(expires_at__gt=now)
+
+    def newest_first(self):
+        return self.order_by("-created_at", "-id")
+
+
+class TenancyTermChange(MutableRecord):
+    """A change to the rent or bond. Rises that tenants must approve wait as PENDING; every other
+    change is written as APPLIED straight away, so this table is the history of the money terms."""
+
+    tenancy = models.ForeignKey(Tenancy, models.PROTECT, related_name="term_changes")
+    status = models.TextField(choices=TermChangeStatus, default=TermChangeStatus.PENDING)
+    requires_approval = models.BooleanField(default=True)
+    expires_at = models.DateTimeField(null=True, blank=True)
+    decided_at = models.DateTimeField(null=True, blank=True)
+    from_rent_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    from_rent_frequency = models.CharField(max_length=30, null=True, blank=True)
+    from_bond_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    rent_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    rent_frequency = models.CharField(max_length=30, null=True, blank=True)
+    bond_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+
+    objects = TenancyTermChangeQuerySet.as_manager()
+
+    class Meta(MutableRecord.Meta):
+        db_table = "tenancy_term_changes"
+        constraints = [
+            *MutableRecord.Meta.constraints,
+            enum_check("tenancy_term_changes", "status", TermChangeStatus),
+            models.CheckConstraint(
+                condition=Q(rent_amount__isnull=True) | Q(rent_amount__gt=0),
+                name="ck_tenancy_term_changes_rent",
+            ),
+            models.CheckConstraint(
+                condition=Q(bond_amount__isnull=True) | Q(bond_amount__gt=0),
+                name="ck_tenancy_term_changes_bond",
+            ),
+            models.CheckConstraint(
+                condition=Q(rent_amount__isnull=True, rent_frequency__isnull=True)
+                | Q(rent_amount__isnull=False, rent_frequency__isnull=False),
+                name="ck_tenancy_term_changes_rent_pair",
+            ),
+            models.CheckConstraint(
+                condition=Q(status=TermChangeStatus.PENDING, decided_at__isnull=True)
+                | (~Q(status=TermChangeStatus.PENDING) & Q(decided_at__isnull=False)),
+                name="ck_tenancy_term_changes_decided",
+            ),
+            models.CheckConstraint(
+                condition=Q(requires_approval=True, expires_at__isnull=False)
+                | Q(requires_approval=False, status=TermChangeStatus.APPLIED),
+                name="ck_tenancy_term_changes_approval",
+            ),
+            models.UniqueConstraint(
+                fields=["tenancy"],
+                condition=Q(status=TermChangeStatus.PENDING),
+                name="uq_tenancy_term_changes_open",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["tenancy", "status"], name="ix_term_changes_tenancy"),
+        ]
+
+
+class TenancyTermDecision(EventRecord):
+    change = models.ForeignKey(TenancyTermChange, models.PROTECT, related_name="decisions")
+    tenant = models.ForeignKey("accounts.User", models.PROTECT, related_name="+")
+    decision = models.TextField(choices=TermDecision)
+
+    class Meta:
+        db_table = "tenancy_term_decisions"
+        constraints = [
+            enum_check("tenancy_term_decisions", "decision", TermDecision),
+            models.UniqueConstraint(
+                fields=["change", "tenant"], name="uq_tenancy_term_decisions_tenant"
+            ),
         ]

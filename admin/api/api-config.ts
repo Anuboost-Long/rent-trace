@@ -19,6 +19,8 @@ const tenancyApi = (root: string) => ({
     byEndpoint(`${root}/${id}/invitations/${invitationId}/${action}/`),
   action: (id: number, action: string) =>
     byEndpoint(`${root}/${id}/${action}/`),
+  withdraw_terms: (id: number, changeId: number) =>
+    byEndpoint(`${root}/${id}/changes/${changeId}/withdraw/`),
 });
 
 const propertyFiles = (root: string) => {
@@ -78,6 +80,8 @@ export const EndPoints = {
   tenant_tenancies: {
     list: byEndpoint("tenant/tenancies/"),
     detail: (id: number | string) => byEndpoint(`tenant/tenancies/${id}/`),
+    respond_terms: (id: number, changeId: number, answer: string) =>
+      byEndpoint(`tenant/tenancies/${id}/changes/${changeId}/${answer}/`),
     request_housemate: (id: number) =>
       byEndpoint(`tenant/tenancies/${id}/invitations/`),
     withdraw_housemate: (id: number, invitationId: number) =>

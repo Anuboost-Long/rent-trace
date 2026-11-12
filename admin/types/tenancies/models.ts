@@ -47,6 +47,40 @@ export type Invitation = {
   revoked_at: string | null;
 };
 
+export type MoneyTerms = {
+  rent_amount: string | null;
+  rent_frequency: string | null;
+  bond_amount: string | null;
+};
+
+export type TermChangeStatus =
+  | "PENDING"
+  | "EXPIRED"
+  | "APPLIED"
+  | "DECLINED"
+  | "WITHDRAWN"
+  | "SUPERSEDED"
+  | "CLOSED";
+
+export type TermApproval = {
+  name: string;
+  decision: "APPROVED" | "DECLINED" | null;
+};
+
+export type TermChange = {
+  id: number;
+  status: TermChangeStatus;
+  requires_approval: boolean;
+  proposed_by: string | null;
+  created_at: string;
+  decided_at: string | null;
+  expires_at: string | null;
+  before: MoneyTerms;
+  after: MoneyTerms;
+  approvals: TermApproval[];
+  my_decision?: "APPROVED" | "DECLINED" | null;
+};
+
 export type TenancyDetail = PlaceRef & {
   id: number;
   max_occupants: number | null;
@@ -63,6 +97,8 @@ export type TenancyDetail = PlaceRef & {
   currency: string;
   tenants: Tenant[];
   invitations: Invitation[];
+  pending_change: TermChange | null;
+  term_history: TermChange[];
 };
 
 export type TenancyPage = {
@@ -97,6 +133,8 @@ export type InviteTenantBody = { email: string; is_primary: boolean };
 export type InvitationAction = "resend" | "revoke" | "approve" | "decline";
 
 export type TenancyAction = "activate" | "end" | "cancel";
+
+export type TermChangeAnswer = "approve" | "decline";
 
 export type MyInvitation = {
   id: number;
@@ -159,4 +197,6 @@ export type HousemateRequest = {
 export type MyTenancyDetail = MyTenancy & {
   housemates: Housemate[];
   housemate_requests: HousemateRequest[];
+  pending_change: TermChange | null;
+  term_history: TermChange[];
 };

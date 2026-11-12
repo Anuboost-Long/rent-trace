@@ -1,12 +1,22 @@
 from django.db.models import Prefetch
 
 from properties.models import PropertyOwner
-from tenancies.models import Tenancy, TenancyInvitation, TenancyParty
+from tenancies.models import (
+    Tenancy,
+    TenancyInvitation,
+    TenancyParty,
+    TenancyTermChange,
+    TermChangeStatus,
+)
 
 
 def my_tenancies(user):
     """Every tenancy the person has joined, past ones included, newest start first."""
-    mine = TenancyParty.objects.filter(tenant=user, deleted_at__isnull=True).order_by("-id")
+    mine = (
+        TenancyParty.objects.filter(tenant=user, deleted_at__isnull=True)
+        .select_related("tenant")
+        .order_by("-id")
+    )
     housemates = TenancyParty.objects.current().exclude(tenant=user).select_related("tenant")
     owners = (
         PropertyOwner.objects.filter(valid_to__isnull=True, deleted_at__isnull=True)
@@ -19,6 +29,16 @@ def my_tenancies(user):
         .select_related("property_unit__property")
         .prefetch_related(
             Prefetch("parties", queryset=mine, to_attr="my_parties"),
+            Prefetch(
+                "term_changes",
+                queryset=TenancyTermChange.objects.filter(
+                    status__in=[TermChangeStatus.PENDING, TermChangeStatus.APPLIED]
+                )
+                .select_related("created_by")
+                .prefetch_related("decisions")
+                .order_by("-created_at", "-id"),
+                to_attr="visible_term_changes",
+            ),
             Prefetch("parties", queryset=housemates.order_by("id"), to_attr="housemates"),
             Prefetch("property_unit__property__owners", queryset=owners, to_attr="current_owners"),
             Prefetch(

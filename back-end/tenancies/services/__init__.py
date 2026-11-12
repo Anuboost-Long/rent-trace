@@ -13,6 +13,8 @@ from tenancies.services.list_my_tenancies import list_my_tenancies
 from tenancies.services.list_tenancies import list_tenancies
 from tenancies.services.request_housemate import request_housemate
 from tenancies.services.resend_invitation import resend_invitation
+from tenancies.services.respond_to_term_change import respond_to_term_change
 from tenancies.services.revoke_invitation import revoke_invitation
 from tenancies.services.update_tenancy import update_tenancy
 from tenancies.services.withdraw_housemate import withdraw_housemate
+from tenancies.services.withdraw_term_change import withdraw_term_change

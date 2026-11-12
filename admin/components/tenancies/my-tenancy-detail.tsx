@@ -10,6 +10,8 @@ import { Suspense } from "react";
 
 import { periodText, placeName } from "./my-tenancy-card";
 import TenancyPeople from "./tenancy-people";
+import TermChangeReview from "./term-change-review";
+import TermHistory from "./term-history";
 
 type MyTenancyDetailProp = Readonly<{ params: Promise<{ id: string }> }>;
 
@@ -67,6 +69,12 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
       <h1 className="mt-4 mb-6 text-2xl font-semibold">
         {placeName(tenancy)}, {tenancy.unit.name}
       </h1>
+      {tenancy.pending_change && (
+        <TermChangeReview
+          tenancyId={tenancy.id}
+          change={tenancy.pending_change}
+        />
+      )}
       <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
         {details.map(([label, value]) => (
           <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">
@@ -84,6 +92,8 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
         canInvite={tenancy.is_current}
         maxPeople={tenancy.max_occupants}
       />
+
+      <TermHistory changes={tenancy.term_history} />
     </>
   );
 }

@@ -6,6 +6,11 @@ urlpatterns = [
     path("", views.LandlordTenanciesView.as_view(), name="landlord-tenancies"),
     path("<int:tenancy_id>/", views.LandlordTenancyDetailView.as_view(), name="landlord-tenancy"),
     path(
+        "<int:tenancy_id>/changes/<int:change_id>/withdraw/",
+        views.LandlordWithdrawTermChangeView.as_view(),
+        name="landlord-tenancy-terms-withdraw",
+    ),
+    path(
         "<int:tenancy_id>/activate/",
         views.LandlordActivateTenancyView.as_view(),
         name="landlord-tenancy-activate",

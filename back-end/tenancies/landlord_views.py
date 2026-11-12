@@ -114,3 +114,15 @@ class LandlordDeclineHousemateView(LandlordScope, views.DeclineHousemateView):
     )
     def post(self, request, tenancy_id, invitation_id):
         return super().post(request, tenancy_id, invitation_id)
+
+
+class LandlordWithdrawTermChangeView(LandlordScope, views.WithdrawTermChangeView):
+    required_permissions = {"POST": "tenancies.update"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_withdraw_terms",
+        request=None,
+        responses=resources.TenancyDetailResource,
+    )
+    def post(self, request, tenancy_id, change_id):
+        return super().post(request, tenancy_id, change_id)

@@ -50,7 +50,8 @@ async function EditTenancy({ audience, params }: EditTenancyProp) {
       />
       <h1 className="mt-4 text-2xl font-semibold">Edit tenancy</h1>
       <p className="mt-1 mb-6 text-foreground/70">
-        Tenants are told if the dates, rent or bond change.
+        Dates and notes apply at once. A higher rent or bond waits until every
+        tenant approves it.
       </p>
       <EditTenancyForm audience={audience} tenancy={tenancy} />
     </div>

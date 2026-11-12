@@ -143,19 +143,30 @@ class UpdateTenancyTests(TenancyApiTestCase):
                 self.assertEqual(response.status_code, 400)
                 self.assertIn(status.lower(), str(response.data))
 
-    def test_tenants_are_told_when_dates_rent_or_bond_change_without_amounts(self):
+    def test_tenants_are_told_when_the_dates_change_and_the_text_has_no_amounts(self):
         self.join()
 
-        self.edit({"rent_amount": "450.00", "rent_frequency": "WEEKLY"})
+        self.edit({"end_date": "2027-06-01"})
 
         (row,) = Notification.objects.filter(recipient=self.tina)
         self.assertEqual((row.kind, row.subject_id), ("TENANCY_TERMS_CHANGED", self.tenancy["id"]))
-        self.assertNotIn("450", row.title + row.body)
         self.assertNotIn("$", row.title + row.body)
 
-    def test_a_notes_only_change_and_an_unchanged_value_tell_nobody(self):
-        self.join()
+    def test_tenants_are_told_when_the_rent_goes_down_and_it_applies_at_once(self):
         self.edit({"rent_amount": "450", "rent_frequency": "WEEKLY"})
+        self.join()
+
+        response = self.edit({"rent_amount": "400", "rent_frequency": "WEEKLY"})
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.row().rent_amount, Decimal("400.00"))
+        (row,) = Notification.objects.filter(recipient=self.tina)
+        self.assertEqual(row.kind, "TENANCY_TERMS_CHANGED")
+        self.assertNotIn("400", row.title + row.body)
+
+    def test_a_notes_only_change_and_an_unchanged_value_tell_nobody(self):
+        self.edit({"rent_amount": "450", "rent_frequency": "WEEKLY"})
+        self.join()
         before = Notification.objects.count()
 
         self.edit({"notes": "Private note"})

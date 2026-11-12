@@ -24,6 +24,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Tenancy lifecycle](tenancy-lifecycle.md)            | Built; actions not yet tried in a browser           |
 | [Housemate invitations](housemate-invitations.md)    | Built, not yet walked through in a browser          |
 | [Tenancy terms](tenancy-terms.md)                    | Built; tenant side not yet walked through           |
+| [Rent change approval](rent-change-approval.md)       | Built; tenant side not yet walked through           |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.

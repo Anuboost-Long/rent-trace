@@ -314,3 +314,27 @@ erDiagram
 ```
 
 A new permission, `tenancies.invite_housemate` (tenants), is seeded by `accounts/0009`.
+
+## 9. Rent and bond change approval
+
+Two tables, both in `tenancies`.
+
+- `tenancy_term_changes`: every change to a tenancy's rent or bond. An increase that tenants must
+  approve waits as `PENDING` (with `expires_at`); every other change is written straight away as
+  `APPLIED` with `requires_approval` false, so this is the history of the money terms. It keeps the
+  old values (`from_rent_amount`, `from_rent_frequency`, `from_bond_amount`) and the new ones. Status is
+  `PENDING`, `APPLIED`, `DECLINED`, `WITHDRAWN`, `SUPERSEDED` or `CLOSED`. At most one `PENDING` row per
+  tenancy (partial unique). CHECKs: amounts above zero, rent amount and frequency together, a
+  decision time exactly when the status is not `PENDING`.
+- `tenancy_term_decisions`: one row per tenant per proposal (`APPROVED` or `DECLINED`), unique on
+  (change, tenant).
+
+```mermaid
+erDiagram
+    TENANCIES ||--o{ TENANCY_TERM_CHANGES : "money history"
+    TENANCY_TERM_CHANGES ||--o{ TENANCY_TERM_DECISIONS : "answers"
+    USERS ||--o{ TENANCY_TERM_DECISIONS : "tenant"
+    USERS ||--o{ TENANCY_TERM_CHANGES : "proposed by"
+```
+
+A new permission, `tenancies.approve_terms` (tenants), is seeded by `accounts/0010`.

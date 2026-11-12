@@ -59,3 +59,13 @@ export const waitingText = (waitingOn: string[]) => {
   if (waitingOn.includes("LANDLORD")) return "Waiting for the landlord";
   return "Waiting for them to accept";
 };
+
+export const TermChangeStatusLabel: Record<string, string> = {
+  PENDING: "Waiting for approval",
+  EXPIRED: "Expired",
+  APPLIED: "Applied",
+  DECLINED: "Declined",
+  WITHDRAWN: "Withdrawn",
+  SUPERSEDED: "Replaced",
+  CLOSED: "Closed with the tenancy",
+};
