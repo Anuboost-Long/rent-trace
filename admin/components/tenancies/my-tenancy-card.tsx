@@ -8,6 +8,15 @@ import Link from "next/link";
 export const placeName = (tenancy: MyTenancy) =>
   tenancy.property.name ?? tenancy.property.suburb;
 
+export const addressText = ({ property }: MyTenancy) =>
+  [
+    property.address_line_1,
+    property.address_line_2,
+    `${property.suburb} ${property.state} ${property.postcode}`,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
 export const periodText = (tenancy: MyTenancy) =>
   tenancy.end_date
     ? `${formatDate(tenancy.start_date)} – ${formatDate(tenancy.end_date)}`

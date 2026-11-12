@@ -170,8 +170,21 @@ export type MyTenancy = {
   rent_frequency: string | null;
   bond_amount: string | null;
   currency: string;
-  unit: { id: number; name: string };
-  property: { id: number; name: string | null; suburb: string; state: string };
+  unit: {
+    id: number;
+    name: string;
+    unit_type: string;
+    description: string | null;
+  };
+  property: {
+    id: number;
+    name: string | null;
+    address_line_1: string;
+    address_line_2: string | null;
+    suburb: string;
+    state: string;
+    postcode: string;
+  };
   landlord: string | null;
   is_primary: boolean;
   joined_at: string;

@@ -24,8 +24,13 @@ class MyTenanciesTests(TenancyApiTestCase):
         self.assertEqual(response.status_code, 200)
         (row,) = response.data
         self.assertEqual(row["id"], mine["id"])
-        self.assertEqual(row["unit"], {"id": self.unit.pk, "name": "Flat 1"})
+        self.assertEqual(
+            row["unit"],
+            {"id": self.unit.pk, "name": "Flat 1", "unit_type": "APARTMENT", "description": None},
+        )
         self.assertEqual(row["property"]["id"], self.property["id"])
+        self.assertIn("address_line_1", row["property"])
+        self.assertIn("postcode", row["property"])
         self.assertEqual(row["landlord"], "Lou Reed")
         self.assertEqual(
             (row["status"], row["is_primary"], row["is_current"]), ("DRAFT", True, True)

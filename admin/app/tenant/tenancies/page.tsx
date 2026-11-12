@@ -1,4 +1,5 @@
 import PageHeader from "@/components/layout/page-header";
+import { CardsSkeleton } from "@/components/layout/page-skeletons";
 import MyInvitations from "@/components/tenancies/my-invitations";
 import MyTenancies from "@/components/tenancies/my-tenancies";
 import { Suspense } from "react";
@@ -13,7 +14,7 @@ export default function Page() {
       <Suspense>
         <MyInvitations />
       </Suspense>
-      <Suspense>
+      <Suspense fallback={<CardsSkeleton />}>
         <MyTenancies showHistory />
       </Suspense>
     </>

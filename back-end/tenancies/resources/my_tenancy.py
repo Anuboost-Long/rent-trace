@@ -43,15 +43,23 @@ class MyTenancyResource(serializers.ModelSerializer):
 
     def get_unit(self, tenancy) -> dict:
         unit = tenancy.property_unit
-        return {"id": unit.pk, "name": unit.name}
+        return {
+            "id": unit.pk,
+            "name": unit.name,
+            "unit_type": unit.unit_type,
+            "description": unit.description,
+        }
 
     def get_property(self, tenancy) -> dict:
         place = tenancy.property_unit.property
         return {
             "id": place.pk,
             "name": place.property_name,
+            "address_line_1": place.address_line_1,
+            "address_line_2": place.address_line_2,
             "suburb": place.suburb,
             "state": place.state,
+            "postcode": place.postcode,
         }
 
     def get_landlord(self, tenancy) -> str | None:

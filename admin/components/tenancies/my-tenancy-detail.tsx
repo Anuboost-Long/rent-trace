@@ -1,7 +1,8 @@
 import { handleGetMyTenancy } from "@/api/services/tenancies/serve-action";
 import TenantConditions from "@/components/conditions/tenant-conditions";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
-import ContentSkeleton from "@/components/layout/content-skeleton";
+import { DetailSkeleton } from "@/components/layout/page-skeletons";
+import { UnitTypeLabel } from "@/constants/properties";
 import { TenantTenancyStatusLabel } from "@/constants/tenancies";
 import { Route } from "@/constants/web-routes";
 import { formatDate } from "@/utils/format-date";
@@ -9,7 +10,7 @@ import { formatMoney, formatRent } from "@/utils/rent";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { periodText, placeName } from "./my-tenancy-card";
+import { addressText, periodText, placeName } from "./my-tenancy-card";
 import TenancyPeople from "./tenancy-people";
 import TermChangeReview from "./term-change-review";
 import TermHistory from "./term-history";
@@ -18,7 +19,7 @@ type MyTenancyDetailProp = Readonly<{ params: Promise<{ id: string }> }>;
 
 export default function MyTenancyDetailPage(props: MyTenancyDetailProp) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
+    <Suspense fallback={<DetailSkeleton />}>
       <MyTenancyDetail {...props} />
     </Suspense>
   );
@@ -38,8 +39,15 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
 
   const details: [string, string][] = [
     ["Status", TenantTenancyStatusLabel[tenancy.status]],
-    ["Place", `${placeName(tenancy)}, ${tenancy.unit.name}`],
-    ["Suburb", `${tenancy.property.suburb} ${tenancy.property.state}`],
+    ["Property", placeName(tenancy)],
+    ["Address", addressText(tenancy)],
+    [
+      "Renting",
+      `${tenancy.unit.name} · ${UnitTypeLabel[tenancy.unit.unit_type]}`,
+    ],
+    ...(tenancy.unit.description
+      ? ([["About", tenancy.unit.description]] as [string, string][])
+      : []),
     ["Dates", periodText(tenancy)],
     ["You joined", formatDate(tenancy.joined_at)],
     ...(tenancy.left_at
