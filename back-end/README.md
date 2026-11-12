@@ -232,7 +232,7 @@ Anyone can browse, so these endpoints need only the API key. They are under `/ap
 | `GET <id>/`                  | One listing: public description, public units with rent, and photos (property and public-unit photos)                                                                                                                                                                                   |
 | `GET <id>/photos/<file_id>/` | A public photo's bytes. Documents and photos of private units are a 404                                                                                                                                                                                                                 |
 
-Landlords and admins control a listing with `POST listing/` on the property (`/api/landlord/properties/<id>/listing/` needs `properties.publish`; `/api/properties/<id>/listing/` needs `properties.admin_manage`) with `listing_status`. To go live the property must be active and have a public unit. Landlords can't set `SUSPENDED` or `ARCHIVED` and can't change a suspended listing; admins can. Units now have an optional `rent_amount` with `rent_frequency` (`WEEKLY`, `FORTNIGHTLY` or `MONTHLY`); both or neither.
+Landlords and admins control a listing with `POST listing/` on the property (`/api/landlord/properties/<id>/listing/` needs `properties.publish`; `/api/properties/<id>/listing/` needs `properties.admin_manage`) with `listing_status`. To go live the property must be active and have a public unit. Landlords can't set `SUSPENDED` or `ARCHIVED` and can't change a suspended listing; admins can. Units now have an optional `rent_amount` with `rent_frequency` (`WEEKLY`, `FORTNIGHTLY` or `MONTHLY`); both or neither, and an optional `max_occupants` (1 to 100): the most people who can live there.
 
 ### Property photos and files
 
@@ -267,17 +267,19 @@ Needs a signed-in landlord. All under `/api/landlord/properties/`. Every endpoin
 
 A landlord (or an admin) creates a tenancy on a unit and invites tenants to it by email. The invitee follows the emailed link, signs in with the same verified email, and joins. Rules and errors are in `docs/features/tenant-invitations.md` (at the repository root). Under `/api/landlord/tenancies/` (needs a landlord; only your own properties) and `/api/tenancies/` (admins, all properties), with the same paths:
 
-| Endpoint                                        | Landlord permission        | Admin permission         | What it does                                                                                                                                                |
-| ----------------------------------------------- | -------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /`                                         | `tenancies.view`           | `tenancies.admin_view`   | Tenancies, newest first, with place, status, dates, tenant count and pending invites. Query: `q`, `status`, `page`. Landlords see their own properties only |
-| `POST /`                                        | `tenancies.create`         | `tenancies.admin_manage` | Create a draft whole-unit tenancy: `property_unit_id`, `start_date`, optional `end_date`, `notes`                                                           |
-| `GET <id>/`                                     | `tenancies.view`           | `tenancies.admin_view`   | The tenancy with its unit, property, current tenants and invitations                                                                                        |
-| `POST <id>/invitations/`                        | `tenancies.manage_parties` | `tenancies.admin_manage` | Invite `email`, optionally `is_primary`. Valid for 7 days; the link is emailed after commit                                                                 |
-| `POST <id>/invitations/<invitation_id>/resend/` | `tenancies.manage_parties` | `tenancies.admin_manage` | New link and 7 more days for a pending or expired invite; the old link stops working                                                                        |
-| `POST <id>/invitations/<invitation_id>/revoke/` | `tenancies.manage_parties` | `tenancies.admin_manage` | End a pending or expired invite                                                                                                                             |
-| `POST <id>/activate/`                           | `tenancies.update`         | `tenancies.admin_manage` | Start a `DRAFT` tenancy: needs a current tenant and no overlapping active tenancy on the unit                                                               |
-| `POST <id>/end/`                                | `tenancies.update`         | `tenancies.admin_manage` | End an `ACTIVE` tenancy that has started: end date becomes today if open or later; tenants leave                                                            |
-| `POST <id>/cancel/`                             | `tenancies.update`         | `tenancies.admin_manage` | Cancel a `DRAFT` tenancy that never started; anyone who joined is released                                                                                  |
+| Endpoint                                         | Landlord permission        | Admin permission         | What it does                                                                                                                                                |
+| ------------------------------------------------ | -------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /`                                          | `tenancies.view`           | `tenancies.admin_view`   | Tenancies, newest first, with place, status, dates, tenant count and pending invites. Query: `q`, `status`, `page`. Landlords see their own properties only |
+| `POST /`                                         | `tenancies.create`         | `tenancies.admin_manage` | Create a draft whole-unit tenancy: `property_unit_id`, `start_date`, optional `end_date`, `notes`                                                           |
+| `GET <id>/`                                      | `tenancies.view`           | `tenancies.admin_view`   | The tenancy with its unit, property, current tenants and invitations                                                                                        |
+| `POST <id>/invitations/`                         | `tenancies.manage_parties` | `tenancies.admin_manage` | Invite `email`, optionally `is_primary`. Valid for 7 days; the link is emailed after commit                                                                 |
+| `POST <id>/invitations/<invitation_id>/resend/`  | `tenancies.manage_parties` | `tenancies.admin_manage` | New link and 7 more days for a pending or expired invite; the old link stops working                                                                        |
+| `POST <id>/invitations/<invitation_id>/revoke/`  | `tenancies.manage_parties` | `tenancies.admin_manage` | End a pending or expired invite                                                                                                                             |
+| `POST <id>/activate/`                            | `tenancies.update`         | `tenancies.admin_manage` | Start a `DRAFT` tenancy: needs a current tenant and no overlapping active tenancy on the unit                                                               |
+| `POST <id>/end/`                                 | `tenancies.update`         | `tenancies.admin_manage` | End an `ACTIVE` tenancy that has started: end date becomes today if open or later; tenants leave                                                            |
+| `POST <id>/cancel/`                              | `tenancies.update`         | `tenancies.admin_manage` | Cancel a `DRAFT` tenancy that never started; anyone who joined is released                                                                                  |
+| `POST <id>/invitations/<invitation_id>/approve/` | `tenancies.manage_parties` | `tenancies.admin_manage` | The landlord says yes to a tenant's housemate request; the person joins if they already said yes                                                            |
+| `POST <id>/invitations/<invitation_id>/decline/` | `tenancies.manage_parties` | `tenancies.admin_manage` | Decline a tenant's housemate request; it ends and the tenant and invitee are told                                                                           |
 
 Tenants use `/api/tenant/invitations/` and need `tenancies.accept_invitation`:
 
@@ -291,10 +293,14 @@ Accepting needs the account's verified email to equal the invited email; any oth
 
 Tenants also read their own tenancies, past ones included, under `/api/tenant/tenancies/` (needs a tenant and `tenancies.view`; rules in `docs/features/tenant-tenancies.md`):
 
-| Endpoint    | What it does                                                                                                                       |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /`     | Every tenancy they joined, newest start first, with place, dates, rent and bond if set, the landlord's name only, and `is_current` |
-| `GET <id>/` | One of theirs, plus the other current tenants' names. Anyone else's tenancy is a 404                                               |
+| Endpoint                                          | What it does                                                                                                                                                                                                          |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /`                                           | Every tenancy they joined, newest start first, with place, dates, rent and bond if set, the landlord's name only, and `is_current`                                                                                    |
+| `GET <id>/`                                       | One of theirs, plus the other current tenants' names. Anyone else's tenancy is a 404                                                                                                                                  |
+| `POST <id>/invitations/`                          | Ask to add a housemate (`email`). Needs `tenancies.invite_housemate`. It goes to the invitee and the landlord, and both have to say yes. At most 5 open per tenancy and 10 per person per day; a full unit refuses it |
+| `POST <id>/invitations/<invitation_id>/withdraw/` | Take back your own request                                                                                                                                                                                            |
+
+A unit's `max_occupants` (optional, 1 or more) caps how many current tenants a tenancy can have. It is checked on every invitation and again when someone would join. The housemate rules are in `docs/features/housemate-invitations.md`.
 
 ### Contact requests
 

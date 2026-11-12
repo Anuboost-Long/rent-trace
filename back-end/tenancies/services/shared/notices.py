@@ -2,6 +2,7 @@ from accounts.models import User
 from accounts.services.shared.account_rules import has_role
 from notifications.models import NotificationKind as Kind
 from notifications.services.shared import notify
+from properties.services.shared.queries import current_owner_users
 from tenancies.services.shared.invitations import place_name
 
 
@@ -14,29 +15,64 @@ def _tenant_with_email(email):
     return person if person and has_role(person, "TENANT") else None
 
 
-def invitation_sent(invitation, tenancy, actor, *, again):
+def _owners(tenancy):
+    return current_owner_users(tenancy.property_unit.property)
+
+
+def invitation_sent(invitation, tenancy, actor, *, again, needs_landlord=False):
     invitee = _tenant_with_email(invitation.email_normalized)
     if invitee is None:
         return
+    body = f"{_name(actor)} invited you to join {place_name(tenancy)}."
+    if needs_landlord:
+        body += " The landlord also needs to approve."
     notify(
         [invitee],
         kind=Kind.TENANCY_INVITATION_RECEIVED,
         title="Invitation sent again" if again else "You're invited to join a tenancy",
-        body=f"{_name(actor)} invited you to join {place_name(tenancy)}.",
+        body=body,
         subject_id=invitation.pk,
     )
 
 
-def invitation_accepted(invitation, tenant):
-    sender = invitation.created_by
-    if sender is None or sender.pk == tenant.pk:
-        return
+def invitation_accepted(invitation, tenant, *, finished_by=None):
+    """Someone joined. The person who asked is told; so are the owners when a tenant asked."""
+    recipients = [invitation.created_by] if invitation.created_by else []
+    if invitation.requested_by_tenant:
+        recipients += _owners(invitation.tenancy)
     notify(
-        [sender],
+        [
+            person
+            for person in recipients
+            if person.pk not in {tenant.pk, getattr(finished_by, "pk", None)}
+        ],
         kind=Kind.TENANCY_INVITATION_ACCEPTED,
         title="Invitation accepted",
         body=f"{_name(tenant)} joined {place_name(invitation.tenancy)}.",
         subject_id=invitation.tenancy_id,
+    )
+
+
+def housemate_requested(tenancy, requester):
+    notify(
+        _owners(tenancy),
+        kind=Kind.TENANCY_HOUSEMATE_REQUESTED,
+        title="A tenant asked to add a housemate",
+        body=f"{_name(requester)} asked to add someone to {place_name(tenancy)}. Open the tenancy to review it.",
+        subject_id=tenancy.pk,
+    )
+
+
+def housemate_decided(invitation, tenancy, *, approved):
+    invitee = _tenant_with_email(invitation.email_normalized)
+    recipients = [invitation.created_by] + ([invitee] if invitee else [])
+    verb = "approved" if approved else "declined"
+    notify(
+        [person for person in recipients if person is not None],
+        kind=Kind.TENANCY_HOUSEMATE_APPROVED if approved else Kind.TENANCY_HOUSEMATE_DECLINED,
+        title=f"Housemate request {verb}",
+        body=f"The landlord {verb} the request to add a housemate to {place_name(tenancy)}.",
+        subject_id=tenancy.pk,
     )
 
 

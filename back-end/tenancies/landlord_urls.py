@@ -35,4 +35,14 @@ urlpatterns = [
         views.LandlordRevokeInvitationView.as_view(),
         name="landlord-tenancy-invitation-revoke",
     ),
+    path(
+        "<int:tenancy_id>/invitations/<int:invitation_id>/approve/",
+        views.LandlordApproveHousemateView.as_view(),
+        name="landlord-tenancy-invitation-approve",
+    ),
+    path(
+        "<int:tenancy_id>/invitations/<int:invitation_id>/decline/",
+        views.LandlordDeclineHousemateView.as_view(),
+        name="landlord-tenancy-invitation-decline",
+    ),
 ]

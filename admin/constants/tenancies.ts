@@ -11,6 +11,7 @@ export const TenancyStatusLabel: Record<string, string> = {
 export const InvitationStatusLabel: Record<string, string> = {
   PENDING: "Pending",
   ACCEPTED: "Accepted",
+  DECLINED: "Declined",
   REVOKED: "Revoked",
   EXPIRED: "Expired",
 };
@@ -47,4 +48,12 @@ export const TenantTenancyStatusLabel: Record<string, string> = {
   ACTIVE: "Current",
   ENDED: "Ended",
   CANCELLED: "Cancelled",
+};
+
+export const waitingText = (waitingOn: string[]) => {
+  if (waitingOn.includes("LANDLORD") && waitingOn.includes("INVITEE")) {
+    return "Waiting for the landlord and for them to accept";
+  }
+  if (waitingOn.includes("LANDLORD")) return "Waiting for the landlord";
+  return "Waiting for them to accept";
 };

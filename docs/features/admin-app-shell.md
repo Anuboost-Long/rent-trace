@@ -15,6 +15,8 @@ navigation and permissions, built from shared components.
 - **Three audiences:** `/tenant`, `/landlord`, `/admin`. Each has its own layout
   (`audience-layout`) with a sidebar, navbar, breadcrumbs and page header. Routes
   and nav items live in `constants/web-routes.ts` and `constants/navigation.ts`.
+- **Detail pages** put a plain "Back" link on its own line, with the breadcrumb trail beneath it,
+  rather than a boxed button beside the trail.
 - **Permissions in the UI:** the `Can` component shows or hides controls from the
   signed-in user's effective permissions. The back end still enforces them.
 - **Shared components** (`components/common/`): button, text, select, check,

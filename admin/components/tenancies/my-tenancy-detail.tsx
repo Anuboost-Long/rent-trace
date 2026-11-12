@@ -8,6 +8,7 @@ import { formatMoney, formatRent } from "@/utils/rent";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import HousemateRequests from "./housemate-requests";
 import { periodText, placeName } from "./my-tenancy-card";
 
 type MyTenancyDetailProp = Readonly<{ params: Promise<{ id: string }> }>;
@@ -42,6 +43,12 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
       ? ([["You left", formatDate(tenancy.left_at)]] as [string, string][])
       : []),
     ["Landlord", tenancy.landlord ?? "—"],
+    [
+      "People",
+      tenancy.max_occupants
+        ? `${tenancy.people_count} of ${tenancy.max_occupants}`
+        : String(tenancy.people_count),
+    ],
     [
       "Rent",
       tenancy.rent_amount && tenancy.rent_frequency
@@ -101,6 +108,14 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
           </ul>
         )}
       </section>
+
+      <HousemateRequests
+        tenancyId={tenancy.id}
+        requests={tenancy.housemate_requests}
+        canAsk={tenancy.is_current}
+        peopleCount={tenancy.people_count}
+        maxPeople={tenancy.max_occupants}
+      />
     </>
   );
 }

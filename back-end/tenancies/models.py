@@ -73,7 +73,9 @@ class TenancyQuerySet(models.QuerySet):
             ),
             Prefetch(
                 "invitations",
-                queryset=TenancyInvitation.objects.not_deleted().order_by("-id"),
+                queryset=TenancyInvitation.objects.not_deleted()
+                .select_related("created_by")
+                .order_by("-id"),
                 to_attr="all_invitations",
             ),
         )
@@ -179,6 +181,11 @@ class TenancyArea(MutableRecord):
         ]
 
 
+class InvitationDecision(models.TextChoices):
+    APPROVED = "APPROVED"
+    DECLINED = "DECLINED"
+
+
 class TenancyInvitationQuerySet(models.QuerySet):
     def not_deleted(self):
         return self.filter(deleted_at__isnull=True)
@@ -210,6 +217,16 @@ class TenancyInvitation(MutableRecord):
         "accounts.User", models.PROTECT, null=True, blank=True, related_name="accepted_invitations"
     )
     revoked_at = models.DateTimeField(null=True, blank=True)
+    requested_by_tenant = models.BooleanField(default=False)
+    landlord_decision = models.TextField(choices=InvitationDecision, null=True, blank=True)
+    landlord_decided_at = models.DateTimeField(null=True, blank=True)
+    landlord_decided_by = models.ForeignKey(
+        "accounts.User", models.PROTECT, null=True, blank=True, related_name="+"
+    )
+    invitee_accepted_at = models.DateTimeField(null=True, blank=True)
+    invitee_accepted_by = models.ForeignKey(
+        "accounts.User", models.PROTECT, null=True, blank=True, related_name="+"
+    )
 
     objects = TenancyInvitationQuerySet.as_manager()
 
@@ -233,6 +250,26 @@ class TenancyInvitation(MutableRecord):
             models.CheckConstraint(
                 condition=Q(accepted_at__isnull=True) | Q(revoked_at__isnull=True),
                 name="ck_tenancy_invitations_outcome",
+            ),
+            enum_check("tenancy_invitations", "landlord_decision", InvitationDecision),
+            models.CheckConstraint(
+                condition=Q(landlord_decision__isnull=True, landlord_decided_at__isnull=True)
+                | Q(landlord_decision__isnull=False, landlord_decided_at__isnull=False),
+                name="ck_tenancy_invitations_decision",
+            ),
+            models.CheckConstraint(
+                condition=Q(accepted_at__isnull=True)
+                | Q(
+                    landlord_decision__isnull=False,
+                    landlord_decision=InvitationDecision.APPROVED,
+                    invitee_accepted_at__isnull=False,
+                ),
+                name="ck_tenancy_invitations_both_agreed",
+            ),
+            models.CheckConstraint(
+                condition=~Q(landlord_decision=InvitationDecision.DECLINED)
+                | Q(revoked_at__isnull=False),
+                name="ck_tenancy_invitations_declined_ends",
             ),
             models.UniqueConstraint(
                 fields=["tenancy", "email_normalized"],

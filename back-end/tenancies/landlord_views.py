@@ -82,3 +82,27 @@ class LandlordCancelTenancyView(LandlordScope, views.CancelTenancyView):
     )
     def post(self, request, tenancy_id):
         return super().post(request, tenancy_id)
+
+
+class LandlordApproveHousemateView(LandlordScope, views.ApproveHousemateView):
+    required_permissions = {"POST": "tenancies.manage_parties"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_approve_housemate",
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        return super().post(request, tenancy_id, invitation_id)
+
+
+class LandlordDeclineHousemateView(LandlordScope, views.DeclineHousemateView):
+    required_permissions = {"POST": "tenancies.manage_parties"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_decline_housemate",
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        return super().post(request, tenancy_id, invitation_id)

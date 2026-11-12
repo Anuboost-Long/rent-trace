@@ -1,7 +1,7 @@
 from django.db.models import Prefetch
 
 from properties.models import PropertyOwner
-from tenancies.models import Tenancy, TenancyParty
+from tenancies.models import Tenancy, TenancyInvitation, TenancyParty
 
 
 def my_tenancies(user):
@@ -21,6 +21,13 @@ def my_tenancies(user):
             Prefetch("parties", queryset=mine, to_attr="my_parties"),
             Prefetch("parties", queryset=housemates.order_by("id"), to_attr="housemates"),
             Prefetch("property_unit__property__owners", queryset=owners, to_attr="current_owners"),
+            Prefetch(
+                "invitations",
+                queryset=TenancyInvitation.objects.not_deleted()
+                .filter(requested_by_tenant=True, created_by=user)
+                .order_by("-id"),
+                to_attr="my_requests",
+            ),
         )
         .order_by("-start_date", "-id")
     )

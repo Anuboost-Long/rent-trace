@@ -287,3 +287,30 @@ erDiagram
         bigint subject_id "new, nullable"
     }
 ```
+
+## 8. Housemate invitations and a limit on people per unit
+
+`tenancy_invitations` gains the two approvals a tenant-requested invitation needs:
+
+- `requested_by_tenant` (bool, default false).
+- `landlord_decision` (`APPROVED` or `DECLINED`, nullable), with `landlord_decided_at` and
+  `landlord_decided_by` (FK to users, nullable). A landlord's or admin's own invitation is
+  created `APPROVED`; existing rows were backfilled `APPROVED`.
+- `invitee_accepted_at` and `invitee_accepted_by` (FK to users, nullable): the invited person's
+  yes. `accepted_at` / `accepted_by` still mean "joined", which now needs both.
+- CHECK constraints: the decision and its time are set together; `accepted_at` needs an
+  `APPROVED` decision and `invitee_accepted_at`; `DECLINED` needs `revoked_at`.
+
+`property_units` gains `max_occupants` (smallint, nullable, at least 1): the most people who can
+live in the unit. Empty means no limit.
+
+```mermaid
+erDiagram
+    USERS ||--o{ TENANCY_INVITATIONS : "landlord_decided_by"
+    USERS ||--o{ TENANCY_INVITATIONS : "invitee_accepted_by"
+    PROPERTY_UNITS {
+        smallint max_occupants "new, nullable"
+    }
+```
+
+A new permission, `tenancies.invite_housemate` (tenants), is seeded by `accounts/0009`.

@@ -4,6 +4,7 @@ import { ApiServiceServer } from "@/api/api-helper";
 import type {
   AcceptedInvitation,
   CreateTenancyBody,
+  HousemateRequest,
   Invitation,
   InvitationAction,
   InviteTenantBody,
@@ -173,6 +174,40 @@ export const handleTenancyAction = async (
   try {
     const data = await ApiServiceServer<TenancyDetail>({
       url: apiFor(audience).action(id, action),
+      method: "POST",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleRequestHousemate = async (
+  tenancyId: number,
+  email: string,
+) => {
+  try {
+    const data = await ApiServiceServer<HousemateRequest>({
+      url: EndPoints.tenant_tenancies.request_housemate(tenancyId),
+      method: "POST",
+      data: { email },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleWithdrawHousemate = async (
+  tenancyId: number,
+  invitationId: number,
+) => {
+  try {
+    const data = await ApiServiceServer<HousemateRequest>({
+      url: EndPoints.tenant_tenancies.withdraw_housemate(
+        tenancyId,
+        invitationId,
+      ),
       method: "POST",
     });
     return { data, error: null };

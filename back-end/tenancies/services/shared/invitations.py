@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 
 from accounts.security import tokens
 from properties.services.shared.queries import live_properties
-from tenancies.models import Tenancy, TenancyStatus
+from tenancies.models import InvitationDecision, Tenancy, TenancyStatus
 
 INVITATION_LIFETIME = timedelta(days=7)
 INVALID_INVITATION = "This invitation is invalid or has expired."
@@ -14,9 +14,23 @@ CLOSED_STATUSES = {TenancyStatus.ENDED, TenancyStatus.CANCELLED}
 def invitation_status(invitation, now):
     if invitation.accepted_at:
         return "ACCEPTED"
+    if invitation.landlord_decision == InvitationDecision.DECLINED:
+        return "DECLINED"
     if invitation.revoked_at:
         return "REVOKED"
     return "EXPIRED" if invitation.expires_at <= now else "PENDING"
+
+
+def waiting_on(invitation, now):
+    """Who still has to say yes, for an invitation that is still open."""
+    if invitation_status(invitation, now) != "PENDING":
+        return []
+    waiting = []
+    if invitation.landlord_decision is None:
+        waiting.append("LANDLORD")
+    if invitation.invitee_accepted_at is None:
+        waiting.append("INVITEE")
+    return waiting
 
 
 def new_link(invitation, now):

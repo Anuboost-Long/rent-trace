@@ -28,9 +28,19 @@ export default async function MyInvitations() {
                   : "You've been invited"}
                 {invitation.is_primary && " as the primary tenant"}. Expires{" "}
                 {formatDate(invitation.expires_at)}.
+                {invitation.requested_by_tenant &&
+                  invitation.waiting_on.includes("LANDLORD") &&
+                  " The landlord also has to approve before you join."}
               </p>
+              {!invitation.waiting_on.includes("INVITEE") && (
+                <p className="mt-1 text-sm font-medium">
+                  You accepted. Waiting for the landlord to approve.
+                </p>
+              )}
             </div>
-            <AcceptInvitationButton invitationId={invitation.id} />
+            {invitation.waiting_on.includes("INVITEE") && (
+              <AcceptInvitationButton invitationId={invitation.id} />
+            )}
           </li>
         ))}
       </ul>

@@ -153,3 +153,39 @@ class CancelTenancyView(TenancyScope, PermissionedView):
         owned_by = self.owned_by(request)
         services.cancel_tenancy(actor=request.user, tenancy_id=tenancy_id, owned_by=owned_by)
         return Response(detail(tenancy_id, owned_by))
+
+
+class ApproveHousemateView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_approve_housemate",
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        invitation = services.approve_housemate(
+            actor=request.user,
+            tenancy_id=tenancy_id,
+            invitation_id=invitation_id,
+            owned_by=self.owned_by(request),
+        )
+        return Response(resources.InvitationResource(invitation).data)
+
+
+class DeclineHousemateView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_decline_housemate",
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        invitation = services.decline_housemate(
+            actor=request.user,
+            tenancy_id=tenancy_id,
+            invitation_id=invitation_id,
+            owned_by=self.owned_by(request),
+        )
+        return Response(resources.InvitationResource(invitation).data)

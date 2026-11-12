@@ -1,4 +1,5 @@
 from tenancies.dtos.accept_invitation import AcceptInvitationDto
 from tenancies.dtos.create_tenancy import CreateTenancyDto
 from tenancies.dtos.invite_tenant import InviteTenantDto
+from tenancies.dtos.request_housemate import RequestHousemateDto
 from tenancies.dtos.tenancy_list_query import TenancyListQueryDto

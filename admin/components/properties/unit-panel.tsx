@@ -48,6 +48,10 @@ export default function UnitPanel({
         ? formatRent(unit.rent_amount, unit.rent_frequency)
         : "Not set",
     ],
+    [
+      "People allowed",
+      unit.max_occupants ? `Up to ${unit.max_occupants}` : "No limit",
+    ],
     ["Occupancy", OccupancyLabel[unit.occupancy_status]],
     ["Shown publicly", unit.is_public ? "Yes" : "No"],
     ["Description", unit.description ?? "—"],

@@ -20,3 +20,10 @@ class UnitFieldsDto(serializers.Serializer):
     rent_frequency = serializers.ChoiceField(
         choices=RentFrequency.values, required=False, allow_null=True, allow_blank=True
     )
+    max_occupants = serializers.IntegerField(
+        min_value=1,
+        max_value=100,
+        required=False,
+        allow_null=True,
+        help_text="The most people who can live in this unit. Empty means no limit.",
+    )

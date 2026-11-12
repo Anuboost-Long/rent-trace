@@ -1,4 +1,3 @@
-import ButtonLink from "@/components/common/button-link";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
@@ -10,18 +9,16 @@ export default function Breadcrumbs({ trail }: BreadcrumbsProp) {
   const parent = trail.at(-2);
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col items-start gap-2">
       {parent?.href && (
-        <ButtonLink
+        <Link
           href={parent.href}
-          variant="quiet"
-          size="sm"
           aria-label={`Back to ${parent.label}`}
-          className="shrink-0 gap-2"
+          className="inline-flex items-center gap-1.5 rounded-md text-sm text-foreground/70 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
         >
           <ArrowLeft aria-hidden className="size-4" />
-          <span className="hidden sm:inline">Back</span>
-        </ButtonLink>
+          Back
+        </Link>
       )}
       <nav aria-label="Breadcrumb" className="min-w-0">
         <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm">

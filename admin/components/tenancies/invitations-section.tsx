@@ -4,7 +4,11 @@ import Can from "@/components/common/can";
 import CheckInput from "@/components/common/inputs/check-input";
 import TextInput from "@/components/common/inputs/text-input";
 import DataTable, { type Column } from "@/components/common/table/data-table";
-import { InvitationStatusLabel, TenancyAccess } from "@/constants/tenancies";
+import {
+  InvitationStatusLabel,
+  TenancyAccess,
+  waitingText,
+} from "@/constants/tenancies";
 import useInvitations from "@/hooks/form/useInvitations";
 import type { Invitation, TenancyAudience } from "@/types/tenancies/models";
 import { formatDate } from "@/utils/format-date";
@@ -36,10 +40,17 @@ export default function InvitationsSection({
       header: "Status",
       cell: (item) => (
         <>
-          {InvitationStatusLabel[item.status]}
+          {item.status === "PENDING"
+            ? waitingText(item.waiting_on)
+            : InvitationStatusLabel[item.status]}
           {item.status === "PENDING" && (
             <p className="text-xs text-foreground/60">
               Expires {formatDate(item.expires_at)}
+            </p>
+          )}
+          {item.requested_by && (
+            <p className="text-xs text-foreground/60">
+              Asked by {item.requested_by}
             </p>
           )}
         </>
@@ -51,14 +62,35 @@ export default function InvitationsSection({
       cell: (item) =>
         (item.status === "PENDING" || item.status === "EXPIRED") && (
           <Can permission={TenancyAccess[audience].invite}>
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="quiet"
-                disabled={pending}
-                onClick={() => act(item.id, "resend")}
-              >
-                Resend
-              </Button>
+            <div className="flex flex-wrap justify-end gap-2">
+              {item.status === "PENDING" &&
+                item.requested_by_tenant &&
+                item.waiting_on.includes("LANDLORD") && (
+                  <>
+                    <Button
+                      disabled={pending}
+                      onClick={() => act(item.id, "approve")}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      variant="quiet"
+                      disabled={pending}
+                      onClick={() => act(item.id, "decline")}
+                    >
+                      Decline
+                    </Button>
+                  </>
+                )}
+              {!item.invitee_accepted_at && (
+                <Button
+                  variant="quiet"
+                  disabled={pending}
+                  onClick={() => act(item.id, "resend")}
+                >
+                  Resend
+                </Button>
+              )}
               <Button
                 variant="quiet"
                 disabled={pending}
@@ -77,7 +109,8 @@ export default function InvitationsSection({
       <h2 className="text-lg font-semibold">Invitations</h2>
       <p className="mt-1 mb-4 text-foreground/70">
         Invited people get an email link that lasts 7 days. Resending sends a
-        new link and the old one stops working.
+        new link and the old one stops working. When a tenant asks to add a
+        housemate, the person only joins once you approve and they accept.
       </p>
       <Can permission={TenancyAccess[audience].invite}>
         {!closed && (

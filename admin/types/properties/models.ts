@@ -25,6 +25,7 @@ export type PropertyUnit = {
   occupancy_status: string;
   rent_amount: string | null;
   rent_frequency: string | null;
+  max_occupants: number | null;
 };
 
 export type PropertyAudience = "admin" | "landlord";
@@ -112,4 +113,5 @@ export type UnitBody = {
   is_public: boolean;
   rent_amount: string | null;
   rent_frequency: string | null;
+  max_occupants: number | null;
 };

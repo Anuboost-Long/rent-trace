@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ValidationError
 
 from accounts.services.shared.mail import send_after_commit
 from tenancies.integrations import emails
@@ -12,6 +12,8 @@ from tenancies.services.shared.invitations import (
     place_name,
 )
 
+ALREADY_ACCEPTED = "They already accepted, so there is nothing to send again."
+
 
 @transaction.atomic
 def resend_invitation(*, actor, tenancy_id, invitation_id, owned_by=None):
@@ -22,12 +24,20 @@ def resend_invitation(*, actor, tenancy_id, invitation_id, owned_by=None):
     invitation = tenancy.invitations.outstanding().filter(pk=invitation_id).first()
     if invitation is None:
         raise NotFound("No open invitation with this id.")
+    if invitation.invitee_accepted_at is not None:
+        raise ValidationError({"invitation": ALREADY_ACCEPTED})
+    needs_landlord = invitation.requested_by_tenant and invitation.landlord_decision is None
     raw = new_link(invitation, timezone.now())
     invitation.updated_by = actor
     invitation.row_version += 1
     invitation.save()
-    notices.invitation_sent(invitation, tenancy, actor, again=True)
+    notices.invitation_sent(invitation, tenancy, actor, again=True, needs_landlord=needs_landlord)
     send_after_commit(
-        emails.send_invitation, invitation.email_normalized, actor, place_name(tenancy), raw
+        emails.send_invitation,
+        invitation.email_normalized,
+        actor,
+        place_name(tenancy),
+        raw,
+        needs_landlord,
     )
     return invitation

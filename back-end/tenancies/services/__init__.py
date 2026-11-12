@@ -1,7 +1,9 @@
 from tenancies.services.accept_invitation import accept_invitation
 from tenancies.services.activate_tenancy import activate_tenancy
+from tenancies.services.approve_housemate import approve_housemate
 from tenancies.services.cancel_tenancy import cancel_tenancy
 from tenancies.services.create_tenancy import create_tenancy
+from tenancies.services.decline_housemate import decline_housemate
 from tenancies.services.end_tenancy import end_tenancy
 from tenancies.services.get_my_tenancy import get_my_tenancy
 from tenancies.services.get_tenancy import get_tenancy
@@ -9,5 +11,7 @@ from tenancies.services.invite_tenant import invite_tenant
 from tenancies.services.list_my_invitations import list_my_invitations
 from tenancies.services.list_my_tenancies import list_my_tenancies
 from tenancies.services.list_tenancies import list_tenancies
+from tenancies.services.request_housemate import request_housemate
 from tenancies.services.resend_invitation import resend_invitation
 from tenancies.services.revoke_invitation import revoke_invitation
+from tenancies.services.withdraw_housemate import withdraw_housemate

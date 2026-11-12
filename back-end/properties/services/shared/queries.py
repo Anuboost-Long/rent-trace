@@ -41,7 +41,9 @@ def with_owners_and_units(properties):
 
 
 def current_owner_users(place):
-    current = PropertyOwner.objects.filter(
-        property=place, valid_to__isnull=True, deleted_at__isnull=True
-    ).select_related("owner")
+    current = (
+        PropertyOwner.objects.filter(property=place, valid_to__isnull=True, deleted_at__isnull=True)
+        .select_related("owner")
+        .order_by("-is_primary_owner", "id")
+    )
     return [row.owner for row in current]

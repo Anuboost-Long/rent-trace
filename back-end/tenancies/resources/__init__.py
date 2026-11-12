@@ -1,3 +1,4 @@
+from tenancies.resources.housemate_request import HousemateRequestResource
 from tenancies.resources.invitation import InvitationResource
 from tenancies.resources.my_invitation import MyInvitationResource
 from tenancies.resources.my_tenancy import MyTenancyResource

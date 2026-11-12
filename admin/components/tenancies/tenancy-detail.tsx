@@ -51,6 +51,12 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
       </Link>,
     ],
     ["Unit", tenancy.unit.name],
+    [
+      "People",
+      tenancy.max_occupants
+        ? `${tenancy.people_count} of ${tenancy.max_occupants}`
+        : String(tenancy.people_count),
+    ],
     ["Starts", formatDate(tenancy.start_date)],
     ["Ends", tenancy.end_date ? formatDate(tenancy.end_date) : "Open-ended"],
     ["Notes", tenancy.notes ?? "—"],

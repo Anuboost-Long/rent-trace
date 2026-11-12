@@ -12,6 +12,8 @@ class MyTenancyResource(serializers.ModelSerializer):
     joined_at = serializers.SerializerMethodField()
     left_at = serializers.SerializerMethodField()
     is_current = serializers.SerializerMethodField()
+    max_occupants = serializers.SerializerMethodField()
+    people_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Tenancy
@@ -32,6 +34,8 @@ class MyTenancyResource(serializers.ModelSerializer):
             "joined_at",
             "left_at",
             "is_current",
+            "max_occupants",
+            "people_count",
         ]
 
     def _party(self, tenancy):
@@ -63,6 +67,12 @@ class MyTenancyResource(serializers.ModelSerializer):
     def get_left_at(self, tenancy) -> str | None:
         left = self._party(tenancy).left_at
         return left.isoformat() if left else None
+
+    def get_max_occupants(self, tenancy) -> int | None:
+        return tenancy.property_unit.max_occupants
+
+    def get_people_count(self, tenancy) -> int:
+        return len(tenancy.housemates) + (1 if self._party(tenancy).left_at is None else 0)
 
     def get_is_current(self, tenancy) -> bool:
         return self._party(tenancy).left_at is None and tenancy.status not in CLOSED_STATUSES

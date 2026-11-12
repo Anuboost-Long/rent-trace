@@ -39,6 +39,7 @@ export default function UnitForm({
           is_public: form.get("is_public") === "on",
           rent_amount: String(form.get("rent_amount") ?? "").trim() || null,
           rent_frequency: String(form.get("rent_frequency") ?? "") || null,
+          max_occupants: Number(form.get("max_occupants")) || null,
         });
       }}
       className="mt-4 flex flex-col gap-4 rounded-xl border border-foreground/15 p-4"
@@ -96,6 +97,17 @@ export default function UnitForm({
           error={error?.fields.rent_frequency}
         />
       </div>
+      <TextInput
+        label="Most people who can live here (optional)"
+        name="max_occupants"
+        type="number"
+        inputMode="numeric"
+        min="1"
+        max="100"
+        step="1"
+        defaultValue={unit?.max_occupants ?? ""}
+        error={error?.fields.max_occupants}
+      />
       <CheckInput
         name="is_public"
         label="Show this unit publicly"

@@ -16,4 +16,5 @@ class UnitResource(serializers.ModelSerializer):
             "occupancy_status",
             "rent_amount",
             "rent_frequency",
+            "max_occupants",
         ]

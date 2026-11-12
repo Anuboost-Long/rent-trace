@@ -78,6 +78,12 @@ export const EndPoints = {
   tenant_tenancies: {
     list: byEndpoint("tenant/tenancies/"),
     detail: (id: number | string) => byEndpoint(`tenant/tenancies/${id}/`),
+    request_housemate: (id: number) =>
+      byEndpoint(`tenant/tenancies/${id}/invitations/`),
+    withdraw_housemate: (id: number, invitationId: number) =>
+      byEndpoint(
+        `tenant/tenancies/${id}/invitations/${invitationId}/withdraw/`,
+      ),
   },
   tenant_invitations: {
     list: byEndpoint("tenant/invitations/"),

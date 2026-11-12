@@ -74,3 +74,34 @@ class MyTenancyDetailView(TenantTenancyView):
     def get(self, request, tenancy_id):
         found = services.get_my_tenancy(user=request.user, tenancy_id=tenancy_id)
         return Response(resources.MyTenancyDetailResource(found).data)
+
+
+class RequestHousemateView(TenantTenancyView):
+    required_permissions = {"POST": "tenancies.invite_housemate"}
+
+    @extend_schema(
+        operation_id="tenant_tenancies_request_housemate",
+        request=dtos.RequestHousemateDto,
+        responses={201: resources.HousemateRequestResource},
+    )
+    def post(self, request, tenancy_id):
+        fields = validated(dtos.RequestHousemateDto, request.data)
+        invitation = services.request_housemate(
+            user=request.user, tenancy_id=tenancy_id, email=fields["email"]
+        )
+        return Response(resources.HousemateRequestResource(invitation).data, status=201)
+
+
+class WithdrawHousemateView(TenantTenancyView):
+    required_permissions = {"POST": "tenancies.invite_housemate"}
+
+    @extend_schema(
+        operation_id="tenant_tenancies_withdraw_housemate",
+        request=None,
+        responses=resources.HousemateRequestResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        invitation = services.withdraw_housemate(
+            user=request.user, tenancy_id=tenancy_id, invitation_id=invitation_id
+        )
+        return Response(resources.HousemateRequestResource(invitation).data)

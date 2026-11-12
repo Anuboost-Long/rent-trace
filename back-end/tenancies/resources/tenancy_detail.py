@@ -19,6 +19,8 @@ class TenancyDetailResource(serializers.ModelSerializer):
     property = serializers.SerializerMethodField()
     tenants = TenantResource(source="current_parties", many=True)
     invitations = InvitationResource(source="all_invitations", many=True)
+    max_occupants = serializers.SerializerMethodField()
+    people_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Tenancy
@@ -32,9 +34,17 @@ class TenancyDetailResource(serializers.ModelSerializer):
             "notes",
             "unit",
             "property",
+            "max_occupants",
+            "people_count",
             "tenants",
             "invitations",
         ]
+
+    def get_max_occupants(self, tenancy) -> int | None:
+        return tenancy.property_unit.max_occupants
+
+    def get_people_count(self, tenancy) -> int:
+        return len(tenancy.current_parties)
 
     def get_unit(self, tenancy) -> dict:
         unit = tenancy.property_unit

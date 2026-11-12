@@ -108,6 +108,7 @@ class PropertyUnit(MutableRecord):
     occupancy_status = models.TextField(choices=OccupancyStatus, default=OccupancyStatus.VACANT)
     rent_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     rent_frequency = models.TextField(choices=RentFrequency, null=True, blank=True)
+    max_occupants = models.PositiveSmallIntegerField(null=True, blank=True)
 
     class Meta(MutableRecord.Meta):
         db_table = "property_units"
@@ -118,6 +119,10 @@ class PropertyUnit(MutableRecord):
             models.CheckConstraint(
                 condition=Q(rent_amount__isnull=True) | Q(rent_amount__gt=0),
                 name="ck_property_units_rent_positive",
+            ),
+            models.CheckConstraint(
+                condition=Q(max_occupants__isnull=True) | Q(max_occupants__gte=1),
+                name="ck_property_units_max_occupants",
             ),
             models.CheckConstraint(
                 condition=(Q(rent_amount__isnull=True) & Q(rent_frequency__isnull=True))

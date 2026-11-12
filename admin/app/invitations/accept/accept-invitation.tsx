@@ -13,7 +13,9 @@ export default function AcceptInvitation({
     return (
       <div className="mt-4">
         <p>
-          You&apos;ve joined {accepted.property_name}, {accepted.unit_name}.
+          {accepted.joined
+            ? `You've joined ${accepted.property_name}, ${accepted.unit_name}.`
+            : `You said yes to joining ${accepted.property_name}, ${accepted.unit_name}. The landlord still has to approve it. We'll tell you when they do.`}
         </p>
         <ButtonLink href={Route.tenant.tenancies} className="mt-6">
           View your tenancies

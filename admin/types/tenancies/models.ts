@@ -3,7 +3,10 @@ export type TenancyAudience = "admin" | "landlord";
 export type TenancyStatus =
   "DRAFT" | "PENDING" | "ACTIVE" | "ENDED" | "CANCELLED";
 
-export type InvitationStatus = "PENDING" | "ACCEPTED" | "REVOKED" | "EXPIRED";
+export type InvitationStatus =
+  "PENDING" | "ACCEPTED" | "DECLINED" | "REVOKED" | "EXPIRED";
+
+export type Approver = "LANDLORD" | "INVITEE";
 
 type PlaceRef = {
   property: { id: number; name: string | null; suburb: string };
@@ -33,6 +36,11 @@ export type Invitation = {
   email: string;
   is_primary: boolean;
   status: InvitationStatus;
+  requested_by_tenant: boolean;
+  requested_by: string | null;
+  landlord_decision: "APPROVED" | "DECLINED" | null;
+  invitee_accepted_at: string | null;
+  waiting_on: Approver[];
   expires_at: string;
   created_at: string;
   accepted_at: string | null;
@@ -41,6 +49,8 @@ export type Invitation = {
 
 export type TenancyDetail = PlaceRef & {
   id: number;
+  max_occupants: number | null;
+  people_count: number;
   reference_no: string;
   status: TenancyStatus;
   tenancy_type: string;
@@ -74,7 +84,7 @@ export type CreateTenancyBody = {
 
 export type InviteTenantBody = { email: string; is_primary: boolean };
 
-export type InvitationAction = "resend" | "revoke";
+export type InvitationAction = "resend" | "revoke" | "approve" | "decline";
 
 export type TenancyAction = "activate" | "end" | "cancel";
 
@@ -84,6 +94,9 @@ export type MyInvitation = {
   unit_name: string;
   invited_by: string;
   is_primary: boolean;
+  requested_by_tenant: boolean;
+  joined: boolean;
+  waiting_on: Approver[];
   expires_at: string;
 };
 
@@ -93,6 +106,8 @@ export type AcceptedInvitation = {
   unit_name: string;
   invited_by: string;
   is_primary: boolean;
+  joined: boolean;
+  waiting_on: Approver[];
 };
 
 export type MyTenancy = {
@@ -112,6 +127,8 @@ export type MyTenancy = {
   joined_at: string;
   left_at: string | null;
   is_current: boolean;
+  max_occupants: number | null;
+  people_count: number;
 };
 
 export type Housemate = {
@@ -120,4 +137,16 @@ export type Housemate = {
   is_primary: boolean;
 };
 
-export type MyTenancyDetail = MyTenancy & { housemates: Housemate[] };
+export type HousemateRequest = {
+  id: number;
+  email: string;
+  status: InvitationStatus;
+  waiting_on: Approver[];
+  created_at: string;
+  expires_at: string;
+};
+
+export type MyTenancyDetail = MyTenancy & {
+  housemates: Housemate[];
+  housemate_requests: HousemateRequest[];
+};

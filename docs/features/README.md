@@ -22,6 +22,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Notifications](notifications.md)                    | Built, not yet walked through in a browser          |
 | [Tenant tenancies](tenant-tenancies.md)              | Built, not yet walked through in a browser          |
 | [Tenancy lifecycle](tenancy-lifecycle.md)            | Built; actions not yet tried in a browser           |
+| [Housemate invitations](housemate-invitations.md)    | Built, not yet walked through in a browser          |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
