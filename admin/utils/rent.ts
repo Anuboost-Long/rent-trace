@@ -13,3 +13,5 @@ const dollars = new Intl.NumberFormat("en-AU", {
 
 export const formatRent = (amount: string, frequency: string) =>
   `${dollars.format(Number(amount))} per ${PER[frequency] ?? "week"}`;
+
+export const formatMoney = (amount: string) => dollars.format(Number(amount));

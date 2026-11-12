@@ -8,6 +8,8 @@ import type {
   InvitationAction,
   InviteTenantBody,
   MyInvitation,
+  MyTenancy,
+  MyTenancyDetail,
   TenancyAudience,
   TenancyDetail,
   TenancyFilters,
@@ -131,6 +133,30 @@ export const handleAcceptInvitationById = async (id: number) => {
     const data = await ApiServiceServer<AcceptedInvitation>({
       url: EndPoints.tenant_invitations.accept_by_id(id),
       method: "POST",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetMyTenancies = async () => {
+  try {
+    const data = await ApiServiceServer<MyTenancy[]>({
+      url: EndPoints.tenant_tenancies.list,
+      method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetMyTenancy = async (id: number | string) => {
+  try {
+    const data = await ApiServiceServer<MyTenancyDetail>({
+      url: EndPoints.tenant_tenancies.detail(id),
+      method: "GET",
     });
     return { data, error: null };
   } catch (error) {

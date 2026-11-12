@@ -28,6 +28,10 @@ class TenancyQuerySet(models.QuerySet):
     def with_status(self, status):
         return self.filter(status=status)
 
+    def for_tenant(self, user):
+        joined = TenancyParty.objects.filter(tenant=user, deleted_at__isnull=True)
+        return self.filter(pk__in=joined.values("tenancy_id"))
+
     def search(self, text):
         matches = self
         for term in text.split():

@@ -92,3 +92,30 @@ export type AcceptedInvitation = {
   invited_by: string;
   is_primary: boolean;
 };
+
+export type MyTenancy = {
+  id: number;
+  reference_no: string;
+  status: TenancyStatus;
+  start_date: string;
+  end_date: string | null;
+  rent_amount: string | null;
+  rent_frequency: string | null;
+  bond_amount: string | null;
+  currency: string;
+  unit: { id: number; name: string };
+  property: { id: number; name: string | null; suburb: string; state: string };
+  landlord: string | null;
+  is_primary: boolean;
+  joined_at: string;
+  left_at: string | null;
+  is_current: boolean;
+};
+
+export type Housemate = {
+  first_name: string;
+  last_name: string;
+  is_primary: boolean;
+};
+
+export type MyTenancyDetail = MyTenancy & { housemates: Housemate[] };

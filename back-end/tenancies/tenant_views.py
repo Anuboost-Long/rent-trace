@@ -51,3 +51,26 @@ class AcceptByIdView(TenantView):
     def post(self, request, invitation_id):
         invitation = services.accept_invitation(user=request.user, invitation_id=invitation_id)
         return Response(resources.MyInvitationResource(invitation).data)
+
+
+class TenantTenancyView(PermissionedView):
+    permission_classes = [*PermissionedView.permission_classes, IsTenant]
+    required_permissions = {"GET": "tenancies.view"}
+
+
+class MyTenanciesView(TenantTenancyView):
+    @extend_schema(
+        operation_id="tenant_tenancies_list", responses=resources.MyTenancyResource(many=True)
+    )
+    def get(self, request):
+        mine = services.list_my_tenancies(user=request.user)
+        return Response(resources.MyTenancyResource(mine, many=True).data)
+
+
+class MyTenancyDetailView(TenantTenancyView):
+    @extend_schema(
+        operation_id="tenant_tenancies_retrieve", responses=resources.MyTenancyDetailResource
+    )
+    def get(self, request, tenancy_id):
+        found = services.get_my_tenancy(user=request.user, tenancy_id=tenancy_id)
+        return Response(resources.MyTenancyDetailResource(found).data)

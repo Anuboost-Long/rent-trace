@@ -33,6 +33,7 @@ urlpatterns = [
     path("api/tenancies/", include("tenancies.urls")),
     path("api/landlord/tenancies/", include("tenancies.landlord_urls")),
     path("api/tenant/invitations/", include("tenancies.tenant_urls")),
+    path("api/tenant/tenancies/", include("tenancies.tenant_tenancy_urls")),
     path("api/tenant/contact-requests/", include("communications.tenant_urls")),
     path("api/landlord/contact-requests/", include("communications.landlord_urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

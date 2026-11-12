@@ -286,6 +286,13 @@ Tenants use `/api/tenant/invitations/` and need `tenancies.accept_invitation`:
 
 Accepting needs the account's verified email to equal the invited email; any other failure answers the same 400 so it doesn't reveal who was invited. 409 when the invite is for the primary tenant and the tenancy already has one.
 
+Tenants also read their own tenancies, past ones included, under `/api/tenant/tenancies/` (needs a tenant and `tenancies.view`; rules in `docs/features/tenant-tenancies.md`):
+
+| Endpoint     | What it does                                                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /`      | Every tenancy they joined, newest start first, with place, dates, rent and bond if set, the landlord's name only, and `is_current`  |
+| `GET <id>/`  | One of theirs, plus the other current tenants' names. Anyone else's tenancy is a 404                                                 |
+
 ### Contact requests
 
 A tenant asks a landlord to get in touch about a listing. The landlord accepts or declines; on accept each side sees the other's name, email and phone. Rules are in `docs/features/contact-requests.md` (repository root).

@@ -38,3 +38,11 @@ export const TenancyRoutes = {
     detail: Route.landlord.tenancy,
   },
 } as const;
+
+export const TenantTenancyStatusLabel: Record<string, string> = {
+  DRAFT: "Being set up",
+  PENDING: "Starting soon",
+  ACTIVE: "Current",
+  ENDED: "Ended",
+  CANCELLED: "Cancelled",
+};

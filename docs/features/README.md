@@ -17,9 +17,10 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Public listings](public-listings.md)                | Built, not yet walked through in a browser          |
 | [Admin tenancies](admin-tenancies.md)                | Built; invites and accept page not yet tried        |
 | [Admin overview](admin-overview.md)                  | Built and walked through                            |
-| [Tenant area](tenant-area.md)                        | In progress, not verified                           |
+| [Tenant area](tenant-area.md)                        | Built, not yet walked through in a browser          |
 | [Landlord tenancies](landlord-tenancies.md)          | Built, not yet walked through in a browser          |
 | [Notifications](notifications.md)                    | Built, not yet walked through in a browser          |
+| [Tenant tenancies](tenant-tenancies.md)              | Built, not yet walked through in a browser          |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.

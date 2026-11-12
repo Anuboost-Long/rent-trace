@@ -73,6 +73,10 @@ export const EndPoints = {
   },
   tenancies: tenancyApi("tenancies"),
   landlord_tenancies: tenancyApi("landlord/tenancies"),
+  tenant_tenancies: {
+    list: byEndpoint("tenant/tenancies/"),
+    detail: (id: number | string) => byEndpoint(`tenant/tenancies/${id}/`),
+  },
   tenant_invitations: {
     list: byEndpoint("tenant/invitations/"),
     accept_by_id: (id: number) =>

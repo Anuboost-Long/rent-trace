@@ -7,6 +7,7 @@ export const Route = {
   tenant: {
     index: "/tenant",
     tenancies: "/tenant/tenancies",
+    tenancy: (id: number) => `/tenant/tenancies/${id}`,
     requests: "/tenant/requests",
     notifications: "/tenant/notifications",
     maintenance: "/tenant/maintenance",

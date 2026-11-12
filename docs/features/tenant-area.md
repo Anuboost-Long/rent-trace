@@ -31,7 +31,6 @@ maintenance. It should feel like the rental site, not like the admin dashboard.
 
 ## Not done
 
-- Overview, Tenancies and Maintenance have no content yet. A tenant's tenancies and
-  rental history need a tenant-side API (none exists: the back end only has the
-  invitation endpoints and contact requests for tenants).
+- Maintenance has no content yet (no API). Overview and Tenancies are built; see
+  [Tenant tenancies](tenant-tenancies.md).
 - Landlords still use the sidebar shell.
