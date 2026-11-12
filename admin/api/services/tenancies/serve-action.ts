@@ -10,6 +10,7 @@ import type {
   MyInvitation,
   MyTenancy,
   MyTenancyDetail,
+  TenancyAction,
   TenancyAudience,
   TenancyDetail,
   TenancyFilters,
@@ -157,6 +158,22 @@ export const handleGetMyTenancy = async (id: number | string) => {
     const data = await ApiServiceServer<MyTenancyDetail>({
       url: EndPoints.tenant_tenancies.detail(id),
       method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleTenancyAction = async (
+  id: number,
+  action: TenancyAction,
+  audience: TenancyAudience = "admin",
+) => {
+  try {
+    const data = await ApiServiceServer<TenancyDetail>({
+      url: apiFor(audience).action(id, action),
+      method: "POST",
     });
     return { data, error: null };
   } catch (error) {

@@ -105,4 +105,4 @@ Builds on the `tenancy_invitations` table and the rules in
 - Offering pending invites right after sign-up (the list endpoint exists for it).
 - Rate limit on invites per landlord, and a cap on pending invites per tenancy.
 - No overlap check between tenancies on the same unit.
-- Tenancy list, edit, activate, end, rent, bond and area-based tenancies.
+- Edit, rent, bond and area-based tenancies. List, start, end and cancel are built.

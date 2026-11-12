@@ -38,3 +38,27 @@ def invitation_accepted(invitation, tenant):
         body=f"{_name(tenant)} joined {place_name(invitation.tenancy)}.",
         subject_id=invitation.tenancy_id,
     )
+
+
+def _tell_tenants(tenancy, tenants, kind, title, verb):
+    notify(
+        tenants,
+        kind=kind,
+        title=title,
+        body=f"Your tenancy at {place_name(tenancy)} {verb}.",
+        subject_id=tenancy.pk,
+    )
+
+
+def tenancy_started(tenancy, tenants):
+    _tell_tenants(tenancy, tenants, Kind.TENANCY_STARTED, "Your tenancy has started", "has started")
+
+
+def tenancy_ended(tenancy, tenants):
+    _tell_tenants(tenancy, tenants, Kind.TENANCY_ENDED, "Your tenancy has ended", "has ended")
+
+
+def tenancy_cancelled(tenancy, tenants):
+    _tell_tenants(
+        tenancy, tenants, Kind.TENANCY_CANCELLED, "Your tenancy was cancelled", "was cancelled"
+    )

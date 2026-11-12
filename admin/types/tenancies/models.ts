@@ -76,6 +76,8 @@ export type InviteTenantBody = { email: string; is_primary: boolean };
 
 export type InvitationAction = "resend" | "revoke";
 
+export type TenancyAction = "activate" | "end" | "cancel";
+
 export type MyInvitation = {
   id: number;
   property_name: string;

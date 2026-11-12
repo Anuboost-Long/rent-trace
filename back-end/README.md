@@ -275,6 +275,9 @@ A landlord (or an admin) creates a tenancy on a unit and invites tenants to it b
 | `POST <id>/invitations/`                        | `tenancies.manage_parties` | `tenancies.admin_manage` | Invite `email`, optionally `is_primary`. Valid for 7 days; the link is emailed after commit                                                                 |
 | `POST <id>/invitations/<invitation_id>/resend/` | `tenancies.manage_parties` | `tenancies.admin_manage` | New link and 7 more days for a pending or expired invite; the old link stops working                                                                        |
 | `POST <id>/invitations/<invitation_id>/revoke/` | `tenancies.manage_parties` | `tenancies.admin_manage` | End a pending or expired invite                                                                                                                             |
+| `POST <id>/activate/`                           | `tenancies.update`         | `tenancies.admin_manage` | Start a `DRAFT` tenancy: needs a current tenant and no overlapping active tenancy on the unit                                                               |
+| `POST <id>/end/`                                | `tenancies.update`         | `tenancies.admin_manage` | End an `ACTIVE` tenancy that has started: end date becomes today if open or later; tenants leave                                                            |
+| `POST <id>/cancel/`                             | `tenancies.update`         | `tenancies.admin_manage` | Cancel a `DRAFT` tenancy that never started; anyone who joined is released                                                                                  |
 
 Tenants use `/api/tenant/invitations/` and need `tenancies.accept_invitation`:
 
@@ -288,10 +291,10 @@ Accepting needs the account's verified email to equal the invited email; any oth
 
 Tenants also read their own tenancies, past ones included, under `/api/tenant/tenancies/` (needs a tenant and `tenancies.view`; rules in `docs/features/tenant-tenancies.md`):
 
-| Endpoint     | What it does                                                                                                                          |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /`      | Every tenancy they joined, newest start first, with place, dates, rent and bond if set, the landlord's name only, and `is_current`  |
-| `GET <id>/`  | One of theirs, plus the other current tenants' names. Anyone else's tenancy is a 404                                                 |
+| Endpoint    | What it does                                                                                                                       |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /`     | Every tenancy they joined, newest start first, with place, dates, rent and bond if set, the landlord's name only, and `is_current` |
+| `GET <id>/` | One of theirs, plus the other current tenants' names. Anyone else's tenancy is a 404                                               |
 
 ### Contact requests
 

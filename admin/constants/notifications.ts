@@ -20,6 +20,9 @@ const DESTINATIONS: Partial<
   CONTACT_REQUEST_DECLINED: { tenant: () => Route.tenant.requests },
   CONTACT_REQUEST_REVOKED: { tenant: () => Route.tenant.requests },
   TENANCY_INVITATION_RECEIVED: { tenant: () => Route.tenant.tenancies },
+  TENANCY_STARTED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
+  TENANCY_ENDED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
+  TENANCY_CANCELLED: { tenant: (id) => (id ? Route.tenant.tenancy(id) : null) },
   TENANCY_INVITATION_ACCEPTED: {
     landlord: (id) => (id ? Route.landlord.tenancy(id) : null),
     admin: (id) => (id ? Route.admin.tenancy(id) : null),

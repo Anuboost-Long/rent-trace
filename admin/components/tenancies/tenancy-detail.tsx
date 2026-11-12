@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import InvitationsSection from "./invitations-section";
+import TenancyActions from "./tenancy-actions";
 
 type TenancyDetailProp = Readonly<{
   audience: TenancyAudience;
@@ -63,9 +64,14 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
           { label: tenancy.reference_no },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">
-        {tenancy.reference_no}
-      </h1>
+      <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-semibold">{tenancy.reference_no}</h1>
+        <TenancyActions
+          audience={audience}
+          tenancyId={tenancy.id}
+          status={tenancy.status}
+        />
+      </div>
       <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
         {details.map(([label, value]) => (
           <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">

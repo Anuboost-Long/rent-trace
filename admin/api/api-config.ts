@@ -17,6 +17,8 @@ const tenancyApi = (root: string) => ({
     byEndpoint(`${root}/${id}/invitations/`),
   invitation_action: (id: number, invitationId: number, action: string) =>
     byEndpoint(`${root}/${id}/invitations/${invitationId}/${action}/`),
+  action: (id: number, action: string) =>
+    byEndpoint(`${root}/${id}/${action}/`),
 });
 
 const propertyFiles = (root: string) => {

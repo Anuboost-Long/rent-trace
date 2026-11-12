@@ -117,3 +117,39 @@ class RevokeInvitationView(TenancyScope, PermissionedView):
             owned_by=self.owned_by(request),
         )
         return Response(resources.InvitationResource(invitation).data)
+
+
+class ActivateTenancyView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_activate", request=None, responses=resources.TenancyDetailResource
+    )
+    def post(self, request, tenancy_id):
+        owned_by = self.owned_by(request)
+        services.activate_tenancy(actor=request.user, tenancy_id=tenancy_id, owned_by=owned_by)
+        return Response(detail(tenancy_id, owned_by))
+
+
+class EndTenancyView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_end", request=None, responses=resources.TenancyDetailResource
+    )
+    def post(self, request, tenancy_id):
+        owned_by = self.owned_by(request)
+        services.end_tenancy(actor=request.user, tenancy_id=tenancy_id, owned_by=owned_by)
+        return Response(detail(tenancy_id, owned_by))
+
+
+class CancelTenancyView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_cancel", request=None, responses=resources.TenancyDetailResource
+    )
+    def post(self, request, tenancy_id):
+        owned_by = self.owned_by(request)
+        services.cancel_tenancy(actor=request.user, tenancy_id=tenancy_id, owned_by=owned_by)
+        return Response(detail(tenancy_id, owned_by))

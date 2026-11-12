@@ -46,3 +46,39 @@ class LandlordResendInvitationView(LandlordScope, views.ResendInvitationView):
 
 class LandlordRevokeInvitationView(LandlordScope, views.RevokeInvitationView):
     required_permissions = {"POST": "tenancies.manage_parties"}
+
+
+class LandlordActivateTenancyView(LandlordScope, views.ActivateTenancyView):
+    required_permissions = {"POST": "tenancies.update"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_activate",
+        request=None,
+        responses=resources.TenancyDetailResource,
+    )
+    def post(self, request, tenancy_id):
+        return super().post(request, tenancy_id)
+
+
+class LandlordEndTenancyView(LandlordScope, views.EndTenancyView):
+    required_permissions = {"POST": "tenancies.update"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_end",
+        request=None,
+        responses=resources.TenancyDetailResource,
+    )
+    def post(self, request, tenancy_id):
+        return super().post(request, tenancy_id)
+
+
+class LandlordCancelTenancyView(LandlordScope, views.CancelTenancyView):
+    required_permissions = {"POST": "tenancies.update"}
+
+    @extend_schema(
+        operation_id="landlord_tenancies_cancel",
+        request=None,
+        responses=resources.TenancyDetailResource,
+    )
+    def post(self, request, tenancy_id):
+        return super().post(request, tenancy_id)

@@ -7,6 +7,7 @@ type ConfirmDialogProp = Readonly<{
   title: string;
   message: string;
   confirmLabel: string;
+  cancelLabel?: string;
   pending?: boolean;
   error?: string;
   confirmDisabled?: boolean;
@@ -20,6 +21,7 @@ export default function ConfirmDialog({
   title,
   message,
   confirmLabel,
+  cancelLabel = "Cancel",
   pending,
   error,
   confirmDisabled,
@@ -66,7 +68,7 @@ export default function ConfirmDialog({
         )}
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="quiet" onClick={onCancel} disabled={pending}>
-            Cancel
+            {cancelLabel}
           </Button>
           <Button
             onClick={onConfirm}

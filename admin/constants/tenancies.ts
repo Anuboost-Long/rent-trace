@@ -19,10 +19,12 @@ export const TenancyAccess = {
   admin: {
     create: "tenancies.admin_manage",
     invite: "tenancies.admin_manage",
+    update: "tenancies.admin_manage",
   },
   landlord: {
     create: "tenancies.create",
     invite: "tenancies.manage_parties",
+    update: "tenancies.update",
   },
 } as const;
 

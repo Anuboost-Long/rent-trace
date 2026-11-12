@@ -28,6 +28,10 @@ class TenancyQuerySet(models.QuerySet):
     def with_status(self, status):
         return self.filter(status=status)
 
+    def overlapping(self, start, end):
+        others = self.filter(Q(end_date__isnull=True) | Q(end_date__gt=start))
+        return others.filter(start_date__lt=end) if end else others
+
     def for_tenant(self, user):
         joined = TenancyParty.objects.filter(tenant=user, deleted_at__isnull=True)
         return self.filter(pk__in=joined.values("tenancy_id"))

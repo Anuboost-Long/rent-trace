@@ -37,5 +37,6 @@ by email, from their own area. The tenant accepts from the emailed link
 
 ## Not done
 
-- Edit, activate, end and cancel a tenancy; rent and bond.
+- Edit a tenancy's dates and notes; rent and bond. Start, end and cancel are built; see
+  [Tenancy lifecycle](tenancy-lifecycle.md).
 - Removing a tenant who has already joined.
