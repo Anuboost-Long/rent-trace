@@ -34,7 +34,7 @@ ban, or end a session.
 ## Source locations
 
 - `back-end/bans/`, `back-end/tokens/`: `/api/bans/`, `/api/tokens/`. Create: `bans/services/create_ban.py`, `bans/dtos/create_ban.py`.
-- `admin/app/admin/bans/` (`create-ban-button.tsx`), `admin/app/admin/tokens/`, `admin/hooks/form/useCreateBan.ts`.
+- `admin/app/(app)/admin/bans/` (`create-ban-button.tsx`), `admin/app/(app)/admin/tokens/`, `admin/hooks/form/useCreateBan.ts`.
 - `admin/api/services/bans/`, `admin/api/services/tokens/`, `admin/types/security/models.ts`.
 
 ## Not done

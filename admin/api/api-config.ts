@@ -69,12 +69,18 @@ export const EndPoints = {
     },
   },
   overview: byEndpoint("overview/"),
+  providers: {
+    list: byEndpoint("landlord/providers/"),
+    detail: (id: number | string) => byEndpoint(`landlord/providers/${id}/`),
+    categories: byEndpoint("landlord/providers/categories/"),
+  },
   conditions: {
     list: byEndpoint("landlord/conditions/"),
     detail: (id: number) => byEndpoint(`landlord/conditions/${id}/`),
   },
   maintenance: {
     list: byEndpoint("maintenance/"),
+    categories: byEndpoint("maintenance/categories/"),
     detail: (id: number | string) => byEndpoint(`maintenance/${id}/`),
     action: (id: number, path: string) =>
       byEndpoint(`maintenance/${id}/${path}/`),
@@ -94,6 +100,8 @@ export const EndPoints = {
     detail: (id: number | string) => byEndpoint(`tenant/tenancies/${id}/`),
     respond_terms: (id: number, changeId: number, answer: string) =>
       byEndpoint(`tenant/tenancies/${id}/changes/${changeId}/${answer}/`),
+    providers: (id: number | string) =>
+      byEndpoint(`tenant/tenancies/${id}/providers/`),
     request_housemate: (id: number) =>
       byEndpoint(`tenant/tenancies/${id}/invitations/`),
     withdraw_housemate: (id: number, invitationId: number) =>

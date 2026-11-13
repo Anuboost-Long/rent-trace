@@ -1,3 +1,4 @@
+import { handleGetIssueCategories } from "@/api/services/maintenance/serve-action";
 import { handleGetMyTenancies } from "@/api/services/tenancies/serve-action";
 import IssueListBody from "@/components/maintenance/issue-list";
 import ReportIssueButton from "@/components/maintenance/report-issue-button";
@@ -28,12 +29,20 @@ export default function Page({
 }
 
 async function ReportButton() {
-  const { data } = await handleGetMyTenancies();
+  const [{ data }, categories] = await Promise.all([
+    handleGetMyTenancies(),
+    handleGetIssueCategories(),
+  ]);
   const tenancies = (data ?? [])
     .filter((tenancy) => tenancy.is_current && tenancy.status === "ACTIVE")
     .map((tenancy) => ({
       id: tenancy.id,
       label: `${tenancy.property.name ?? tenancy.property.suburb}, ${tenancy.unit.name}`,
     }));
-  return <ReportIssueButton tenancies={tenancies} />;
+  return (
+    <ReportIssueButton
+      tenancies={tenancies}
+      categories={categories.data ?? []}
+    />
+  );
 }

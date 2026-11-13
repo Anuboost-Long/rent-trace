@@ -2,6 +2,7 @@ import { handleGetMyTenancy } from "@/api/services/tenancies/serve-action";
 import TenantConditions from "@/components/conditions/tenant-conditions";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
+import TenantProviders from "@/components/providers/tenant-providers";
 import { UnitTypeLabel } from "@/constants/properties";
 import { TenantTenancyStatusLabel } from "@/constants/tenancies";
 import { Route } from "@/constants/web-routes";
@@ -101,6 +102,8 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
         canInvite={tenancy.is_current}
         maxPeople={tenancy.max_occupants}
       />
+
+      {tenancy.is_current && <TenantProviders tenancyId={tenancy.id} />}
 
       <TenantConditions notes={tenancy.unit_conditions} />
 

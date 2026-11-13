@@ -13,6 +13,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import IssueActions from "./issue-actions";
+import IssueProvider from "./issue-provider";
 import IssueTimeline from "./issue-timeline";
 
 type IssueDetailProp = Readonly<{
@@ -43,6 +44,9 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
   const details: [string, string][] = [
     ["Status", IssueStatusLabel[issue.status]],
     ["Priority", IssuePriorityLabel[issue.priority]],
+    ...(issue.category
+      ? ([["Kind of problem", issue.category.name]] as [string, string][])
+      : []),
     [
       "Where",
       `${issue.property.name ?? issue.property.suburb}, ${issue.unit.name}`,
@@ -89,6 +93,7 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
           </p>
         </section>
       )}
+      {issue.assignment && <IssueProvider assignment={issue.assignment} />}
       <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
         {details.map(([label, value]) => (
           <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">

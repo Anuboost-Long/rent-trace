@@ -21,6 +21,10 @@ def _landlord_actions(issue):
         actions.append("ACKNOWLEDGE")
     if issue.status == MaintenanceStatus.ACKNOWLEDGED:
         actions.append("START")
+    actions.append("ASSIGN_PROVIDER")
+    current = issue.assignments.filter(superseded_by__isnull=True).first()
+    if current is not None and current.completed_at is None:
+        actions.append("COMPLETE_VISIT")
     if not current_tenant_users(issue):
         actions.append("CLOSE_VACANT")
     return actions

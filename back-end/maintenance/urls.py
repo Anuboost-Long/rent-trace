@@ -4,6 +4,7 @@ from maintenance import views
 
 urlpatterns = [
     path("", views.IssuesView.as_view(), name="maintenance"),
+    path("categories/", views.IssueCategoriesView.as_view(), name="maintenance-categories"),
     path("<int:issue_id>/", views.IssueDetailView.as_view(), name="maintenance-detail"),
     path(
         "<int:issue_id>/acknowledge/",
@@ -11,6 +12,16 @@ urlpatterns = [
         name="maintenance-acknowledge",
     ),
     path("<int:issue_id>/start/", views.StartWorkView.as_view(), name="maintenance-start"),
+    path(
+        "<int:issue_id>/assignment/",
+        views.AssignProviderView.as_view(),
+        name="maintenance-assign-provider",
+    ),
+    path(
+        "<int:issue_id>/assignment/complete/",
+        views.CompleteVisitView.as_view(),
+        name="maintenance-complete-visit",
+    ),
     path("<int:issue_id>/close/", views.CloseVacantView.as_view(), name="maintenance-close-vacant"),
     path(
         "<int:issue_id>/closure/",

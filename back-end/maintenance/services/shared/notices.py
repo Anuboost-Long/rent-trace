@@ -1,4 +1,4 @@
-from maintenance.services.shared.parties import current_owner_users
+from maintenance.services.shared.parties import current_owner_users, current_tenant_users
 from notifications.models import NotificationKind as Kind
 from notifications.services.shared import notify
 
@@ -63,5 +63,16 @@ def closed(issue, recipients):
         kind=Kind.MAINTENANCE_CLOSED,
         title="A maintenance issue was closed",
         body=f"Closed: {issue.title}",
+        subject_id=issue.pk,
+    )
+
+
+def provider_assigned(issue, provider, scheduled_at):
+    when = f" on {scheduled_at:%d %b %Y}" if scheduled_at else ""
+    notify(
+        current_tenant_users(issue),
+        kind=Kind.MAINTENANCE_PROVIDER_ASSIGNED,
+        title="A tradesperson was booked for your issue",
+        body=f"{provider.business_name} will look at: {issue.title}{when}. Open the issue for their contact details.",
         subject_id=issue.pk,
     )

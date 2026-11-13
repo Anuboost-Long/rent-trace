@@ -38,7 +38,7 @@ list, create, and revoke.
 ## Source locations
 
 - `back-end/access/`: `/api/access/`.
-- `admin/app/admin/access/`: `permissions/`, `roles/`, `grants/`,
+- `admin/app/(app)/admin/access/`: `permissions/`, `roles/`, `grants/`,
   `role-editor.tsx`, `revoke-grant-button.tsx`.
 - `admin/hooks/form/useGrantForm.ts`, `useGrants.ts`, `usePermissionForm.ts`,
   `useRoleEditor.ts`, `useRoleMembers.ts`.

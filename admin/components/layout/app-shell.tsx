@@ -10,6 +10,7 @@ import type { Me } from "@/types/auth/models";
 import clsx from "clsx";
 import { createStore, Provider } from "jotai";
 import { X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import Navbar from "./navbar";
@@ -17,7 +18,7 @@ import Sidebar from "./sidebar";
 import SidebarToggle from "./sidebar-toggle";
 
 type AppShellProp = Readonly<{
-  audience: Audience;
+  home: Audience;
   user: Me;
   sidebarCollapsed: boolean;
   children: React.ReactNode;
@@ -26,7 +27,7 @@ type AppShellProp = Readonly<{
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
 
 export default function AppShell({
-  audience,
+  home,
   user,
   sidebarCollapsed,
   children,
@@ -41,6 +42,9 @@ export default function AppShell({
   }, [store, user]);
   const [collapsed, setCollapsed] = useState(sidebarCollapsed);
   const menuRef = useRef<HTMLDialogElement>(null);
+  const section = usePathname().split("/")[1];
+  const audience =
+    section === "admin" || section === "landlord" ? section : home;
   const { label } = Navigation[audience];
   const items = Navigation[audience].items.filter(
     (item) => !item.permission || user.permissions.includes(item.permission),

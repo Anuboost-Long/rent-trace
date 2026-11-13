@@ -19,14 +19,14 @@ One API, `/api/maintenance/`, scoped by who is asking: a tenant sees issues on t
 they are a **current tenant** of; a landlord sees issues on properties they **currently own**. Anything
 else is a 404. Admins are not included yet (see "Not done"). Permissions already seeded:
 
-| Action | Permission | Who |
-| ------ | ---------- | --- |
-| Read, list | `maintenance.view` | the two scoped groups above |
-| Report | `maintenance.report` | a current tenant of an **active** tenancy |
-| Acknowledge, start work | `maintenance.confirm_start` | landlord side only (checked in the service) |
-| Propose a closure, withdraw it | `maintenance.propose_closure` | either side |
-| Approve or reject a closure | `maintenance.review_closure` | the **other** side |
-| Close with nobody to approve | `maintenance.close_vacant` | landlord, only when the tenancy has no current tenant |
+| Action                         | Permission                    | Who                                                   |
+| ------------------------------ | ----------------------------- | ----------------------------------------------------- |
+| Read, list                     | `maintenance.view`            | the two scoped groups above                           |
+| Report                         | `maintenance.report`          | a current tenant of an **active** tenancy             |
+| Acknowledge, start work        | `maintenance.confirm_start`   | landlord side only (checked in the service)           |
+| Propose a closure, withdraw it | `maintenance.propose_closure` | either side                                           |
+| Approve or reject a closure    | `maintenance.review_closure`  | the **other** side                                    |
+| Close with nobody to approve   | `maintenance.close_vacant`    | landlord, only when the tenancy has no current tenant |
 
 ### An issue
 
@@ -62,6 +62,14 @@ carry the issue title, never contact details.
 Photos on an issue, comments, assigning a provider, recurring issues, and service categories (the
 fields exist and stay empty).
 
+### Trade and tradesperson
+
+A tenant can say what kind of problem it is when reporting (optional, from the same list of
+trades the landlord's tradespeople use). The landlord can book one of their tradespeople linked to
+the property, with a date, and later mark the visit done. The tenant is told and sees the
+tradesperson's contact details on the issue. Booking does not change the issue's status. See
+[Service providers](service-providers.md).
+
 ## Source locations
 
 - Back end: `back-end/maintenance/` (models exist; `services/`, `views.py`, `dtos/`, `resources/`,
@@ -70,7 +78,7 @@ fields exist and stay empty).
   becomes optional, because the review engine isn't built; a new `maintenance_closure_responses` table
   records each proposal's answer (approved, rejected or withdrawn), keeping proposals append-only; and
   `maintenance_issues.open_closure_proposal` points at the proposal waiting for an answer.
-- Admin: `admin/app/tenant/maintenance/`, `admin/app/landlord/maintenance/`,
+- Admin: `admin/app/tenant/maintenance/`, `admin/app/(app)/landlord/maintenance/`,
   `admin/components/maintenance/`, `admin/hooks/form/useIssueActions.ts`, `admin/api/services/maintenance/`.
 
 ## Not done

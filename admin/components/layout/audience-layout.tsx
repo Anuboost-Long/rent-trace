@@ -1,11 +1,6 @@
-import { handleGetMe } from "@/api/services/auth/serve-action";
-import {
-  audienceFor,
-  isMemberOf,
-  SIDEBAR_COOKIE,
-  type Audience,
-} from "@/constants/navigation";
+import { audienceFor, SIDEBAR_COOKIE } from "@/constants/navigation";
 import { Route } from "@/constants/web-routes";
+import { getMe } from "@/utils/viewer";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -13,10 +8,7 @@ import { Suspense } from "react";
 import AppShell from "./app-shell";
 import ShellSkeleton from "./shell-skeleton";
 
-type AudienceLayoutProp = Readonly<{
-  audience?: Audience;
-  children: React.ReactNode;
-}>;
+type AudienceLayoutProp = Readonly<{ children: React.ReactNode }>;
 
 export default function AudienceLayout(props: AudienceLayoutProp) {
   return (
@@ -26,10 +18,10 @@ export default function AudienceLayout(props: AudienceLayoutProp) {
   );
 }
 
-async function SignedInShell({ audience, children }: AudienceLayoutProp) {
-  const { data: user } = await handleGetMe();
-  const target = user && (audience ?? audienceFor(user));
-  if (!user || !target || !isMemberOf(target, user)) redirect(Route.home);
+async function SignedInShell({ children }: AudienceLayoutProp) {
+  const { data: user } = await getMe();
+  const home = user && audienceFor(user);
+  if (!user || !home) redirect(Route.home);
   if (user.mfa_status === "ENROL" || user.mfa_status === "VERIFY") {
     redirect(Route.auth.mfa);
   }
@@ -37,7 +29,7 @@ async function SignedInShell({ audience, children }: AudienceLayoutProp) {
   const sidebarCollapsed = (await cookies()).get(SIDEBAR_COOKIE)?.value === "1";
 
   return (
-    <AppShell audience={target} user={user} sidebarCollapsed={sidebarCollapsed}>
+    <AppShell home={home} user={user} sidebarCollapsed={sidebarCollapsed}>
       {children}
     </AppShell>
   );

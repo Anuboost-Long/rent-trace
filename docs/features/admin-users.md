@@ -27,7 +27,7 @@ Admins find, create, edit, suspend and remove accounts.
 ## Source locations
 
 - `back-end/users/`: `/api/users/`.
-- `admin/app/admin/users/`: `page.tsx`, `[id]/`, `new/`, `role-picker.tsx`,
+- `admin/app/(app)/admin/users/`: `page.tsx`, `[id]/`, `new/`, `role-picker.tsx`,
   `user-actions.tsx`, `users-filter.tsx`.
 - `admin/hooks/form/useCreateUser.ts`, `useUpdateUser.ts`, `useUserActions.ts`.
 - `admin/api/services/users/serve-action.ts`, `admin/types/users/models.ts`.

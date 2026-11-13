@@ -27,7 +27,7 @@ manage their own profile and password.
 ## Source locations
 
 - `back-end/accounts/`: onboarding and profile views and services.
-- `admin/app/account/`: `page.tsx`, `profile-section.tsx`, `security-section.tsx`.
+- `admin/app/(app)/account/`: `page.tsx`, `profile-section.tsx`, `security-section.tsx`.
 - `admin/app/auth/onboarding/`.
 - `admin/hooks/form/useOnboarding.ts`, `useUpdateProfile.ts`, `useChangePassword.ts`.
 - `admin/constants/audience.ts`: `homePathFor`.

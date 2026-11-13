@@ -24,12 +24,13 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Tenancy lifecycle](tenancy-lifecycle.md)            | Built; actions not yet tried in a browser           |
 | [Housemate invitations](housemate-invitations.md)    | Built, not yet walked through in a browser          |
 | [Tenancy terms](tenancy-terms.md)                    | Built; tenant side not yet walked through           |
-| [Rent change approval](rent-change-approval.md)       | Built; tenant side not yet walked through           |
-| [Maintenance](maintenance.md)                         | Built; not yet seen in a browser                    |
-| [Unit conditions](unit-conditions.md)                 | Built; tenant side not yet seen in a browser        |
+| [Rent change approval](rent-change-approval.md)      | Built; tenant side not yet walked through           |
+| [Maintenance](maintenance.md)                        | Built; not yet seen in a browser                    |
+| [Unit conditions](unit-conditions.md)                | Built; tenant side not yet seen in a browser        |
+| [Service providers](service-providers.md)            | Built; not yet seen in a browser on the tenant side |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
 
-Not yet built: reviews, documents and providers. Their tables exist in the
-back end but they have no API or screens.
+Not yet built: reviews and documents. Their tables exist in the back end but they have
+no API or screens. Service providers are planned (see above).

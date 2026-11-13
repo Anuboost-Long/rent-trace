@@ -103,6 +103,6 @@ class ReportAndScopeTests(MaintenanceApiTestCase):
         landlord = self.detail(issue, self.lou).data
 
         self.assertEqual(tenant["actions"], ["PROPOSE_CLOSURE"])
-        self.assertEqual(landlord["actions"], ["ACKNOWLEDGE", "PROPOSE_CLOSURE"])
+        self.assertEqual(landlord["actions"], ["ACKNOWLEDGE", "ASSIGN_PROVIDER", "PROPOSE_CLOSURE"])
         self.assertEqual([h["to_status"] for h in tenant["history"]], ["REPORTED"])
         self.assertEqual(tenant["history"][0]["actor"], "Tina Ray")

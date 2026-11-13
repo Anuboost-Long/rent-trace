@@ -7,6 +7,8 @@ from accounts.services.shared.account_rules import has_role
 from common.pagination import PagePagination
 from maintenance import dtos, resources, services
 from maintenance.models import ClosureDecision
+from providers import services as providers_services
+from providers.resources import ServiceCategoryResource
 
 
 def _validated(dto_class, data):
@@ -29,6 +31,19 @@ def _detail(request, issue_id):
 
 class MaintenanceView(PermissionedView):
     permission_classes = [*PermissionedView.permission_classes, IsLandlordOrTenant]
+
+
+class IssueCategoriesView(MaintenanceView):
+    required_permissions = {"GET": "maintenance.view"}
+
+    @extend_schema(
+        operation_id="maintenance_categories_list",
+        responses=ServiceCategoryResource(many=True),
+    )
+    def get(self, request):
+        return Response(
+            ServiceCategoryResource(providers_services.list_categories(), many=True).data
+        )
 
 
 class IssuesView(MaintenanceView):
@@ -90,6 +105,33 @@ class StartWorkView(MaintenanceView):
     )
     def post(self, request, issue_id):
         services.start_work(user=request.user, issue_id=issue_id)
+        return _detail(request, issue_id)
+
+
+class AssignProviderView(MaintenanceView):
+    required_permissions = {"POST": "maintenance.confirm_start"}
+
+    @extend_schema(
+        operation_id="maintenance_assign_provider",
+        request=dtos.AssignProviderDto,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id):
+        fields = _validated(dtos.AssignProviderDto, request.data)
+        services.assign_provider(user=request.user, issue_id=issue_id, **fields)
+        return _detail(request, issue_id)
+
+
+class CompleteVisitView(MaintenanceView):
+    required_permissions = {"POST": "maintenance.confirm_start"}
+
+    @extend_schema(
+        operation_id="maintenance_complete_visit",
+        request=None,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id):
+        services.complete_visit(user=request.user, issue_id=issue_id)
         return _detail(request, issue_id)
 
 

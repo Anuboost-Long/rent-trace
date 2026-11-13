@@ -94,7 +94,7 @@ the role, as the other tenant and landlord routes do.
 - `back-end/accounts/migrations/0008_seed_contact_request_permissions.py`,
   `accounts/seeds/permissions.py`.
 - `back-end/config/urls.py`, `back-end/README.md`.
-- `admin/app/tenant/requests/`, `admin/app/landlord/requests/`,
+- `admin/app/tenant/requests/`, `admin/app/(app)/landlord/requests/`,
   `admin/app/(site)/properties/[id]/page.tsx` (the request box).
 - `admin/components/contact-requests/`: request form, action buttons, contact card,
   status filter.

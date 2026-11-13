@@ -41,7 +41,7 @@ documents.
 - `back-end/properties/`: `views.py`, `landlord_views.py`, `file_views.py`,
   `models.py`, `services/`, `catalogue.py`.
 - `back-end/files/`: uploaded file metadata.
-- `admin/app/admin/properties/`, `admin/app/landlord/properties/`.
+- `admin/app/(app)/admin/properties/`, `admin/app/(app)/landlord/properties/`.
 - `admin/app/property-files/`: file download route handlers.
 - `admin/components/properties/`: list, filter, forms, detail, units, files,
   photo tiles, dropzone.

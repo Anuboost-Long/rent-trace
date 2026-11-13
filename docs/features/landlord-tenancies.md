@@ -31,7 +31,7 @@ by email, from their own area. The tenant accepts from the emailed link
 ## Source locations
 
 - Shared screens: `admin/components/tenancies/`.
-- Pages: `admin/app/landlord/tenancies/`, `admin/app/admin/tenancies/`.
+- Pages: `admin/app/(app)/landlord/tenancies/`, `admin/app/(app)/admin/tenancies/`.
 - Back end: `GET/POST /api/landlord/tenancies/` and the invitation paths under it
   (`back-end/tenancies/landlord_views.py`); no back-end change was needed.
 

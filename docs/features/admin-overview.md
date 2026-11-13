@@ -35,7 +35,7 @@ real numbers, and what needs a follow-up.
 
 - Back end: `back-end/overview/` (`GET /api/overview/`); named queries in
   `TenancyQuerySet`, `TenancyInvitationQuerySet` and `AccountAccessHistoryQuerySet`.
-- Admin: `admin/app/admin/dashboard.tsx`, `admin/api/services/overview/`,
+- Admin: `admin/app/(app)/admin/dashboard.tsx`, `admin/api/services/overview/`,
   `admin/types/overview/models.ts`, `admin/constants/overview.ts`.
 
 ## Not done

@@ -1,7 +1,7 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 
-from common.models import CatalogueRecord, EventRecord, MutableRecord
+from common.models import CatalogueRecord, EventRecord, MutableRecord, nonblank_check
 
 
 class ServiceCategory(CatalogueRecord):
@@ -13,10 +13,48 @@ class ServiceCategory(CatalogueRecord):
         db_table = "service_categories"
 
 
+class ServiceProviderQuerySet(models.QuerySet):
+    def live(self):
+        return self.filter(deleted_at__isnull=True)
+
+    def owned_by(self, user):
+        return self.filter(owner=user)
+
+    def matching(self, text):
+        return self.filter(Q(business_name__icontains=text) | Q(contact_name__icontains=text))
+
+    def in_category(self, code):
+        return self.filter(
+            categories__service_category__code=code, categories__deleted_at__isnull=True
+        )
+
+    def with_categories(self):
+        return self.prefetch_related(
+            Prefetch(
+                "categories",
+                queryset=ServiceProviderCategory.objects.filter(deleted_at__isnull=True)
+                .select_related("service_category")
+                .order_by("service_category__name"),
+                to_attr="live_categories",
+            ),
+        )
+
+    def with_links_and_categories(self):
+        return self.with_categories().prefetch_related(
+            Prefetch(
+                "property_links",
+                queryset=PropertyServiceProvider.objects.filter(
+                    deleted_at__isnull=True, property__deleted_at__isnull=True
+                )
+                .select_related("property")
+                .order_by("id"),
+                to_attr="live_links",
+            ),
+        )
+
+
 class ServiceProvider(MutableRecord):
-    property = models.ForeignKey(
-        "properties.Property", models.PROTECT, related_name="service_providers"
-    )
+    owner = models.ForeignKey("accounts.User", models.PROTECT, related_name="service_providers")
     business_name = models.CharField(max_length=200)
     contact_name = models.CharField(max_length=150, null=True, blank=True)
     phone_number = models.CharField(max_length=30, null=True, blank=True)
@@ -25,10 +63,13 @@ class ServiceProvider(MutableRecord):
     address = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
+    objects = ServiceProviderQuerySet.as_manager()
+
     class Meta(MutableRecord.Meta):
         db_table = "service_providers"
         constraints = [
             *MutableRecord.Meta.constraints,
+            nonblank_check("service_providers", "business_name"),
             models.CheckConstraint(
                 condition=Q(phone_number__isnull=False)
                 | Q(email__isnull=False)
@@ -48,6 +89,7 @@ class ServiceProviderCategory(MutableRecord):
             *MutableRecord.Meta.constraints,
             models.UniqueConstraint(
                 fields=["service_provider", "service_category"],
+                condition=Q(deleted_at__isnull=True),
                 name="uq_service_provider_categories",
             ),
         ]
@@ -69,6 +111,7 @@ class PropertyServiceProvider(MutableRecord):
             *MutableRecord.Meta.constraints,
             models.UniqueConstraint(
                 fields=["property", "service_provider"],
+                condition=Q(deleted_at__isnull=True),
                 name="uq_property_service_providers",
             ),
         ]

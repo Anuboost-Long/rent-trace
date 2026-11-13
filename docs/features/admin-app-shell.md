@@ -1,9 +1,10 @@
 # Admin app shell
 
-## Status — 12 November 2026
+## Status — 13 November 2026
 
 Shipped 11 November 2026; the `(site)` route group was added after it and is in
-progress (see [Public listings](public-listings.md)).
+progress (see [Public listings](public-listings.md)). On 13 November the four sidebar
+layouts became one shared layout (below); that change is type-checked but not yet clicked through.
 
 ## Goal
 
@@ -12,9 +13,18 @@ navigation and permissions, built from shared components.
 
 ## How it works
 
-- **Three audiences:** `/tenant`, `/landlord`, `/admin`. Each has its own layout
-  (`audience-layout`) with a sidebar, navbar, breadcrumbs and page header. Routes
-  and nav items live in `constants/web-routes.ts` and `constants/navigation.ts`.
+- **Three audiences:** `/tenant` (site header and tabs), `/landlord` and `/admin` (sidebar
+  shell). Routes and nav items live in `constants/web-routes.ts` and `constants/navigation.ts`.
+- **One sidebar shell for the whole signed-in app.** `/admin`, `/landlord`, `/account` and
+  `/invitations` live in the route group `app/(app)/` (the group does not change any URL). Its one
+  layout (`audience-layout`) checks the person is signed in and renders the sidebar and navbar
+  **once**. The shell stays mounted as you move between those sections, so collapsing the sidebar
+  holds on every page; the collapsed choice is also kept in the `sidebar_collapsed` cookie for the
+  next visit. The nav items follow the section in the URL (`/admin` shows the admin nav,
+  `/landlord` the landlord nav; `/account` and `/invitations` show the nav for the person's own
+  audience). `/admin` and `/landlord` each have a small layout that only checks the person belongs
+  there and sends them home if not (`components/layout/require-audience.tsx`); it renders no
+  shell. No page renders the sidebar itself.
 - **Detail pages** put a bordered **Back** button on its own line with the breadcrumb trail beneath
   it, so the control and the trail can be told apart at a glance.
 - **Permissions in the UI:** the `Can` component shows or hides controls from the
@@ -47,7 +57,8 @@ navigation and permissions, built from shared components.
 - `admin/components/layout/`, `admin/components/common/`.
 - `admin/constants/`: `web-routes.ts`, `navigation.ts`, `audience.ts`, `roles.ts`.
 - `admin/api/`: `api-config.ts`, `api-helper.ts`, `services/`.
-- `admin/app/`: `layout.tsx`, `loading.tsx`, `tenant/`, `landlord/`, `admin/`, `tools/`.
+- `admin/app/`: `layout.tsx`, `loading.tsx`, `tenant/`, `(site)/`, `tools/`, and `(app)/` with
+  `layout.tsx`, `landlord/`, `admin/`, `account/`, `invitations/`.
 - `admin/hooks/`, `admin/types/`, `admin/utils/`.
 
 ## Not done

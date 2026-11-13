@@ -6,6 +6,7 @@ from common.models import PartySide
 from maintenance.models import MaintenanceIssue, MaintenanceStatus, MaintenanceTrigger
 from maintenance.services.shared import notices
 from maintenance.services.shared.history import record_transition
+from providers.models import ServiceCategory
 from tenancies.models import Tenancy, TenancyParty, TenancyStatus
 
 NOT_STARTED = "You can only report an issue on a tenancy that has started and hasn't ended."
@@ -26,6 +27,11 @@ def report_issue(*, user, fields):
         raise NotFound("No tenancy with this id.")
     if tenancy.status != TenancyStatus.ACTIVE:
         raise ValidationError({"tenancy_id": NOT_STARTED})
+    category = None
+    if fields.get("category_code"):
+        category = ServiceCategory.objects.filter(code=fields["category_code"]).first()
+        if category is None:
+            raise ValidationError({"category_code": "Choose one of the listed kinds of problem."})
     now = timezone.now()
     issue = MaintenanceIssue.objects.create(
         property_unit=tenancy.property_unit,
@@ -33,6 +39,7 @@ def report_issue(*, user, fields):
         title=fields["title"].strip(),
         description=fields["description"].strip(),
         priority=fields["priority"],
+        service_category=category,
         status=MaintenanceStatus.REPORTED,
         reported_by=user,
         reporter_side=PartySide.TENANT,

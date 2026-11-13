@@ -1,0 +1,104 @@
+"use server";
+import { EndPoints } from "@/api/api-config";
+import { ApiServiceServer } from "@/api/api-helper";
+import type {
+  ProviderBody,
+  ProviderFilters,
+  ProviderPage,
+  ServiceCategory,
+  ServiceProvider,
+  TenantProvider,
+} from "@/types/providers/models";
+import { handleSSRActionError } from "@/utils/server-side-error-handler";
+
+const redirectOnUnauth = { redirectOnUnauth: true };
+
+export const handleGetProviders = async (params: ProviderFilters = {}) => {
+  try {
+    const data = await ApiServiceServer<ProviderPage>({
+      url: EndPoints.providers.list,
+      method: "GET",
+      params,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetProvider = async (id: number | string) => {
+  try {
+    const data = await ApiServiceServer<ServiceProvider>({
+      url: EndPoints.providers.detail(id),
+      method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetServiceCategories = async () => {
+  try {
+    const data = await ApiServiceServer<ServiceCategory[]>({
+      url: EndPoints.providers.categories,
+      method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleCreateProvider = async (body: ProviderBody) => {
+  try {
+    const data = await ApiServiceServer<ServiceProvider>({
+      url: EndPoints.providers.list,
+      method: "POST",
+      data: body,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleUpdateProvider = async (id: number, body: ProviderBody) => {
+  try {
+    const data = await ApiServiceServer<ServiceProvider>({
+      url: EndPoints.providers.detail(id),
+      method: "PATCH",
+      data: body,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleDeleteProvider = async (id: number) => {
+  try {
+    await ApiServiceServer<null>({
+      url: EndPoints.providers.detail(id),
+      method: "DELETE",
+      data: {},
+    });
+    return { data: true, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetMyPropertyProviders = async (
+  tenancyId: number | string,
+) => {
+  try {
+    const data = await ApiServiceServer<TenantProvider[]>({
+      url: EndPoints.tenant_tenancies.providers(tenancyId),
+      method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};

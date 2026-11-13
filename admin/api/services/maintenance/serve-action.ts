@@ -2,6 +2,7 @@
 import { EndPoints } from "@/api/api-config";
 import { ApiServiceServer } from "@/api/api-helper";
 import type {
+  AssignBody,
   ClosureAnswer,
   ClosureBody,
   IssueDetail,
@@ -9,6 +10,7 @@ import type {
   IssuePage,
   ReportIssueBody,
 } from "@/types/maintenance/models";
+import type { ServiceCategory } from "@/types/providers/models";
 import { handleSSRActionError } from "@/utils/server-side-error-handler";
 
 const redirectOnUnauth = { redirectOnUnauth: true };
@@ -53,8 +55,15 @@ export const handleReportIssue = async (body: ReportIssueBody) => {
 
 export const handleIssueAction = async (
   id: number,
-  path: "acknowledge" | "start" | "closure" | "closure/withdraw" | "close",
-  body?: ClosureBody,
+  path:
+    | "acknowledge"
+    | "start"
+    | "closure"
+    | "closure/withdraw"
+    | "close"
+    | "assignment"
+    | "assignment/complete",
+  body?: ClosureBody | AssignBody,
 ) => {
   try {
     const data = await ApiServiceServer<IssueDetail>({
@@ -77,6 +86,18 @@ export const handleRespondClosure = async (
     const data = await ApiServiceServer<IssueDetail>({
       url: EndPoints.maintenance.respond(id, proposalId, answer),
       method: "POST",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetIssueCategories = async () => {
+  try {
+    const data = await ApiServiceServer<ServiceCategory[]>({
+      url: EndPoints.maintenance.categories,
+      method: "GET",
     });
     return { data, error: null };
   } catch (error) {

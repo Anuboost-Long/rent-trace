@@ -359,3 +359,28 @@ erDiagram
     MAINTENANCE_CLOSURE_PROPOSALS ||--o| MAINTENANCE_CLOSURE_RESPONSES : "answered by"
     USERS ||--o{ MAINTENANCE_CLOSURE_RESPONSES : "responded_by"
 ```
+
+## 11. Service providers belong to the landlord
+
+A tradesperson such as a plumber works for several properties, so a provider row now belongs to the
+landlord who added them, not to one property.
+
+- `service_providers.property_id` is removed. New `service_providers.owner_id` (required, `users`).
+  The tables held no rows, so no data moved.
+- `service_providers.business_name` may not be blank (`ck_service_providers_business_name_nonblank`).
+- `property_service_providers` stays as the link between a provider and each property it serves, and
+  carries `is_recommended` and the private `contract_notes` for that property.
+- `uq_property_service_providers` and `uq_service_provider_categories` only apply to rows that are not
+  soft-deleted, so a link that was removed can be added again.
+- The seven starting service categories (`PLUMBING`, `ELECTRICAL`, `APPLIANCES`, `HEATING_COOLING`,
+  `LOCKS_DOORS`, `PESTS`, `GENERAL`) are seeded by `providers/0003`.
+- The permissions already existed (`providers.view`, `providers.manage`), so none were added.
+
+```mermaid
+erDiagram
+    USERS ||--o{ SERVICE_PROVIDERS : "owner"
+    SERVICE_PROVIDERS ||--o{ PROPERTY_SERVICE_PROVIDERS : "serves"
+    PROPERTIES ||--o{ PROPERTY_SERVICE_PROVIDERS : "served by"
+    SERVICE_PROVIDERS ||--o{ SERVICE_PROVIDER_CATEGORIES : "covers"
+    SERVICE_CATEGORIES ||--o{ SERVICE_PROVIDER_CATEGORIES : "kind of work"
+```

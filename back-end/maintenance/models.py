@@ -58,7 +58,10 @@ class MaintenanceIssueQuerySet(models.QuerySet):
 
     def with_details(self):
         return self.select_related(
-            "property_unit__property", "reported_by", "open_closure_proposal__proposed_by"
+            "property_unit__property",
+            "reported_by",
+            "service_category",
+            "open_closure_proposal__proposed_by",
         )
 
     def newest_first(self):

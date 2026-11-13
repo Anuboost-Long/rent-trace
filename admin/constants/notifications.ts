@@ -38,6 +38,9 @@ const DESTINATIONS: Partial<
     tenant: (id) => (id ? Route.tenant.issue(id) : null),
     landlord: (id) => (id ? Route.landlord.issue(id) : null),
   },
+  MAINTENANCE_PROVIDER_ASSIGNED: {
+    tenant: (id) => (id ? Route.tenant.issue(id) : null),
+  },
   MAINTENANCE_CLOSED: {
     tenant: (id) => (id ? Route.tenant.issue(id) : null),
     landlord: (id) => (id ? Route.landlord.issue(id) : null),

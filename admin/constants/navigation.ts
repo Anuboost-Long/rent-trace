@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Users,
   Wrench,
+  HardHat,
   type LucideIcon,
 } from "lucide-react";
 
@@ -110,6 +111,12 @@ export const Navigation: Record<Audience, Navigation> = {
         icon: MessageSquare,
       },
       { label: "Maintenance", href: Route.landlord.maintenance, icon: Wrench },
+      {
+        label: "Tradespeople",
+        href: Route.landlord.providers,
+        icon: HardHat,
+        permission: "providers.view",
+      },
     ],
   },
   tenant: {

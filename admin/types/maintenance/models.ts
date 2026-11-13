@@ -1,3 +1,5 @@
+import type { ServiceCategory, TenantProvider } from "@/types/providers/models";
+
 export type IssueStatus =
   "REPORTED" | "ACKNOWLEDGED" | "IN_PROGRESS" | "CLOSED";
 export type IssuePriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
@@ -10,7 +12,9 @@ export type IssueAction =
   | "WITHDRAW_CLOSURE"
   | "APPROVE_CLOSURE"
   | "REJECT_CLOSURE"
-  | "CLOSE_VACANT";
+  | "CLOSE_VACANT"
+  | "ASSIGN_PROVIDER"
+  | "COMPLETE_VISIT";
 
 export type MaintenanceAudience = "tenant" | "landlord";
 
@@ -26,6 +30,7 @@ export type IssueSummary = {
   property: { id: number; name: string | null; suburb: string };
   reported_by_name: string;
   has_open_closure: boolean;
+  category: ServiceCategory | null;
 };
 
 export type OpenClosure = {
@@ -55,6 +60,28 @@ export type IssueDetail = IssueSummary & {
   history: IssueHistoryEntry[];
   actions: IssueAction[];
   my_side: "LANDLORD" | "TENANT" | null;
+  assignment: IssueAssignment | null;
+  provider_options: ProviderOption[];
+};
+
+export type IssueAssignment = {
+  id: number;
+  scheduled_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+  provider: Omit<TenantProvider, "is_recommended">;
+};
+
+export type ProviderOption = {
+  id: number;
+  business_name: string;
+  is_recommended: boolean;
+  matches_category: boolean;
+};
+
+export type AssignBody = {
+  service_provider_id: number;
+  scheduled_at: string | null;
 };
 
 export type IssuePage = {
@@ -72,6 +99,7 @@ export type ReportIssueBody = {
   title: string;
   description: string;
   priority: IssuePriority;
+  category_code: string | null;
 };
 
 export type ClosureBody = { outcome: ClosureOutcome; reason: string };

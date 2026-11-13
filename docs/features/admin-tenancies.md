@@ -36,8 +36,8 @@ by email. A tenant who gets the email can accept from a page in the app.
   copy, `GET /api/landlord/tenancies/`, needs `tenancies.view`) is new:
   `services/list_tenancies.py`, `resources/tenancy_summary.py`, `TenancyQuerySet.search`.
 - Navigation: a Tenancies item under Rentals in `admin/constants/navigation.ts`.
-- Admin: `admin/app/admin/tenancies/` (thin pages over `admin/components/tenancies/`,
-  shared with the landlord area), `admin/app/invitations/accept/`,
+- Admin: `admin/app/(app)/admin/tenancies/` (thin pages over `admin/components/tenancies/`,
+  shared with the landlord area), `admin/app/(app)/invitations/accept/`,
   `admin/api/services/tenancies/`, `admin/types/tenancies/`.
 
 ## Not done

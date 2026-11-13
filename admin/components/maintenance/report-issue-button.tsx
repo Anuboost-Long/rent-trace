@@ -7,6 +7,7 @@ import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import { IssuePriorityLabel } from "@/constants/maintenance";
 import useIssueActions from "@/hooks/form/useIssueActions";
 import type { IssuePriority } from "@/types/maintenance/models";
+import type { ServiceCategory } from "@/types/providers/models";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -16,15 +17,22 @@ const priorityOptions = Object.entries(IssuePriorityLabel).map(
   ([value, label]) => ({ value, label }),
 );
 
+type ReportIssueButtonProp = Readonly<{
+  tenancies: ReportableTenancy[];
+  categories: ServiceCategory[];
+}>;
+
 export default function ReportIssueButton({
   tenancies,
-}: Readonly<{ tenancies: ReportableTenancy[] }>) {
+  categories,
+}: ReportIssueButtonProp) {
   const { pending, error, report, clearError } = useIssueActions("tenant");
   const [open, setOpen] = useState(false);
   const [tenancyId, setTenancyId] = useState(String(tenancies[0]?.id ?? ""));
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<IssuePriority>("MEDIUM");
+  const [category, setCategory] = useState("");
 
   if (tenancies.length === 0) return null;
   const fields = error?.fields ?? {};
@@ -40,6 +48,7 @@ export default function ReportIssueButton({
       title: title.trim(),
       description: description.trim(),
       priority,
+      category_code: category || null,
     });
   };
 
@@ -96,6 +105,20 @@ export default function ReportIssueButton({
               onChange={(event) => setDescription(event.target.value)}
               error={fields.description}
               required
+            />
+            <SelectInput
+              label="Kind of problem (optional)"
+              name="category"
+              value={category}
+              onValueChange={setCategory}
+              options={[
+                { value: "", label: "Not sure" },
+                ...categories.map(({ code, name }) => ({
+                  value: code,
+                  label: name,
+                })),
+              ]}
+              error={fields.category_code}
             />
             <SelectInput
               label="How urgent"

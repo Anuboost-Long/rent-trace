@@ -1,9 +1,11 @@
+import { handleGetIssueCategories } from "@/api/services/maintenance/serve-action";
 import { handleGetMyTenancies } from "@/api/services/tenancies/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import ReportIssueButton from "@/components/maintenance/report-issue-button";
 import { UnitTypeLabel } from "@/constants/properties";
 import { TenantTenancyStatusLabel } from "@/constants/tenancies";
 import { Route } from "@/constants/web-routes";
+import type { ServiceCategory } from "@/types/providers/models";
 import type { MyTenancy } from "@/types/tenancies/models";
 import { formatDate } from "@/utils/format-date";
 import { formatMoney, formatRent } from "@/utils/rent";
@@ -12,7 +14,10 @@ import Link from "next/link";
 import { addressText, placeName } from "./my-tenancy-card";
 
 export default async function TenantHome() {
-  const { data, error } = await handleGetMyTenancies();
+  const [{ data, error }, categories] = await Promise.all([
+    handleGetMyTenancies(),
+    handleGetIssueCategories(),
+  ]);
   if (error) {
     return (
       <p role="alert" className="text-red-600">
@@ -35,7 +40,7 @@ export default async function TenantHome() {
         <ul className="space-y-6">
           {current.map((tenancy) => (
             <li key={tenancy.id}>
-              <HomePanel tenancy={tenancy} />
+              <HomePanel tenancy={tenancy} categories={categories.data ?? []} />
             </li>
           ))}
         </ul>
@@ -70,7 +75,10 @@ function NoTenancy() {
   );
 }
 
-function HomePanel({ tenancy }: Readonly<{ tenancy: MyTenancy }>) {
+function HomePanel({
+  tenancy,
+  categories,
+}: Readonly<{ tenancy: MyTenancy; categories: ServiceCategory[] }>) {
   const facts: [string, string][] = [
     [
       "Rent",
@@ -115,6 +123,7 @@ function HomePanel({ tenancy }: Readonly<{ tenancy: MyTenancy }>) {
       <div className="flex flex-wrap items-center gap-3 border-t border-foreground/15 p-4 sm:px-8">
         {tenancy.status === "ACTIVE" && (
           <ReportIssueButton
+            categories={categories}
             tenancies={[
               {
                 id: tenancy.id,

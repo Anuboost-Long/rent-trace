@@ -7,6 +7,7 @@ import {
 import { IssueRoutes } from "@/constants/maintenance";
 import type { ApiFailure } from "@/types/api/common";
 import type {
+  AssignBody,
   ClosureAnswer,
   ClosureBody,
   MaintenanceAudience,
@@ -29,7 +30,7 @@ const useIssueActions = (audience: MaintenanceAudience, issueId?: number) => {
     return !failure;
   };
 
-  const run = async (path: IssuePath, body?: ClosureBody) => {
+  const run = async (path: IssuePath, body?: ClosureBody | AssignBody) => {
     if (issueId === undefined) return false;
     setPending(true);
     setError(null);

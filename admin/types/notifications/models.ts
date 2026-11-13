@@ -22,7 +22,8 @@ export type NotificationKind =
   | "MAINTENANCE_STARTED"
   | "MAINTENANCE_CLOSURE_PROPOSED"
   | "MAINTENANCE_CLOSURE_REJECTED"
-  | "MAINTENANCE_CLOSED";
+  | "MAINTENANCE_CLOSED"
+  | "MAINTENANCE_PROVIDER_ASSIGNED";
 
 export type AppNotification = {
   id: number;

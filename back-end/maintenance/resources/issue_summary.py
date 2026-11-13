@@ -12,6 +12,7 @@ class IssueSummaryResource(serializers.ModelSerializer):
     property = serializers.SerializerMethodField()
     reported_by_name = serializers.SerializerMethodField()
     has_open_closure = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = MaintenanceIssue
@@ -27,6 +28,7 @@ class IssueSummaryResource(serializers.ModelSerializer):
             "property",
             "reported_by_name",
             "has_open_closure",
+            "category",
         ]
 
     def get_unit(self, issue) -> dict:
@@ -39,6 +41,10 @@ class IssueSummaryResource(serializers.ModelSerializer):
 
     def get_reported_by_name(self, issue) -> str:
         return _name(issue.reported_by)
+
+    def get_category(self, issue) -> dict | None:
+        category = issue.service_category
+        return {"code": category.code, "name": category.name} if category else None
 
     def get_has_open_closure(self, issue) -> bool:
         return issue.open_closure_proposal_id is not None
