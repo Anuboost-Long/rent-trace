@@ -56,9 +56,9 @@ class IssueDetailResource(IssueSummaryResource):
 
     def get_history(self, issue) -> list[dict]:
         rows = issue.status_history.select_related("actor").order_by("sequence_no")
-        return [
+        entries = [
             {
-                "sequence_no": row.sequence_no,
+                "kind": "STATUS",
                 "from_status": row.from_status,
                 "to_status": row.to_status,
                 "trigger": row.trigger,
@@ -68,6 +68,19 @@ class IssueDetailResource(IssueSummaryResource):
             }
             for row in rows
         ]
+        return sorted(
+            [*entries, *self._visit_entries(issue)], key=lambda entry: entry["created_at"]
+        )
+
+    def _visit_entries(self, issue) -> list[dict]:
+        entries = []
+        bookings = issue.assignments.select_related("service_provider", "recorded_by")
+        for booking in bookings.order_by("id"):
+            provider = booking.service_provider.business_name
+            entries.append(_visit_entry("PROVIDER_BOOKED", booking, booking.created_at, provider))
+            if booking.completed_at is not None:
+                entries.append(_visit_entry("VISIT_DONE", booking, booking.completed_at, provider))
+        return entries
 
     def get_actions(self, issue) -> list[str]:
         return allowed_actions(issue, self.context["user"])
@@ -138,3 +151,15 @@ class IssueDetailResource(IssueSummaryResource):
                 row["business_name"],
             ),
         )
+
+
+def _visit_entry(kind, booking, created_at, provider) -> dict:
+    return {
+        "kind": kind,
+        "from_status": None,
+        "to_status": None,
+        "trigger": kind,
+        "actor": _name(booking.recorded_by),
+        "reason": provider,
+        "created_at": created_at,
+    }

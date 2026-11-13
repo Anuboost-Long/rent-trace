@@ -43,9 +43,9 @@ export type OpenClosure = {
 };
 
 export type IssueHistoryEntry = {
-  sequence_no: number;
+  kind: "STATUS" | "PROVIDER_BOOKED" | "VISIT_DONE";
   from_status: IssueStatus | null;
-  to_status: IssueStatus;
+  to_status: IssueStatus | null;
   trigger: string;
   actor: string;
   reason: string;

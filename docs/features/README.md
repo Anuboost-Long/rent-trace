@@ -37,7 +37,6 @@ no API or screens.
 Known issues from the 14 November 2026 walkthrough (test landlord and tenants, local
 database):
 
-- Maintenance history does not record the tradesperson being booked or the visit being done.
 - A declined rent proposal does not appear in the tenant's rent and bond history.
 - Not tried: cancelling a tenancy, declining a maintenance closing, contact requests, and the
   admin side of any of these. Housemate requests were made through the service layer so no email

@@ -7,6 +7,11 @@ export const IssueStatusLabel: Record<string, string> = {
   CLOSED: "Closed",
 };
 
+export const IssueVisitLabel: Record<string, string> = {
+  PROVIDER_BOOKED: "Tradesperson booked",
+  VISIT_DONE: "Visit done",
+};
+
 export const IssuePriorityLabel: Record<string, string> = {
   LOW: "Low",
   MEDIUM: "Medium",

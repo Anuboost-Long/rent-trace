@@ -34,7 +34,10 @@ else is a 404. Admins are not included yet (see "Not done"). Permissions already
   belongs to, who reported it and when.
 - Status: **Reported** to **Acknowledged** to **In progress** to **Closed**. Every move is written to a
   history in the same transaction (a sequence number, who, the trigger, a reason), shown as a
-  timeline on the issue.
+  timeline on the issue. The timeline also lists when a tradesperson was booked and when the
+  visit was marked done ([Service providers](service-providers.md)). Those two are read from the
+  assignments at display time, not stored as status history, because they don't change the
+  status. Each history entry has a `kind`: `STATUS`, `PROVIDER_BOOKED` or `VISIT_DONE`.
 - **Acknowledge** is an explicit button, not a side effect of opening the issue (the "reads" table
   stays unused for now). **Start work** moves an acknowledged issue to in progress.
 - **Closing** can be proposed from any open status, by either side, with an outcome (`FIXED` or

@@ -108,6 +108,22 @@ class AssignProviderTests(MaintenanceApiTestCase):
         self.assertEqual(self.act(issue, "assignment/complete/", self.lou).status_code, 400)
         self.assertEqual(self.act(issue, "assignment/complete/", self.tina).status_code, 403)
 
+    def test_booking_and_the_visit_appear_in_the_history_in_order(self):
+        issue = self.reported()
+        self.assign(issue, self.provider())
+        self.act(issue, "assignment/complete/", self.lou)
+
+        history = self.detail(issue, self.tina).data["history"]
+
+        self.assertEqual(
+            [(h["kind"], h["reason"]) for h in history],
+            [
+                ("STATUS", "Reported"),
+                ("PROVIDER_BOOKED", "Smith Plumbing"),
+                ("VISIT_DONE", "Smith Plumbing"),
+            ],
+        )
+
     def test_booking_does_not_change_the_issue_status(self):
         issue = self.reported()
 

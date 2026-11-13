@@ -1,4 +1,4 @@
-import { IssueStatusLabel } from "@/constants/maintenance";
+import { IssueStatusLabel, IssueVisitLabel } from "@/constants/maintenance";
 import type { IssueHistoryEntry } from "@/types/maintenance/models";
 import { formatDateTime } from "@/utils/format-date";
 
@@ -12,9 +12,13 @@ export default function IssueTimeline({
       </h2>
       <ol className="mt-2 divide-y divide-foreground/10">
         {history.map((entry) => (
-          <li key={entry.sequence_no} className="py-3">
+          <li key={`${entry.kind}-${entry.created_at}`} className="py-3">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <p className="font-medium">{IssueStatusLabel[entry.to_status]}</p>
+              <p className="font-medium">
+                {entry.to_status
+                  ? IssueStatusLabel[entry.to_status]
+                  : IssueVisitLabel[entry.kind]}
+              </p>
               <p className="text-sm text-foreground/60">
                 {formatDateTime(entry.created_at)}
               </p>
