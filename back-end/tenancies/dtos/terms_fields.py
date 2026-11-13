@@ -19,7 +19,7 @@ class TermsFieldsDto(serializers.Serializer):
         help_text="Per payment, in Australian dollars. Needs a frequency.",
     )
     rent_frequency = serializers.ChoiceField(
-        choices=RentFrequency.values, required=False, allow_null=True, allow_blank=True
+        choices=RentFrequency.choices, required=False, allow_null=True, allow_blank=True
     )
     bond_amount = serializers.DecimalField(
         max_digits=12, decimal_places=2, min_value=MIN_AMOUNT, required=False, allow_null=True

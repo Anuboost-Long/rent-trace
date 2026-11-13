@@ -18,7 +18,7 @@ class UnitFieldsDto(serializers.Serializer):
         max_digits=10, decimal_places=2, min_value=Decimal("0.01"), required=False, allow_null=True
     )
     rent_frequency = serializers.ChoiceField(
-        choices=RentFrequency.values, required=False, allow_null=True, allow_blank=True
+        choices=RentFrequency.choices, required=False, allow_null=True, allow_blank=True
     )
     max_occupants = serializers.IntegerField(
         min_value=1,

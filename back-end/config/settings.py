@@ -235,5 +235,11 @@ SPECTACULAR_SETTINGS = {
         "MaintenanceStatusEnum": "maintenance.models.MaintenanceStatus",
         "MaintenancePriorityEnum": "maintenance.models.MaintenancePriority",
         "ClosureOutcomeEnum": "maintenance.models.ClosureOutcome",
+        "ListingStatusEnum": "properties.models.ListingStatus",
+        "PropertyStatusEnum": "properties.models.PropertyStatus",
+        "RentFrequencyEnum": "properties.models.RentFrequency",
+        "ContactRequestStatusEnum": "communications.models.ContactRequestStatus",
+        "BanStatusEnum": "bans.dtos.ban_list_query.BAN_STATUSES",
+        "TokenStatusEnum": "tokens.dtos.token_list_query.TOKEN_STATUSES",
     },
 }
