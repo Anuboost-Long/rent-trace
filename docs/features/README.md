@@ -21,10 +21,10 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page is a placeholder                             |
 | [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                             |
 | [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                             |
-| [Tenancy lifecycle](tenancy-lifecycle.md)            | Start walked through 14 Nov 2026; end and cancel not tried                             |
-| [Housemate invitations](housemate-invitations.md)    | Built, not yet walked through in a browser                                             |
+| [Tenancy lifecycle](tenancy-lifecycle.md) | Start and end walked through 14 Nov 2026; cancel not tried |
+| [Housemate invitations](housemate-invitations.md) | Walked through 14 Nov 2026 (request, approve, decline, accept) |
 | [Tenancy terms](tenancy-terms.md)                    | Walked through 14 Nov 2026 (both sides)                                                |
-| [Rent change approval](rent-change-approval.md)      | Approve walked through 14 Nov 2026; decline not tried                                  |
+| [Rent change approval](rent-change-approval.md) | Approve and decline walked through 14 Nov 2026 |
 | [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close                                            |
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                |
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                       |
@@ -38,5 +38,7 @@ Known issues from the 14 November 2026 walkthrough (test landlord and tenants, l
 database):
 
 - Maintenance history does not record the tradesperson being booked or the visit being done.
-- Not tried: housemate invitations, ending or cancelling a tenancy, declining a rent change or
-  closing, contact requests, and the admin side of any of these.
+- A declined rent proposal does not appear in the tenant's rent and bond history.
+- Not tried: cancelling a tenancy, declining a maintenance closing, contact requests, and the
+  admin side of any of these. Housemate requests were made through the service layer so no email
+  was sent; the approve, decline and accept steps were done in the browser.
