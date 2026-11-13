@@ -19,13 +19,14 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Admin overview](admin-overview.md)                  | Built and walked through                                                               |
 | [Tenant area](tenant-area.md)                        | Walked through 14 Nov 2026                                                             |
 | [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page is a placeholder                             |
+| [Contact requests](contact-requests.md) | Walked through 14 Nov 2026; emails not sent |
 | [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                             |
 | [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                             |
-| [Tenancy lifecycle](tenancy-lifecycle.md) | Start and end walked through 14 Nov 2026; cancel not tried |
+| [Tenancy lifecycle](tenancy-lifecycle.md) | Start, end and cancel walked through 14 Nov 2026 |
 | [Housemate invitations](housemate-invitations.md) | Walked through 14 Nov 2026 (request, approve, decline, accept) |
 | [Tenancy terms](tenancy-terms.md)                    | Walked through 14 Nov 2026 (both sides)                                                |
 | [Rent change approval](rent-change-approval.md) | Approve and decline walked through 14 Nov 2026 |
-| [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close                                            |
+| [Maintenance](maintenance.md) | Walked through 14 Nov 2026, report to close and reject |
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                |
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                       |
 
@@ -38,6 +39,9 @@ Known issues from the 14 November 2026 walkthrough (test landlord and tenants, l
 database):
 
 - A declined rent proposal does not appear in the tenant's rent and bond history.
-- Not tried: cancelling a tenancy, declining a maintenance closing, contact requests, and the
-  admin side of any of these. Housemate requests were made through the service layer so no email
-  was sent; the approve, decline and accept steps were done in the browser.
+- A rejected maintenance closing leaves no trace on the issue: the proposal disappears and the
+  landlord only learns from a notification.
+- Not tried: the admin side of any of these, and sending, declining or cancelling a contact
+  request from the screens. Housemate and contact requests were made, and the contact request
+  was accepted and revoked, through the service layer with email suppressed, because the server
+  sends real mail; the screens were checked for what each side sees.

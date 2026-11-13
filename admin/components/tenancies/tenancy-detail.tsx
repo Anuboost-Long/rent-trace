@@ -48,6 +48,7 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
     );
   }
 
+  const closed = tenancy.status === "ENDED" || tenancy.status === "CANCELLED";
   const details: [string, React.ReactNode][] = [
     ["Status", TenancyStatusLabel[tenancy.status]],
     [
@@ -93,7 +94,7 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold">{tenancy.reference_no}</h1>
         <div className="flex flex-wrap items-center gap-2">
-          {tenancy.status !== "ENDED" && tenancy.status !== "CANCELLED" && (
+          {!closed && (
             <Can permission={TenancyAccess[audience].update}>
               <ButtonLink
                 href={TenancyRoutes[audience].edit(tenancy.id)}
@@ -132,7 +133,9 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
         <h2 className="text-lg font-semibold">Tenants</h2>
         {tenancy.tenants.length === 0 ? (
           <p className="mt-2 text-foreground/70">
-            No one has joined yet. Invite a tenant below.
+            {closed
+              ? "No tenants are on this tenancy."
+              : "No one has joined yet. Invite a tenant below."}
           </p>
         ) : (
           <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
@@ -167,7 +170,7 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
         audience={audience}
         tenancyId={tenancy.id}
         invitations={tenancy.invitations}
-        closed={tenancy.status === "ENDED" || tenancy.status === "CANCELLED"}
+        closed={closed}
       />
 
       <TermHistory changes={tenancy.term_history} />
