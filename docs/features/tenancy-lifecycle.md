@@ -29,6 +29,11 @@ Statuses are `DRAFT` (set up, invitations out), `ACTIVE`, `ENDED` and `CANCELLED
 - Permissions: a landlord needs `tenancies.update` and acts on their own properties; an
   admin needs `tenancies.admin_manage` and can act on any. Paths are `/api/tenancies/…` for
   admins and `/api/landlord/tenancies/…` for landlords.
+- **Unit occupancy follows the tenancy.** Starting a tenancy sets its unit to `OCCUPIED`; ending
+  it sets the unit back to `VACANT` unless another tenancy on the unit is still `ACTIVE`. A unit
+  marked `UNAVAILABLE` is never changed. So an occupied unit drops out of public listings
+  ([Public listings](public-listings.md)). Occupancy of units whose tenancy started before this
+  rule existed was corrected once by hand in the dev database.
 - An ended or cancelled tenancy takes no new invitations or joiners (already enforced).
 - The tenants are told in the app when their tenancy starts, ends or is cancelled
   ([Notifications](notifications.md)); the message has no contact details.

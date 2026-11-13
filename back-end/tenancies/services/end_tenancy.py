@@ -11,6 +11,7 @@ from tenancies.services.shared.transitions import (
     release_tenants,
     require_status,
     save_status,
+    sync_occupancy,
 )
 
 NOT_STARTED = "This tenancy hasn't started yet. Cancel it instead."
@@ -29,5 +30,6 @@ def end_tenancy(*, actor, tenancy_id, owned_by=None):
     release_tenants(tenants, today, actor)
     close_open_changes(tenancy, TermChangeStatus.CLOSED, timezone.now())
     save_status(tenancy, TenancyStatus.ENDED, actor)
+    sync_occupancy(tenancy.property_unit, actor)
     notices.tenancy_ended(tenancy, [party.tenant for party in tenants])
     return tenancy

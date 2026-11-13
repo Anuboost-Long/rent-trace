@@ -2,7 +2,8 @@ from datetime import timedelta
 
 from rest_framework.exceptions import NotFound, ValidationError
 
-from tenancies.models import Tenancy, TenancyParty, TenancyStatus
+from properties.models import OccupancyStatus
+from tenancies.models import Tenancy, TenancyParty
 from tenancies.services.shared.invitations import live_tenancies
 
 UNIT_BUSY = "This unit already has an active tenancy in that period."
@@ -35,6 +36,18 @@ def save_status(tenancy, status, actor):
     tenancy.save()
 
 
+def sync_occupancy(unit, actor):
+    if unit.occupancy_status == OccupancyStatus.UNAVAILABLE:
+        return
+    occupied = Tenancy.objects.active_on(unit).exists()
+    occupancy = OccupancyStatus.OCCUPIED if occupied else OccupancyStatus.VACANT
+    if unit.occupancy_status != occupancy:
+        unit.occupancy_status = occupancy
+        unit.updated_by = actor
+        unit.row_version += 1
+        unit.save()
+
+
 def current_tenants(tenancy):
     parties = TenancyParty.objects.filter(tenancy=tenancy).current().select_related("tenant")
     return list(parties.order_by("id"))
@@ -51,8 +64,7 @@ def release_tenants(parties, today, actor):
 
 def check_unit_is_free(tenancy):
     busy = (
-        Tenancy.objects.live()
-        .filter(property_unit=tenancy.property_unit, status=TenancyStatus.ACTIVE)
+        Tenancy.objects.active_on(tenancy.property_unit)
         .exclude(pk=tenancy.pk)
         .overlapping(tenancy.start_date, tenancy.end_date)
     )

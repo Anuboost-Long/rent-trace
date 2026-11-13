@@ -93,6 +93,28 @@ class TenancyLifecycleTests(TenancyApiTestCase):
         self.assertEqual(TenancyParty.objects.get().left_at, self.today)
         self.assertEqual(self.kinds_for(self.tina), ["TENANCY_STARTED", "TENANCY_ENDED"])
 
+    def test_starting_a_tenancy_marks_the_unit_occupied_and_ending_frees_it(self):
+        self.join()
+
+        self.act("activate")
+        self.unit.refresh_from_db()
+        self.assertEqual(self.unit.occupancy_status, "OCCUPIED")
+
+        self.start_in_past()
+        self.act("end")
+        self.unit.refresh_from_db()
+        self.assertEqual(self.unit.occupancy_status, "VACANT")
+
+    def test_an_unavailable_unit_stays_unavailable(self):
+        self.join()
+        self.unit.occupancy_status = "UNAVAILABLE"
+        self.unit.save()
+
+        self.act("activate")
+
+        self.unit.refresh_from_db()
+        self.assertEqual(self.unit.occupancy_status, "UNAVAILABLE")
+
     def test_ending_keeps_an_end_date_already_in_the_past(self):
         self.join()
         self.act("activate")

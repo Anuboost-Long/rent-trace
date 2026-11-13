@@ -28,6 +28,9 @@ class TenancyQuerySet(models.QuerySet):
     def with_status(self, status):
         return self.filter(status=status)
 
+    def active_on(self, unit):
+        return self.live().filter(property_unit=unit, status=TenancyStatus.ACTIVE)
+
     def overlapping(self, start, end):
         others = self.filter(Q(end_date__isnull=True) | Q(end_date__gt=start))
         return others.filter(start_date__lt=end) if end else others
