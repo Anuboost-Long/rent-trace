@@ -20,11 +20,11 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Admin overview](admin-overview.md)                  | Built and walked through                                                                                                                              |
 | [Tenant area](tenant-area.md)                        | Walked through 14 Nov 2026                                                                                                                            |
 | [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page is a placeholder                                                                                            |
-| [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; emails not sent                                                                                                           |
+| [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; received/answered emails confirmed against real Gmail 15 Nov 2026                                                        |
 | [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                                                                                            |
 | [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                                                                                            |
 | [Tenancy lifecycle](tenancy-lifecycle.md)            | Start, end and cancel walked through 14 Nov 2026 (landlord); end and cancel walked through from the admin side 15 Nov 2026                            |
-| [Housemate invitations](housemate-invitations.md)    | Walked through 14 Nov 2026 (request, approve, decline, accept)                                                                                        |
+| [Housemate invitations](housemate-invitations.md)    | Walked through 14 Nov 2026 (request, approve, decline, accept); real-email + in-app notification loop confirmed 15 Nov 2026                          |
 | [Tenancy terms](tenancy-terms.md)                    | Walked through 14 Nov 2026 (both sides)                                                                                                               |
 | [Rent change approval](rent-change-approval.md)      | Approve and decline walked through 14 Nov 2026                                                                                                        |
 | [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close and reject                                                                                                |
@@ -58,7 +58,8 @@ local database):
 - Tenancies have no `on_behalf_of` concept to check in the first place — only
   `maintenance_status_history` and the unbuilt reviews tables carry that column. Admin actions on
   a tenancy are tracked only as `updated_by`, confirmed correct when an admin ended one.
-- Starting a tenancy to `ACTIVE` from the admin side still needs an invited-and-accepted tenant,
-  which needs a real email send (item 3 in `docs/todo.md`); not completed this session.
+- Starting a tenancy to `ACTIVE` from the admin side needs an invited-and-accepted tenant; this
+  was completed later the same session with a real email send — see `docs/todo.md` item 3 and
+  [Tenant invitations](tenant-invitations.md).
 - Confirmed by walkthrough: unit occupancy (`PARTIALLY_OCCUPIED`/`UNAVAILABLE`) has no admin UI
   control anywhere — the unit edit form has no occupancy field at all.
