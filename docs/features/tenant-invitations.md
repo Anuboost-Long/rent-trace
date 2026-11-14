@@ -1,10 +1,18 @@
 # Tenant invitations
 
-## Status — 12 November 2026
+## Status — 15 November 2026
 
 Shipped in the back end, 12 November 2026. 35 tenancy tests and the full suite
-(365) pass; Ruff, `manage.py check` and the OpenAPI schema validate. Not tried
-against a real mail server or from the admin app, which has no screens for it yet.
+(365) pass; Ruff, `manage.py check` and the OpenAPI schema validate.
+
+Walked through end to end against the real Gmail backend on 15 November 2026: an admin invited
+a real address, resent it (fresh link, old one correctly dead), and the invitee received the
+email, accepted it themselves (`invitee_accepted_at` set, joined as primary tenant), and the
+admin then started the tenancy. A second invitation, created and revoked without being
+accepted, correctly stopped offering Resend/Revoke/Approve once revoked. The admin app does
+have screens for this after all (`components/tenancies/invitations-section.tsx`, shared with
+the landlord tenancy page) — see the correction in
+[Admin tenancies](admin-tenancies.md).
 
 ## Goal
 

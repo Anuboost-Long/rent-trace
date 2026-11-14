@@ -14,13 +14,22 @@ documents and `git log` (latest commits: `a420f8b` occupancy, `8771fdc` maintena
   `mock.patch` on the email function (for example `tenancies.integrations.emails.send_invitation`,
   `communications.integrations.emails._send`) and capture the link, then use the link in the browser.
 - Local test accounts (verified, same throwaway password, kept outside the repo): landlord
-  `test.landlord@renttrace.test`, tenants `test.tenant1@renttrace.test` and
-  `test.tenant2@renttrace.test`. The password file was in the session scratchpad and will be gone;
-  to get back in, set a new password with `make_password` on their `UserCredential` in
-  `manage.py shell`.
-- Test data left in the dev database: property 3 "Walkthrough house" (unit 4), tenancies 2 (ended),
-  3 (cancelled), 4 (ended), maintenance issues 1 (closed) and 2 (open, Reported), contact request 2
-  (revoked), tradesperson "Spark Electrical". Delete or reuse as needed.
+  **`kimlongly57+landlord@gmail.com`** (was `test.landlord@renttrace.test` until 15 Nov 2026, when
+  its email was swapped to a real address to test outbound mail — see item 3), tenant
+  **`kimlongly57+tenant@gmail.com`** (was `test.tenant1@renttrace.test`, same reason), tenant
+  `test.tenant2@renttrace.test` (unchanged). Also new since 15 Nov: `kimlongly57+housemate@gmail.com`
+  (TENANT, pre-verified) and `kimlongly57@gmail.com` itself, now a real signed-up TENANT account.
+  The password file was in the session scratchpad and will be gone; to get back in, set a new
+  password with `make_password` on their `UserCredential` in `manage.py shell` — except
+  `kimlongly57@gmail.com`, which the user signed up themselves and whose password is theirs, not
+  ours to reset.
+- Test data left in the dev database: property 3 "Walkthrough house" (unit 4) is now **OCCUPIED**
+  (tenancy 6, Active, `kimlongly57@gmail.com` as primary tenant plus `kimlongly57+housemate@gmail.com`
+  as an approved housemate) — it dropped out of public listings as a result, which is correct
+  behaviour, not a bug. Tenancies 1 (ended 15 Nov, was Active), 2 (ended), 3 (cancelled), 4 (ended),
+  5 (cancelled), 6 (Active, see above), 7 (revoked invitation only, never started) exist. Maintenance
+  issues 1 (closed) and 2 (open, Reported), contact request 2 (revoked) and 3 (accepted, 15 Nov),
+  tradesperson "Spark Electrical". Delete or reuse as needed.
 - Browser checks use Claude in Chrome. Signing in as another user means signing out first, because
   all roles share one cookie on localhost.
 
@@ -60,18 +69,34 @@ Results are in `docs/features/admin-tenancies.md`, `tenancy-lifecycle.md`, `prop
   `OCCUPIED`/`VACANT` (by starting and ending a tenancy). There is no way in the unit form to mark
   one unavailable or partly occupied. Decide whether rooms and shared units need this.
 
-## 3. Test the emails for real (once, to an address the user owns)
+## 3. Test the emails for real — done 15 Nov 2026
 
-Nothing in the walkthrough sent a real email. Ask the user for an address they control, then send
-one of each from the screens and confirm they arrive and the links work: tenant invitation,
-housemate request (to the landlord and to the housemate), contact request received and answered.
-Tenancy invitations and housemate requests were created through the service with email suppressed.
+Used `kimlongly57@gmail.com` (user-owned). All four real sends confirmed arriving with correct
+wording and working links: tenant invitation (+ resend, + revoke-without-accepting), housemate
+request (to the landlord and to the housemate, plus the landlord's in-app notification fired
+correctly alongside the email — no gap there), contact request received and answered. Full
+results in `docs/features/tenant-invitations.md`, `housemate-invitations.md`,
+`contact-requests.md`, `admin-tenancies.md`.
 
-## 4. Screens not tried from the browser
+Account/email changes made to run this (dev database only, not committed):
 
-Only their results were checked, because the action sends email: sending a contact request from
-the listing page, declining or cancelling one, the tenant's "Invite housemate" form, and Resend and
-Revoke on an invitation. Try them in item 3 with a real address.
+- `test.landlord@renttrace.test` → `kimlongly57+landlord@gmail.com`
+- `test.tenant1@renttrace.test` → `kimlongly57+tenant@gmail.com`
+- New account created directly via shell (pre-verified, skipping the signup email loop):
+  `kimlongly57+housemate@gmail.com`, role TENANT
+- All three share a throwaway password, recorded in the session scratchpad, not here or in the
+  repo (same convention as the original test accounts).
+- `kimlongly57@gmail.com` itself (no alias) is now a real TENANT account, primary tenant and
+  Active on tenancy 6 ("Walkthrough house", unit 4) — a new, real piece of test data distinct
+  from the property-3/unit-4 state described below, which is unaffected.
+
+## 4. Screens not tried from the browser — done 15 Nov 2026
+
+All tried for real in Chrome: sending a contact request from the listing page (as `Tom Tenant`,
+swapped to `kimlongly57+tenant@gmail.com`) and accepting it as the landlord; the tenant's
+"Invite housemate" form; Resend and Revoke on a tenancy invitation. Declining/cancelling a
+contact request was not tried (the one sent was accepted, to also test the "answered" email) —
+still open if wanted.
 
 ## 5. Small fixes found during the walkthrough
 

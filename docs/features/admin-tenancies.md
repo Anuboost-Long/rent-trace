@@ -12,12 +12,21 @@ Walked through again on 15 November 2026 as the regular admin (`kimlongly53@gmai
 not the super admin): detail page gates **Edit tenancy** correctly (404s for
 `ENDED`/`CANCELLED`, by design — see `components/tenancies/edit-tenancy.tsx`), and
 **Start tenancy** correctly refuses with "Add a tenant first" when no tenant has
-joined. Still not tried: inviting a tenant to the point of starting a tenancy, since
-that needs a real email send (see `docs/todo.md` item 3). There is no "on behalf of"
-field to check here — tenancies have no such column; only
+joined. There is no "on behalf of" field to check here — tenancies have no such column; only
 `maintenance_status_history` and the (unbuilt) reviews tables carry one. Admin
 actions on a tenancy are tracked only as `updated_by`, which correctly showed the
 admin after ending one.
+
+**Correction**: an earlier pass of this walkthrough said the admin detail page has no
+Invite/Resend/Revoke UI — that was wrong, caught by grepping only
+`app/(app)/admin/tenancies/` and missing the shared `components/tenancies/invitations-section.tsx`
+that the admin and landlord detail pages both render (same component the Approve/Decline
+housemate-request UI lives in too). Confirmed by actually using it: sent a real invitation
+through the Gmail backend to an address the user controls, resent it, the user accepted the
+_resent_ link (the original died, as the UI says it will), and the admin then started the
+tenancy with Start tenancy — full loop worked. A second invitation was revoked without being
+accepted to confirm that path too. See [Tenant invitations](tenant-invitations.md) for the
+full real-email walkthrough.
 
 ## Goal
 

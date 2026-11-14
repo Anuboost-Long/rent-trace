@@ -1,5 +1,13 @@
 # Contact requests
 
+## Status — 15 November 2026
+
+Walked through end to end against the real Gmail backend on 15 November 2026: signed in as a
+tenant, sent a contact request from a public listing page (`properties/1`) to a real landlord
+address, the landlord received the "new contact request" email and accepted it from their
+Contact requests screen, and the tenant received the "request answered" email. Both emails'
+wording and links confirmed correct.
+
 ## Status — 12 November 2026
 
 Update 12 November 2026: an accepted request now also shows the tenant's email and phone to

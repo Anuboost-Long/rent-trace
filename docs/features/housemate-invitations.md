@@ -1,5 +1,16 @@
 # Housemate invitations
 
+## Status — 15 November 2026
+
+Walked through end to end against the real Gmail backend on 15 November 2026: a real tenant
+(the primary tenant on an active tenancy) invited a housemate by email from the tenant
+screens. Both emails sent at once as documented — the housemate got the invitation email, the
+landlord got the "a tenant asked to add a housemate" email — and the landlord's in-app
+notification bell showed "A tenant asked to add a housemate" at the same time, linking straight
+to the tenancy. The housemate signed in and accepted ("Waiting for the landlord to approve"),
+the landlord opened the tenancy from the notification and clicked Approve, and the housemate
+joined immediately. No gap between the email and in-app notification for this flow.
+
 ## Status — 12 November 2026
 
 Built, not yet walked through in a browser. Back end: 40 new tests (both orders of approval,
