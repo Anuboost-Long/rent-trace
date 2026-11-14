@@ -1,10 +1,18 @@
 # Properties, units, photos and files
 
-## Status — 12 November 2026
+## Status — 15 November 2026
 
 Shipped 11 November 2026 (back end and admin screens). Unit rent and listing
 status were added afterwards: see [Unit rent](unit-rent.md) and
 [Listing status](listing-status.md). Not re-verified when this was written.
+
+Admin property and unit detail/edit screens walked through in Chrome on
+15 November 2026 as the regular admin: both render and match the data. Confirmed
+the unit edit form has no field for occupancy at all (name, unit number, type,
+description, rent, rent frequency, max people, "Show publicly" only) — occupancy
+is entirely a side effect of starting/ending a tenancy ([Tenancy
+lifecycle](tenancy-lifecycle.md)). There is no way to set a unit to
+`PARTIALLY_OCCUPIED` or `UNAVAILABLE` anywhere in the admin UI.
 
 ## Goal
 

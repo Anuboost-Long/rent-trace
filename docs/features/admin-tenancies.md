@@ -1,12 +1,23 @@
 # Admin tenancies
 
-## Status — 12 November 2026
+## Status — 15 November 2026
 
 Built. Walked through in Chrome on 12 November 2026 as the super admin: the list,
 new tenancy (property search, unit, start date) and detail page all work, and the
 new tenancy shows on the list and the dashboard. Not tried: sending, resending and
 revoking an invite, and the accept page. The local back end sends mail through
 Gmail, so an invite sends a real email. The date fields use the new custom calendar; start date, end-date limits and keyboard use were checked in Chrome. Back end: 42 tenancy tests pass.
+
+Walked through again on 15 November 2026 as the regular admin (`kimlongly53@gmail.com`,
+not the super admin): detail page gates **Edit tenancy** correctly (404s for
+`ENDED`/`CANCELLED`, by design — see `components/tenancies/edit-tenancy.tsx`), and
+**Start tenancy** correctly refuses with "Add a tenant first" when no tenant has
+joined. Still not tried: inviting a tenant to the point of starting a tenancy, since
+that needs a real email send (see `docs/todo.md` item 3). There is no "on behalf of"
+field to check here — tenancies have no such column; only
+`maintenance_status_history` and the (unbuilt) reviews tables carry one. Admin
+actions on a tenancy are tracked only as `updated_by`, which correctly showed the
+admin after ending one.
 
 ## Goal
 

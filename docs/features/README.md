@@ -2,33 +2,33 @@
 
 Every feature has a document here. See `CLAUDE.md` for the rule.
 
-| Feature                                              | Status                                                                                 |
-| ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| [Authentication and sessions](authentication.md)     | Shipped                                                                                |
-| [Account and onboarding](account-and-onboarding.md)  | Shipped                                                                                |
-| [Admin app shell](admin-app-shell.md)                | Shipped; tenant and landlord pages are placeholders                                    |
-| [Admin users](admin-users.md)                        | Shipped                                                                                |
-| [Access control](access-control.md)                  | Shipped                                                                                |
-| [Bans and sessions](bans-and-sessions.md)            | Shipped                                                                                |
-| [Locations lookup](locations.md)                     | Shipped                                                                                |
-| [Properties, units, photos and files](properties.md) | Shipped                                                                                |
-| [Unit rent](unit-rent.md)                            | Walked through 14 Nov 2026 (landlord and tenant)                                       |
-| [Listing status](listing-status.md)                  | Walked through 14 Nov 2026; see known issues                                           |
-| [Public listings](public-listings.md)                | Walked through 14 Nov 2026; occupied units drop out (fixed and re-checked 14 Nov 2026) |
-| [Admin tenancies](admin-tenancies.md)                | Built; invites and accept page walked through 14 Nov 2026 (landlord side)              |
-| [Admin overview](admin-overview.md)                  | Built and walked through                                                               |
-| [Tenant area](tenant-area.md)                        | Walked through 14 Nov 2026                                                             |
-| [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page is a placeholder                             |
-| [Contact requests](contact-requests.md) | Walked through 14 Nov 2026; emails not sent |
-| [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                             |
-| [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                             |
-| [Tenancy lifecycle](tenancy-lifecycle.md) | Start, end and cancel walked through 14 Nov 2026 |
-| [Housemate invitations](housemate-invitations.md) | Walked through 14 Nov 2026 (request, approve, decline, accept) |
-| [Tenancy terms](tenancy-terms.md)                    | Walked through 14 Nov 2026 (both sides)                                                |
-| [Rent change approval](rent-change-approval.md) | Approve and decline walked through 14 Nov 2026 |
-| [Maintenance](maintenance.md) | Walked through 14 Nov 2026, report to close and reject |
-| [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                |
-| [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                       |
+| Feature                                              | Status                                                                                                                                         |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Authentication and sessions](authentication.md)     | Shipped                                                                                                                                        |
+| [Account and onboarding](account-and-onboarding.md)  | Shipped                                                                                                                                        |
+| [Admin app shell](admin-app-shell.md)                | Shipped; tenant and landlord pages are placeholders                                                                                            |
+| [Admin users](admin-users.md)                        | Shipped                                                                                                                                        |
+| [Access control](access-control.md)                  | Shipped                                                                                                                                        |
+| [Bans and sessions](bans-and-sessions.md)            | Shipped                                                                                                                                        |
+| [Locations lookup](locations.md)                     | Shipped                                                                                                                                        |
+| [Properties, units, photos and files](properties.md) | Shipped; admin property/unit screens walked through 15 Nov 2026                                                                                |
+| [Unit rent](unit-rent.md)                            | Walked through 14 Nov 2026 (landlord and tenant)                                                                                               |
+| [Listing status](listing-status.md)                  | Walked through 14 Nov 2026; see known issues                                                                                                   |
+| [Public listings](public-listings.md)                | Walked through 14 Nov 2026; occupied units drop out (fixed and re-checked 14 Nov 2026)                                                         |
+| [Admin tenancies](admin-tenancies.md)                | Built; invites and accept page walked through 14 Nov 2026 (landlord side); admin-side view/edit-gating/start/cancel walked through 15 Nov 2026 |
+| [Admin overview](admin-overview.md)                  | Built and walked through                                                                                                                       |
+| [Tenant area](tenant-area.md)                        | Walked through 14 Nov 2026                                                                                                                     |
+| [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page is a placeholder                                                                                     |
+| [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; emails not sent                                                                                                    |
+| [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                                                                                     |
+| [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                                                                                     |
+| [Tenancy lifecycle](tenancy-lifecycle.md)            | Start, end and cancel walked through 14 Nov 2026 (landlord); end and cancel walked through from the admin side 15 Nov 2026                     |
+| [Housemate invitations](housemate-invitations.md)    | Walked through 14 Nov 2026 (request, approve, decline, accept)                                                                                 |
+| [Tenancy terms](tenancy-terms.md)                    | Walked through 14 Nov 2026 (both sides)                                                                                                        |
+| [Rent change approval](rent-change-approval.md)      | Approve and decline walked through 14 Nov 2026                                                                                                 |
+| [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close and reject                                                                                         |
+| [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                                                                        |
+| [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                                                                               |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
@@ -45,3 +45,19 @@ database):
   request from the screens. Housemate and contact requests were made, and the contact request
   was accepted and revoked, through the service layer with email suppressed, because the server
   sends real mail; the screens were checked for what each side sees.
+
+Known issues from the 15 November 2026 admin walkthrough (regular admin, `kimlongly53@gmail.com`,
+local database):
+
+- **The admin app has no Maintenance, Contact requests or Tradespeople screens at all** — not
+  unlinked, not built. `admin/constants/navigation.ts` and `admin/app/(app)/admin/` only have
+  Overview, Users, Access, Properties, Tenancies, Bans and Access tokens. This means the
+  `on_behalf_of` recording on `maintenance_status_history` (the only tenancy-adjacent history
+  table that has it) can't be exercised from the admin UI at all right now.
+- Tenancies have no `on_behalf_of` concept to check in the first place — only
+  `maintenance_status_history` and the unbuilt reviews tables carry that column. Admin actions on
+  a tenancy are tracked only as `updated_by`, confirmed correct when an admin ended one.
+- Starting a tenancy to `ACTIVE` from the admin side still needs an invited-and-accepted tenant,
+  which needs a real email send (item 3 in `docs/todo.md`); not completed this session.
+- Confirmed by walkthrough: unit occupancy (`PARTIALLY_OCCUPIED`/`UNAVAILABLE`) has no admin UI
+  control anywhere — the unit edit form has no occupancy field at all.

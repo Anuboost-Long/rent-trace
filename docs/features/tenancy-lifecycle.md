@@ -1,12 +1,21 @@
 # Tenancy lifecycle
 
-## Status — 12 November 2026
+## Status — 15 November 2026
 
 Built. Back end: 17 tests (rules, dates, overlap, notifications, permissions); the full suite
 (472 tests) passes. Admin: type-check, lint and a production build pass. In Chrome as a landlord
 on 12 November 2026: the Start and Cancel buttons show on a draft tenancy and the Start dialog
 reads correctly. No tenancy was actually started, ended or cancelled in the browser, because the
 test tenancy starts on 1 December 2026 and an active one can't be ended or cancelled before then.
+
+Walked through from the **admin side** in Chrome on 15 November 2026 as the regular admin: ended
+an active tenancy (confirmation dialog read correctly, status moved to `ENDED`, end date set to
+the server's today, the unit's occupancy correctly dropped back to `VACANT`, `updated_by` recorded
+the admin); created a new draft tenancy and cancelled it (status moved to `CANCELLED`, unit stayed
+`VACANT` since it never started). Tried **Start** on a draft with no tenant yet: correctly refused
+with "Add a tenant first. Invite someone and wait for them to accept." Starting a tenancy all the
+way to `ACTIVE` still needs an invited-and-accepted tenant, which needs a real email send — not
+done yet (see `docs/todo.md` item 3).
 
 ## Goal
 
