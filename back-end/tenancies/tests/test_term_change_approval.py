@@ -180,6 +180,25 @@ class TermChangeApprovalTests(TenancyApiTestCase):
         self.assertEqual(self.kinds_for(self.lou)[-1], "TENANCY_TERMS_DECLINED")
         self.assertEqual(self.respond("approve", change, self.tina).status_code, 400)
 
+    def test_a_declined_change_shows_in_the_tenants_history(self):
+        change = self.propose()
+        self.respond("decline", change)
+
+        detail = self.client.get(f"{TENANT_TENANCIES}{self.tenancy['id']}/").data
+
+        self.assertEqual([c["status"] for c in detail["term_history"]], ["DECLINED", "APPLIED"])
+
+    def test_a_withdrawn_change_shows_in_the_tenants_history(self):
+        self.propose()
+        self.as_user(self.lou)
+        open_change = self.open_change()
+        self.post(f"{LANDLORD_URL}{self.tenancy['id']}/changes/{open_change.pk}/withdraw/")
+
+        self.acting_as(self.tina)
+        detail = self.client.get(f"{TENANT_TENANCIES}{self.tenancy['id']}/").data
+
+        self.assertEqual([c["status"] for c in detail["term_history"]], ["WITHDRAWN", "APPLIED"])
+
     def test_a_tenant_cannot_change_their_answer(self):
         self.add_tenant(self.tenancy["id"], self.sam)
         change = self.propose()

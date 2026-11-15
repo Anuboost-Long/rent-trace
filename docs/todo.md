@@ -122,9 +122,11 @@ still open if wanted.
 
 ## 7. Decisions made 15 Nov 2026, not yet implemented
 
-- **Declined/withdrawn rent proposals**: show them in the tenant's "Rent and bond history", not
-  just applied changes. Likely a QuerySet filter change on whatever lists that history (per
-  AGENTS.md §3, the lookup belongs on the QuerySet, not the service).
+- ~~**Declined/withdrawn rent proposals**: show them in the tenant's "Rent and bond history"~~
+  Done 15 Nov 2026: it was exactly a QuerySet filter (the tenant-side prefetch in
+  `my_tenancies.py` only fetched PENDING/APPLIED) plus the resource's own filter — the
+  landlord/admin side was never affected, it already showed everything. Verified live. See
+  [Rent change approval](rent-change-approval.md).
 - ~~**Rejected maintenance closing**: show "Closing rejected" in the issue timeline.~~ Done
   15 Nov 2026: built from `MaintenanceClosureResponse` rows directly (same pattern as the
   tradesperson-visit entries), no migration needed. Verified live against real historical data

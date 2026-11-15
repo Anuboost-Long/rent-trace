@@ -6,6 +6,8 @@ from tenancies.resources.housemate_request import HousemateRequestResource
 from tenancies.resources.my_tenancy import MyTenancyResource
 from tenancies.resources.term_change import MyTermChangeResource
 
+DECIDED_STATUSES = (TermChangeStatus.APPLIED, TermChangeStatus.DECLINED, TermChangeStatus.WITHDRAWN)
+
 
 class MyTenancyDetailResource(MyTenancyResource):
     housemates = serializers.SerializerMethodField(help_text="Other current tenants, names only.")
@@ -22,7 +24,7 @@ class MyTenancyDetailResource(MyTenancyResource):
         help_text="A rent or bond increase waiting for your answer, or null."
     )
     term_history = serializers.SerializerMethodField(
-        help_text="Rent and bond changes that took effect."
+        help_text="Rent and bond changes that were applied, declined or withdrawn."
     )
 
     class Meta(MyTenancyResource.Meta):
@@ -66,7 +68,7 @@ class MyTenancyDetailResource(MyTenancyResource):
         return MyTermChangeResource(pending, context=self._people_context(tenancy)).data
 
     def get_term_history(self, tenancy) -> list[dict]:
-        applied = [c for c in tenancy.visible_term_changes if c.status == TermChangeStatus.APPLIED]
+        decided = [c for c in tenancy.visible_term_changes if c.status in DECIDED_STATUSES]
         return MyTermChangeResource(
-            applied[:20], many=True, context=self._people_context(tenancy)
+            decided[:20], many=True, context=self._people_context(tenancy)
         ).data

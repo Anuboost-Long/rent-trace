@@ -20,13 +20,13 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Admin overview](admin-overview.md)                  | Built and walked through                                                                                                                              |
 | [Tenant area](tenant-area.md)                        | Walked through 14 Nov 2026                                                                                                                            |
 | [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page is a placeholder                                                                                            |
-| [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; received/answered emails confirmed against real Gmail 15 Nov 2026                                                        |
+| [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; received/answered emails confirmed against real Gmail 15 Nov 2026                                                         |
 | [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                                                                                            |
 | [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                                                                                            |
 | [Tenancy lifecycle](tenancy-lifecycle.md)            | Start, end and cancel walked through 14 Nov 2026 (landlord); end and cancel walked through from the admin side 15 Nov 2026                            |
-| [Housemate invitations](housemate-invitations.md)    | Walked through 14 Nov 2026 (request, approve, decline, accept); real-email + in-app notification loop confirmed 15 Nov 2026                          |
+| [Housemate invitations](housemate-invitations.md)    | Walked through 14 Nov 2026 (request, approve, decline, accept); real-email + in-app notification loop confirmed 15 Nov 2026                           |
 | [Tenancy terms](tenancy-terms.md)                    | Walked through 14 Nov 2026 (both sides)                                                                                                               |
-| [Rent change approval](rent-change-approval.md)      | Approve and decline walked through 14 Nov 2026                                                                                                        |
+| [Rent change approval](rent-change-approval.md)      | Approve and decline walked through 14 Nov 2026; declined/withdrawn now show in tenant history 15 Nov 2026                                             |
 | [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close and reject; rejected-closing timeline trace added 15 Nov 2026                                             |
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                                                                               |
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                                                                                      |
@@ -39,7 +39,8 @@ no API or screens.
 Known issues from the 14 November 2026 walkthrough (test landlord and tenants, local
 database):
 
-- A declined rent proposal does not appear in the tenant's rent and bond history.
+- ~~A declined rent proposal does not appear in the tenant's rent and bond history.~~ Fixed
+  15 Nov 2026: see [Rent change approval](rent-change-approval.md).
 - ~~A rejected maintenance closing leaves no trace on the issue~~ Fixed 15 Nov 2026: see
   [Maintenance](maintenance.md).
 - Not tried: the admin side of any of these, and sending, declining or cancelling a contact

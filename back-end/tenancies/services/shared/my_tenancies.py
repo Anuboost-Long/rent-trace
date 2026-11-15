@@ -33,7 +33,12 @@ def my_tenancies(user):
             Prefetch(
                 "term_changes",
                 queryset=TenancyTermChange.objects.filter(
-                    status__in=[TermChangeStatus.PENDING, TermChangeStatus.APPLIED]
+                    status__in=[
+                        TermChangeStatus.PENDING,
+                        TermChangeStatus.APPLIED,
+                        TermChangeStatus.DECLINED,
+                        TermChangeStatus.WITHDRAWN,
+                    ]
                 )
                 .select_related("created_by")
                 .prefetch_related("decisions")

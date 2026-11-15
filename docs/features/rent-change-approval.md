@@ -1,5 +1,17 @@
 # Rent and bond change approval
 
+## Status — 15 November 2026
+
+The tenant's "Rent and bond history" was only showing `APPLIED` changes — a declined or
+withdrawn proposal just vanished from the tenant's view once answered, even though the
+landlord's own tenancy page always showed it. Fixed: the tenant-side prefetch
+(`tenancies/services/shared/my_tenancies.py`) and `MyTenancyDetailResource.get_term_history`
+now include `DECLINED` and `WITHDRAWN` alongside `APPLIED`, matching what the landlord/admin
+side already showed. No front-end change needed — `components/tenancies/term-history.tsx` is
+shared with the landlord side and already had labels for every status. Verified live in Chrome:
+raised the rent on an active tenancy, declined it as a housemate, and it shows as "Declined" in
+the tenant's own history.
+
 ## Status — 12 November 2026
 
 Built. Back end: 28 new tests (what needs approval, exact rent comparison, every approval and decline path, stale and expired proposals, ending and cancelling, who is allowed, no amounts in messages, a history row for every change) and the existing edit tests updated for the new rule. Admin: type-check, lint and a production build pass. In Chrome as the landlord on 12 November 2026: raising the rent on the test tenancy from $450 to $500 a week created a proposal, the page showed it waiting with the tenant's answer, and the rent stayed at $450. The tenant's side (the review panel, the notification, approving) has not been seen yet.
