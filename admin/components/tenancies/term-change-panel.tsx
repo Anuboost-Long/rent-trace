@@ -1,10 +1,10 @@
 "use client";
 import Button from "@/components/common/button";
 import Can from "@/components/common/can";
+import LocalTime from "@/components/common/local-time";
 import { TenancyAccess } from "@/constants/tenancies";
 import useTermChange from "@/hooks/form/useTermChange";
 import type { TenancyAudience, TermChange } from "@/types/tenancies/models";
-import { formatDate } from "@/utils/format-date";
 
 import { Approvals, ChangedTerms } from "./term-change-summary";
 
@@ -33,9 +33,14 @@ export default function TermChangePanel({
             {expired ? "Proposal expired" : "Waiting for tenants to approve"}
           </h2>
           <p className="mt-1 text-sm text-foreground/70">
-            {expired
-              ? "The tenants didn't answer in time. Edit the tenancy to send it again."
-              : `This rise only takes effect once every tenant approves. It expires on ${formatDate(change.expires_at)}.`}
+            {expired ? (
+              "The tenants didn't answer in time. Edit the tenancy to send it again."
+            ) : (
+              <>
+                This rise only takes effect once every tenant approves. It
+                expires on <LocalTime iso={change.expires_at} />.
+              </>
+            )}
           </p>
         </div>
         <Can permission={TenancyAccess[audience].update}>

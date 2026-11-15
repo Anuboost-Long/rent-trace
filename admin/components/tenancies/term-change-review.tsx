@@ -1,10 +1,10 @@
 "use client";
 import Button from "@/components/common/button";
 import Can from "@/components/common/can";
+import LocalTime from "@/components/common/local-time";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import useTermChange from "@/hooks/form/useTermChange";
 import type { TermChange, TermChangeAnswer } from "@/types/tenancies/models";
-import { formatDate } from "@/utils/format-date";
 import { useState } from "react";
 
 import { Approvals, ChangedTerms } from "./term-change-summary";
@@ -56,9 +56,14 @@ export default function TermChangeReview({
           : "Your landlord proposed a change"}
       </h2>
       <p className="mt-1 text-sm text-foreground/70">
-        {expired
-          ? "Nobody answered in time, so nothing changed. Your landlord can send it again."
-          : `Rent or bond would go up. Every tenant has to approve. It expires on ${formatDate(change.expires_at)}.`}
+        {expired ? (
+          "Nobody answered in time, so nothing changed. Your landlord can send it again."
+        ) : (
+          <>
+            Rent or bond would go up. Every tenant has to approve. It expires on{" "}
+            <LocalTime iso={change.expires_at} />.
+          </>
+        )}
       </p>
       <div className="mt-3">
         <ChangedTerms change={change} />

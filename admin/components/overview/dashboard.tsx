@@ -1,9 +1,9 @@
 import { handleGetOverview } from "@/api/services/overview/serve-action";
+import LocalTime from "@/components/common/local-time";
 import { ActivityLabel } from "@/constants/overview";
 import { TenancyStatusLabel } from "@/constants/tenancies";
 import { Route } from "@/constants/web-routes";
 import type { TenancyAudience, TenancyStatus } from "@/types/tenancies/models";
-import { formatDateTime } from "@/utils/format-date";
 import Link from "next/link";
 
 const STATUS_SHADE: Record<TenancyStatus, string> = {
@@ -182,7 +182,7 @@ export default async function Dashboard({
                     </Link>
                   </span>
                   <span className="shrink-0 text-foreground/70">
-                    {formatDateTime(entry.at)}
+                    <LocalTime iso={entry.at} withTime />
                   </span>
                 </li>
               ))}

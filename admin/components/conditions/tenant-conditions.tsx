@@ -1,5 +1,5 @@
+import LocalTime from "@/components/common/local-time";
 import type { TenantCondition } from "@/types/conditions/models";
-import { formatDate } from "@/utils/format-date";
 
 export default function TenantConditions({
   notes,
@@ -24,7 +24,7 @@ export default function TenantConditions({
               </p>
             )}
             <p className="mt-1.5 text-sm text-foreground/60">
-              Checked {formatDate(note.observed_at)}
+              Checked <LocalTime iso={note.observed_at} />
             </p>
           </li>
         ))}

@@ -3,6 +3,7 @@ import Button from "@/components/common/button";
 import Can from "@/components/common/can";
 import CheckInput from "@/components/common/inputs/check-input";
 import TextInput from "@/components/common/inputs/text-input";
+import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import {
   InvitationStatusLabel,
@@ -11,7 +12,6 @@ import {
 } from "@/constants/tenancies";
 import useInvitations from "@/hooks/form/useInvitations";
 import type { Invitation, TenancyAudience } from "@/types/tenancies/models";
-import { formatDate } from "@/utils/format-date";
 import { useRef } from "react";
 
 type InvitationsSectionProp = Readonly<{
@@ -45,7 +45,7 @@ export default function InvitationsSection({
             : InvitationStatusLabel[item.status]}
           {item.status === "PENDING" && (
             <p className="text-xs text-foreground/60">
-              Expires {formatDate(item.expires_at)}
+              Expires <LocalTime iso={item.expires_at} />
             </p>
           )}
           {item.requested_by && (

@@ -1,4 +1,5 @@
 import { handleGetIssues } from "@/api/services/maintenance/serve-action";
+import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
@@ -11,7 +12,6 @@ import type {
   IssueSummary,
   MaintenanceAudience,
 } from "@/types/maintenance/models";
-import { formatDate } from "@/utils/format-date";
 import Link from "next/link";
 import { Suspense } from "react";
 
@@ -64,7 +64,10 @@ const columnsFor = (audience: MaintenanceAudience): Column<IssueSummary>[] => [
         },
       ]
     : []),
-  { header: "Reported", cell: (issue) => formatDate(issue.reported_at) },
+  {
+    header: "Reported",
+    cell: (issue) => <LocalTime iso={issue.reported_at} />,
+  },
 ];
 
 export default function IssueListBody({

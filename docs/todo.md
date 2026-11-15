@@ -7,26 +7,10 @@ context. Older done-item detail lives in `git log` and the feature docs linked b
 
 ## What's left
 
-### D. Convert displayed dates from UTC to local time
+### D. Local time for displayed dates — done 16 Nov 2026
 
-User decided 15 Nov 2026: show local time everywhere, not UTC (symptom: "13 Nov 2026" showing
-late in the evening local time). **This is not a one-line fix** — read `admin/utils/format-date.ts`
-first, then grep every call site, because the same formatter is used for two different kinds of
-field and they need opposite treatment:
-
-- **Instants** (`created_at`, `decided_at`, and similar timestamps) are real moments in time and
-  should convert to the viewer's local time zone.
-- **Calendar dates** (`start_date`, `end_date`, `joined_at` and similar Django `DateField`s) are
-  not timestamps — they have no time-of-day component. Converting them with a timezone shift is
-  what would introduce an off-by-one-day bug (e.g. a December 1 start date rendering as
-  November 30 for anyone behind UTC) — the same bug class this fix is supposed to remove.
-
-Plan: split call sites by which kind of field they're rendering before changing anything, not a
-global find-and-replace on `formatDate`. Known call sites so far include
-`components/tenancies/term-history.tsx` (passes `decided_at ?? created_at`, an instant). Expect
-this to touch several components across admin, and possibly mobile if it renders the same fields.
-Verify the fix by checking a date near a day boundary in a non-UTC-adjacent time, not just
-visually glancing at "today."
+Timestamps use `LocalTime`; calendar dates keep `formatDate`. See
+[Date display](features/date-display.md). The mobile app was not checked for the same fields.
 
 ### E. Landlord overview — done 16 Nov 2026
 

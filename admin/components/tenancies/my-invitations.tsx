@@ -1,5 +1,5 @@
 import { handleGetMyInvitations } from "@/api/services/tenancies/serve-action";
-import { formatDate } from "@/utils/format-date";
+import LocalTime from "@/components/common/local-time";
 
 import AcceptInvitationButton from "./accept-invitation-button";
 
@@ -27,7 +27,7 @@ export default async function MyInvitations() {
                   ? `${invitation.invited_by} invited you`
                   : "You've been invited"}
                 {invitation.is_primary && " as the primary tenant"}. Expires{" "}
-                {formatDate(invitation.expires_at)}.
+                <LocalTime iso={invitation.expires_at} />.
                 {invitation.requested_by_tenant &&
                   invitation.waiting_on.includes("LANDLORD") &&
                   " The landlord also has to approve before you join."}

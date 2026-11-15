@@ -1,4 +1,5 @@
 import { handleGetIssue } from "@/api/services/maintenance/serve-action";
+import LocalTime from "@/components/common/local-time";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import {
@@ -8,8 +9,8 @@ import {
   IssueStatusLabel,
 } from "@/constants/maintenance";
 import type { MaintenanceAudience } from "@/types/maintenance/models";
-import { formatDate } from "@/utils/format-date";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 import { Suspense } from "react";
 
 import IssueActions from "./issue-actions";
@@ -41,11 +42,11 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
     );
   }
 
-  const details: [string, string][] = [
+  const details: [string, ReactNode][] = [
     ["Status", IssueStatusLabel[issue.status]],
     ["Priority", IssuePriorityLabel[issue.priority]],
     ...(issue.category
-      ? ([["Kind of problem", issue.category.name]] as [string, string][])
+      ? ([["Kind of problem", issue.category.name]] as [string, ReactNode][])
       : []),
     [
       "Where",
@@ -53,7 +54,9 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
     ],
     [
       "Reported",
-      `${formatDate(issue.reported_at)} by ${issue.reported_by_name}`,
+      <>
+        <LocalTime iso={issue.reported_at} /> by {issue.reported_by_name}
+      </>,
     ],
     ...(issue.closure_outcome
       ? ([["Outcome", ClosureOutcomeLabel[issue.closure_outcome]]] as [

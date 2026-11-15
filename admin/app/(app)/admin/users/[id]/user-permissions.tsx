@@ -2,10 +2,10 @@
 import Button from "@/components/common/button";
 import SelectInput from "@/components/common/inputs/select-input";
 import TextInput from "@/components/common/inputs/text-input";
+import LocalTime from "@/components/common/local-time";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import useGrants from "@/hooks/form/useGrants";
 import type { PermissionItem, UserPermissions } from "@/types/access/models";
-import { formatDate } from "@/utils/format-date";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -81,7 +81,7 @@ export default function UserPermissionsSection({
                   <div className="text-sm">
                     <p className="font-medium">{item.name}</p>
                     <p className="text-foreground/70">
-                      {item.reason} · {formatDate(item.created_at)}
+                      {item.reason} · <LocalTime iso={item.created_at} />
                     </p>
                   </div>
                   <Button

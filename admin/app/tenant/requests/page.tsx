@@ -1,4 +1,5 @@
 import { handleGetMyContactRequests } from "@/api/services/contact-requests/serve-action";
+import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import ContactCard from "@/components/contact-requests/contact-card";
@@ -9,7 +10,6 @@ import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { ContactRequestStatusLabel } from "@/constants/contact-requests";
 import { Route } from "@/constants/web-routes";
 import type { TenantContactRequest } from "@/types/contact-requests/models";
-import { formatDate } from "@/utils/format-date";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -44,7 +44,7 @@ const columns: Column<TenantContactRequest>[] = [
       <p className="line-clamp-3 whitespace-pre-line">{request.message}</p>
     ),
   },
-  { header: "Sent", cell: (request) => formatDate(request.created_at) },
+  { header: "Sent", cell: (request) => <LocalTime iso={request.created_at} /> },
   {
     header: "Status",
     cell: (request) => (
@@ -52,7 +52,7 @@ const columns: Column<TenantContactRequest>[] = [
         {ContactRequestStatusLabel[request.status]}
         {request.decided_at && (
           <p className="text-xs text-foreground/60">
-            {formatDate(request.decided_at)}
+            <LocalTime iso={request.decided_at} />
           </p>
         )}
       </>

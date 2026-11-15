@@ -1,6 +1,6 @@
+import LocalTime from "@/components/common/local-time";
 import { IssueStatusLabel, IssueVisitLabel } from "@/constants/maintenance";
 import type { IssueHistoryEntry } from "@/types/maintenance/models";
-import { formatDateTime } from "@/utils/format-date";
 
 export default function IssueTimeline({
   history,
@@ -20,7 +20,7 @@ export default function IssueTimeline({
                   : IssueVisitLabel[entry.kind]}
               </p>
               <p className="text-sm text-foreground/60">
-                {formatDateTime(entry.created_at)}
+                <LocalTime iso={entry.created_at} withTime />
               </p>
             </div>
             <p className="text-sm text-foreground/70">

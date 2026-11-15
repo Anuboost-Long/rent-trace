@@ -1,11 +1,11 @@
 import { handleGetTokens } from "@/api/services/tokens/serve-action";
+import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { TokenStatusLabel } from "@/constants/security";
 import { Route } from "@/constants/web-routes";
 import type { AccessToken } from "@/types/security/models";
-import { formatDateTime } from "@/utils/format-date";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -77,9 +77,18 @@ const columns: Column<AccessToken>[] = [
       <span className="font-mono">{token.ip_address ?? "—"}</span>
     ),
   },
-  { header: "Signed in", cell: (token) => formatDateTime(token.created_at) },
-  { header: "Last used", cell: (token) => formatDateTime(token.last_used_at) },
-  { header: "Expires", cell: (token) => formatDateTime(token.expires_at) },
+  {
+    header: "Signed in",
+    cell: (token) => <LocalTime iso={token.created_at} withTime />,
+  },
+  {
+    header: "Last used",
+    cell: (token) => <LocalTime iso={token.last_used_at} withTime />,
+  },
+  {
+    header: "Expires",
+    cell: (token) => <LocalTime iso={token.expires_at} withTime />,
+  },
   { header: "Status", cell: (token) => TokenStatusLabel[token.status] },
   {
     header: "Actions",

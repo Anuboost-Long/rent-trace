@@ -1,10 +1,10 @@
 "use client";
 import Button from "@/components/common/button";
 import CheckInput from "@/components/common/inputs/check-input";
+import LocalTime from "@/components/common/local-time";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import useConditionActions from "@/hooks/form/useConditionActions";
 import type { UnitCondition } from "@/types/conditions/models";
-import { formatDate } from "@/utils/format-date";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -71,7 +71,7 @@ export default function UnitConditions({ unitId, notes }: UnitConditionsProp) {
                     </p>
                   )}
                   <p className="mt-1.5 text-sm text-foreground/60">
-                    Checked {formatDate(note.observed_at)}
+                    Checked <LocalTime iso={note.observed_at} />
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">

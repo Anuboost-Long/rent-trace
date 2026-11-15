@@ -1,7 +1,7 @@
 "use client";
 import { handleMarkNotificationRead } from "@/api/services/notifications/serve-action";
+import LocalTime from "@/components/common/local-time";
 import type { AppNotification } from "@/types/notifications/models";
-import { formatDateTime } from "@/utils/format-date";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -49,7 +49,7 @@ export default function NotificationItem({
           {notification.body}
         </span>
         <span className="mt-1 block text-xs text-foreground/60">
-          {formatDateTime(notification.created_at)}
+          <LocalTime iso={notification.created_at} withTime />
         </span>
       </span>
     </>

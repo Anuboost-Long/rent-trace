@@ -4,12 +4,12 @@ import {
 } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
 import type { GrantListItem } from "@/types/access/models";
-import { formatDate } from "@/utils/format-date";
 import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -80,7 +80,7 @@ const columns: Column<GrantListItem>[] = [
         ? `${grant.granted_by.first_name} ${grant.granted_by.last_name}`
         : "—",
   },
-  { header: "Date", cell: (grant) => formatDate(grant.created_at) },
+  { header: "Date", cell: (grant) => <LocalTime iso={grant.created_at} /> },
   {
     header: "Actions",
     className: "text-right",

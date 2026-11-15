@@ -2,13 +2,13 @@ import { handleGetRoles } from "@/api/services/access/serve-action";
 import { handleGetUsers } from "@/api/services/users/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { BUILT_IN_PARTY_ROLES, StatusLabel } from "@/constants/roles";
 import { Route } from "@/constants/web-routes";
 import type { UserSummary } from "@/types/users/models";
-import { formatDate } from "@/utils/format-date";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -60,7 +60,7 @@ const columns: Column<UserSummary>[] = [
       user.role_names.join(", ") + (user.is_top_level_admin ? " (super)" : ""),
   },
   { header: "Status", cell: (user) => StatusLabel[user.account_status] },
-  { header: "Joined", cell: (user) => formatDate(user.created_at) },
+  { header: "Joined", cell: (user) => <LocalTime iso={user.created_at} /> },
   {
     header: "Actions",
     className: "text-right",

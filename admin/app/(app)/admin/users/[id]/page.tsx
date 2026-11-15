@@ -3,12 +3,13 @@ import {
   handleGetUserPermissions,
 } from "@/api/services/access/serve-action";
 import { handleGetUser } from "@/api/services/users/serve-action";
+import LocalTime from "@/components/common/local-time";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { StatusLabel } from "@/constants/roles";
 import { Route } from "@/constants/web-routes";
-import { formatDate } from "@/utils/format-date";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 import { Suspense } from "react";
 
 import UserActions from "../user-actions";
@@ -42,7 +43,7 @@ async function UserDetail({
     );
   }
 
-  const details: [string, string][] = [
+  const details: [string, ReactNode][] = [
     ["Email", user.email],
     [
       "Role",
@@ -55,9 +56,12 @@ async function UserDetail({
       "Sign-in method",
       user.auth_method === "GOOGLE" ? "Google" : "Email and password",
     ],
-    ["Email verified", formatDate(user.email_verified_at)],
-    ["Last sign-in", formatDate(user.last_login_at)],
-    ["Joined", formatDate(user.created_at)],
+    [
+      "Email verified",
+      <LocalTime key="Email verified" iso={user.email_verified_at} />,
+    ],
+    ["Last sign-in", <LocalTime key="Last sign-in" iso={user.last_login_at} />],
+    ["Joined", <LocalTime key="Joined" iso={user.created_at} />],
   ];
 
   return (

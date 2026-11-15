@@ -30,6 +30,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close and reject; rejected-closing timeline trace added 15 Nov 2026                                             |
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                                                                               |
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                                                                                      |
+| [Date display](date-display.md)                      | In progress; nothing verified yet                                                                                                                     |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.

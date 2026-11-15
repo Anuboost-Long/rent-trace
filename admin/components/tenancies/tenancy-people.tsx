@@ -3,10 +3,10 @@ import { UserAtom } from "@/api/services/auth/jotai";
 import Button from "@/components/common/button";
 import Can from "@/components/common/can";
 import TextInput from "@/components/common/inputs/text-input";
+import LocalTime from "@/components/common/local-time";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import useHousemateRequests from "@/hooks/form/useHousemateRequests";
 import type { Housemate, HousemateRequest } from "@/types/tenancies/models";
-import { formatDate } from "@/utils/format-date";
 import clsx from "clsx";
 import { useAtomValue } from "jotai";
 import { Check, Clock, UserPlus } from "lucide-react";
@@ -219,7 +219,7 @@ export default function TenancyPeople({
                           waitingText="Waiting for them"
                         />
                         <span className="text-foreground/60">
-                          Expires {formatDate(item.expires_at)}
+                          Expires <LocalTime iso={item.expires_at} />
                         </span>
                       </p>
                     )}

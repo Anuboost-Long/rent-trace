@@ -1,6 +1,6 @@
+import LocalTime from "@/components/common/local-time";
 import { TermChangeStatusLabel } from "@/constants/tenancies";
 import type { TermChange } from "@/types/tenancies/models";
-import { formatDate } from "@/utils/format-date";
 import { changedRows } from "@/utils/terms";
 
 export default function TermHistory({
@@ -21,7 +21,7 @@ export default function TermHistory({
           <li key={change.id} className="py-3">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="text-sm text-foreground/60">
-                {formatDate(change.decided_at ?? change.created_at)}
+                <LocalTime iso={change.decided_at ?? change.created_at} />
                 {change.proposed_by && ` by ${change.proposed_by}`}
               </p>
               <p className="text-sm text-foreground/60">

@@ -1,8 +1,9 @@
 import { handleGetMe } from "@/api/services/auth/serve-action";
+import LocalTime from "@/components/common/local-time";
 import PageHeader from "@/components/layout/page-header";
 import { FormSkeleton } from "@/components/layout/page-skeletons";
-import { formatDate } from "@/utils/format-date";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Suspense } from "react";
 
 import ProfileSection from "./profile-section";
@@ -34,16 +35,19 @@ async function Account() {
     );
   }
 
-  const details: [string, string][] = [
+  const details: [string, ReactNode][] = [
     ["Email", user.email],
     ["Role", user.role_names.join(", ") || "None yet"],
     [
       "Sign-in method",
       user.auth_method === "GOOGLE" ? "Google" : "Email and password",
     ],
-    ["Email verified", formatDate(user.email_verified_at)],
-    ["Member since", formatDate(user.created_at)],
-    ["Last sign-in", formatDate(user.last_login_at)],
+    [
+      "Email verified",
+      <LocalTime key="Email verified" iso={user.email_verified_at} />,
+    ],
+    ["Member since", <LocalTime key="Member since" iso={user.created_at} />],
+    ["Last sign-in", <LocalTime key="Last sign-in" iso={user.last_login_at} />],
   ];
 
   return (

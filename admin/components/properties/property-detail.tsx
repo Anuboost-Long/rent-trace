@@ -1,6 +1,7 @@
 import { handleGetProperty } from "@/api/services/properties/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LocalTime from "@/components/common/local-time";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import {
@@ -11,7 +12,6 @@ import {
 } from "@/constants/properties";
 import { TenancyAccess, TenancyRoutes } from "@/constants/tenancies";
 import type { PropertyAudience } from "@/types/properties/models";
-import { formatDate } from "@/utils/format-date";
 import {
   formatAddress,
   ownerName,
@@ -70,8 +70,11 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
     ],
     ["Public description", property.public_description ?? "—"],
     ["Private notes", property.private_notes ?? "—"],
-    ["Created", formatDate(property.created_at)],
-    ["Last changed", formatDate(property.updated_at)],
+    ["Created", <LocalTime key="Created" iso={property.created_at} />],
+    [
+      "Last changed",
+      <LocalTime key="Last changed" iso={property.updated_at} />,
+    ],
   ];
 
   return (

@@ -1,11 +1,11 @@
 import { handleGetBans } from "@/api/services/bans/serve-action";
+import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { BanStatusLabel, BanTypeLabel } from "@/constants/security";
 import { Route } from "@/constants/web-routes";
 import type { Ban } from "@/types/security/models";
-import { formatDate } from "@/utils/format-date";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -67,7 +67,7 @@ const columns: Column<Ban>[] = [
     header: "Banned",
     cell: (ban) => (
       <>
-        {formatDate(ban.created_at)}
+        <LocalTime iso={ban.created_at} />
         {ban.created_by && (
           <p className="text-xs text-foreground/60">
             by {fullName(ban.created_by)}
@@ -78,7 +78,8 @@ const columns: Column<Ban>[] = [
   },
   {
     header: "Expires",
-    cell: (ban) => (ban.expires_at ? formatDate(ban.expires_at) : "Never"),
+    cell: (ban) =>
+      ban.expires_at ? <LocalTime iso={ban.expires_at} /> : "Never",
   },
   {
     header: "Status",
@@ -87,7 +88,7 @@ const columns: Column<Ban>[] = [
         {BanStatusLabel[ban.status]}
         {ban.status === "LIFTED" && (
           <p className="text-xs text-foreground/60">
-            {formatDate(ban.lifted_at)}
+            <LocalTime iso={ban.lifted_at} />
             {ban.lift_reason && ` · ${ban.lift_reason}`}
           </p>
         )}

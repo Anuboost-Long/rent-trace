@@ -1,9 +1,9 @@
 import { handleGetPermissionHolders } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
+import LocalTime from "@/components/common/local-time";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
-import { formatDate } from "@/utils/format-date";
 import { UserPlus } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -124,7 +124,7 @@ async function PermissionDetail({
                           {name}
                         </Link>
                         <p className="text-foreground/70">
-                          {grant.reason} · {formatDate(grant.created_at)}
+                          {grant.reason} · <LocalTime iso={grant.created_at} />
                         </p>
                       </div>
                       <RevokeGrantButton
