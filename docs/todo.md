@@ -125,9 +125,10 @@ still open if wanted.
 - **Declined/withdrawn rent proposals**: show them in the tenant's "Rent and bond history", not
   just applied changes. Likely a QuerySet filter change on whatever lists that history (per
   AGENTS.md §3, the lookup belongs on the QuerySet, not the service).
-- **Rejected maintenance closing**: show "Closing rejected" in the issue timeline.
-  `MaintenanceStatusHistory`/`MaintenanceClosureResponse` already exist — likely a new history
-  row and a timeline label, not a migration. Confirm before assuming.
+- ~~**Rejected maintenance closing**: show "Closing rejected" in the issue timeline.~~ Done
+  15 Nov 2026: built from `MaintenanceClosureResponse` rows directly (same pattern as the
+  tradesperson-visit entries), no migration needed. Verified live against real historical data
+  from the 13 Nov walkthrough. See [Maintenance](maintenance.md).
 - **Unit occupancy** (`PARTIALLY_OCCUPIED`/`UNAVAILABLE`): add a control to the unit form. The
   `OccupancyStatus` enum already has the values — the real work is the interaction with the
   automatic occupancy rule in [Tenancy lifecycle](tenancy-lifecycle.md) (ending sets `VACANT`

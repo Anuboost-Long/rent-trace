@@ -43,7 +43,7 @@ export type OpenClosure = {
 };
 
 export type IssueHistoryEntry = {
-  kind: "STATUS" | "PROVIDER_BOOKED" | "VISIT_DONE";
+  kind: "STATUS" | "PROVIDER_BOOKED" | "VISIT_DONE" | "CLOSING_REJECTED";
   from_status: IssueStatus | null;
   to_status: IssueStatus | null;
   trigger: string;

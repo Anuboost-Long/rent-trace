@@ -78,6 +78,18 @@ class ClosureTests(MaintenanceApiTestCase):
         self.assertEqual(self.kinds_for(self.tina)[-1], "MAINTENANCE_CLOSURE_REJECTED")
         self.assertEqual(self.propose(issue, self.tina).status_code, 200)
 
+    def test_a_rejection_shows_in_the_timeline(self):
+        issue = self.reported()
+        self.propose(issue, self.tina, "FIXED", "The tap is fixed.")
+
+        self.answer(issue, self.lou, "reject")
+
+        entry = self.detail(issue, self.tina).data["history"][-1]
+        self.assertEqual(
+            (entry["kind"], entry["actor"], entry["reason"]),
+            ("CLOSING_REJECTED", "Lou Reed", "The tap is fixed."),
+        )
+
     def test_you_cannot_answer_your_own_proposal_or_one_from_your_own_side(self):
         self.add_co_tenant()
         issue = self.reported()

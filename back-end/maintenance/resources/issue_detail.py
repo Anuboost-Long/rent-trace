@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from common.models import PartySide
+from maintenance.models import ClosureDecision
 from maintenance.resources.issue_summary import IssueSummaryResource, _name
 from maintenance.services.shared.actions import allowed_actions
 from maintenance.services.shared.parties import side_of
@@ -69,7 +70,8 @@ class IssueDetailResource(IssueSummaryResource):
             for row in rows
         ]
         return sorted(
-            [*entries, *self._visit_entries(issue)], key=lambda entry: entry["created_at"]
+            [*entries, *self._visit_entries(issue), *self._rejected_closure_entries(issue)],
+            key=lambda entry: entry["created_at"],
         )
 
     def _visit_entries(self, issue) -> list[dict]:
@@ -81,6 +83,23 @@ class IssueDetailResource(IssueSummaryResource):
             if booking.completed_at is not None:
                 entries.append(_visit_entry("VISIT_DONE", booking, booking.completed_at, provider))
         return entries
+
+    def _rejected_closure_entries(self, issue) -> list[dict]:
+        rejected = issue.closure_proposals.filter(
+            response__decision=ClosureDecision.REJECTED
+        ).select_related("response__responded_by")
+        return [
+            {
+                "kind": "CLOSING_REJECTED",
+                "from_status": None,
+                "to_status": None,
+                "trigger": "CLOSING_REJECTED",
+                "actor": _name(proposal.response.responded_by),
+                "reason": proposal.reason,
+                "created_at": proposal.response.created_at,
+            }
+            for proposal in rejected
+        ]
 
     def get_actions(self, issue) -> list[str]:
         return allowed_actions(issue, self.context["user"])

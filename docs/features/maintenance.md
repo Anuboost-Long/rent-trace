@@ -1,5 +1,14 @@
 # Maintenance
 
+## Status — 15 November 2026
+
+A rejected closing now leaves a trace on the issue itself: the timeline shows a "Closing
+rejected" entry (who rejected it and the original proposal's reason), not just a notification
+to the proposer. Verified live in Chrome against real historical data from the 13 November
+walkthrough (`maintenance/resources/issue_detail.py`, `_rejected_closure_entries`; built from
+`MaintenanceClosureResponse` rows, same pattern as the tradesperson-visit entries — no
+migration needed).
+
 ## Status — 12 November 2026
 
 Built, not yet seen in a browser. Back end: 29 tests (reporting, scoping, the workflow, every closure path, a stale proposal, closing when nobody is left, notifications) and the full suite pass. Admin: type-check, lint and a production build pass. The new migrations (`maintenance/0003`, `notifications/0007`) have **not** been applied to the dev database yet, so the screens can't be opened until they are.

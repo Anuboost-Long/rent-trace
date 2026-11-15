@@ -27,7 +27,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Housemate invitations](housemate-invitations.md)    | Walked through 14 Nov 2026 (request, approve, decline, accept); real-email + in-app notification loop confirmed 15 Nov 2026                          |
 | [Tenancy terms](tenancy-terms.md)                    | Walked through 14 Nov 2026 (both sides)                                                                                                               |
 | [Rent change approval](rent-change-approval.md)      | Approve and decline walked through 14 Nov 2026                                                                                                        |
-| [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close and reject                                                                                                |
+| [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close and reject; rejected-closing timeline trace added 15 Nov 2026                                             |
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                                                                               |
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                                                                                      |
 
@@ -40,8 +40,8 @@ Known issues from the 14 November 2026 walkthrough (test landlord and tenants, l
 database):
 
 - A declined rent proposal does not appear in the tenant's rent and bond history.
-- A rejected maintenance closing leaves no trace on the issue: the proposal disappears and the
-  landlord only learns from a notification.
+- ~~A rejected maintenance closing leaves no trace on the issue~~ Fixed 15 Nov 2026: see
+  [Maintenance](maintenance.md).
 - Not tried: the admin side of any of these, and sending, declining or cancelling a contact
   request from the screens. Housemate and contact requests were made, and the contact request
   was accepted and revoked, through the service layer with email suppressed, because the server
