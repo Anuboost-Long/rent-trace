@@ -131,6 +131,26 @@ class LandlordUnitDetailView(LandlordView):
         return Response(status=204)
 
 
+class LandlordUnitOccupancyView(LandlordView):
+    required_permissions = {"POST": "properties.update"}
+
+    @extend_schema(
+        operation_id="landlord_properties_units_occupancy",
+        request=dtos.ChangeOccupancyDto,
+        responses=resources.UnitResource,
+    )
+    def post(self, request, property_id, unit_id):
+        data = _validated(dtos.ChangeOccupancyDto, request.data)
+        unit = services.change_unit_occupancy(
+            actor=request.user,
+            property_id=property_id,
+            unit_id=unit_id,
+            occupancy_status=data["occupancy_status"],
+            owned_by=request.user,
+        )
+        return Response(resources.UnitResource(unit).data)
+
+
 class LandlordScope:
     """Narrows the shared file views to properties the signed-in landlord owns."""
 

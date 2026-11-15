@@ -60,6 +60,12 @@ export const ListingStatusHint: Record<string, string> = {
 
 export const PUBLIC_LISTING_STATUSES = ["AVAILABLE", "PARTIALLY_AVAILABLE"];
 
+export const MANUAL_OCCUPANCY_STATUSES = [
+  "VACANT",
+  "PARTIALLY_OCCUPIED",
+  "UNAVAILABLE",
+];
+
 export const labelOptions = (labels: Record<string, string>) =>
   Object.entries(labels).map(([value, label]) => ({ value, label }));
 

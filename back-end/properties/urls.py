@@ -12,6 +12,11 @@ urlpatterns = [
         views.UnitDetailView.as_view(),
         name="property-unit-detail",
     ),
+    path(
+        "<int:property_id>/units/<int:unit_id>/occupancy/",
+        views.UnitOccupancyView.as_view(),
+        name="property-unit-occupancy",
+    ),
     path("<int:property_id>/files/", file_views.PropertyFilesView.as_view(), name="property-files"),
     path(
         "<int:property_id>/files/<int:file_id>/",

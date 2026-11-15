@@ -226,6 +226,24 @@ export const handleDeletePropertyFile = async (
   }
 };
 
+export const handleChangeUnitOccupancy = async (
+  propertyId: number | string,
+  unitId: number,
+  occupancyStatus: string,
+  audience: PropertyAudience = "admin",
+) => {
+  try {
+    const data = await ApiServiceServer<PropertyUnit>({
+      url: apiFor(audience).unit_occupancy(propertyId, unitId),
+      method: "POST",
+      data: { occupancy_status: occupancyStatus },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
 export const handleChangeListingStatus = async (
   audience: PropertyAudience,
   propertyId: number | string,

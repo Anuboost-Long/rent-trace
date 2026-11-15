@@ -133,12 +133,11 @@ still open if wanted.
   15 Nov 2026: built from `MaintenanceClosureResponse` rows directly (same pattern as the
   tradesperson-visit entries), no migration needed. Verified live against real historical data
   from the 13 Nov walkthrough. See [Maintenance](maintenance.md).
-- **Unit occupancy** (`PARTIALLY_OCCUPIED`/`UNAVAILABLE`): add a control to the unit form. The
-  `OccupancyStatus` enum already has the values — the real work is the interaction with the
-  automatic occupancy rule in [Tenancy lifecycle](tenancy-lifecycle.md) (ending sets `VACANT`
-  unless another tenancy is still `ACTIVE`; `UNAVAILABLE` is "never changed" by that rule).
-  Decide and document the interaction rules in `properties.md`/`tenancy-lifecycle.md` _before_
-  adding the dropdown.
+- ~~**Unit occupancy** (`PARTIALLY_OCCUPIED`/`UNAVAILABLE`): add a control to the unit form.~~ Done
+  15 Nov 2026: `POST …/units/<id>/occupancy/` (admin and landlord), refused while the unit has an
+  `ACTIVE` tenancy. `OCCUPIED` can't be set by hand. Verified live as a landlord. See
+  [Properties](properties.md) and [Tenancy lifecycle](tenancy-lifecycle.md) (the one known gap:
+  starting a tenancy never clears a manually set occupancy first).
 - **Landlord overview**: build a basic version, scoped to what `/api/overview/` already returns
   filtered to the landlord's own properties — check first whether that endpoint supports a
   landlord audience at all; `admin-overview.md` says today it's "open to any admin (not landlords

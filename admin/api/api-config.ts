@@ -8,6 +8,8 @@ const propertyApi = (root: string) => ({
   units: (id: number | string) => byEndpoint(`${root}/${id}/units/`),
   unit: (id: number | string, unitId: number) =>
     byEndpoint(`${root}/${id}/units/${unitId}/`),
+  unit_occupancy: (id: number | string, unitId: number) =>
+    byEndpoint(`${root}/${id}/units/${unitId}/occupancy/`),
 });
 
 const tenancyApi = (root: string) => ({

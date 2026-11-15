@@ -122,3 +122,22 @@ class UnitDetailView(PermissionedView):
     def delete(self, request, property_id, unit_id):
         services.delete_unit(actor=request.user, property_id=property_id, unit_id=unit_id)
         return Response(status=204)
+
+
+class UnitOccupancyView(PermissionedView):
+    required_permissions = {"POST": "properties.admin_manage"}
+
+    @extend_schema(
+        operation_id="properties_units_occupancy",
+        request=dtos.ChangeOccupancyDto,
+        responses=resources.UnitResource,
+    )
+    def post(self, request, property_id, unit_id):
+        data = _validated(dtos.ChangeOccupancyDto, request.data)
+        unit = services.change_unit_occupancy(
+            actor=request.user,
+            property_id=property_id,
+            unit_id=unit_id,
+            occupancy_status=data["occupancy_status"],
+        )
+        return Response(resources.UnitResource(unit).data)

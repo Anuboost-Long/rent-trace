@@ -43,6 +43,12 @@ Statuses are `DRAFT` (set up, invitations out), `ACTIVE`, `ENDED` and `CANCELLED
   marked `UNAVAILABLE` is never changed. So an occupied unit drops out of public listings
   ([Public listings](public-listings.md)). Occupancy of units whose tenancy started before this
   rule existed was corrected once by hand in the dev database.
+- **Manually setting occupancy** (`VACANT`, `PARTIALLY_OCCUPIED` or `UNAVAILABLE` — see
+  [Properties](properties.md)) is refused while the unit has an `ACTIVE` tenancy, so a landlord or
+  admin can never make an occupied unit look available. This is the only guard: starting a tenancy
+  does not check or clear occupancy first, so a unit left manually marked `UNAVAILABLE` and then
+  given a new active tenancy anyway keeps showing `UNAVAILABLE` (the existing skip above) until
+  someone clears it by hand — a known gap, not fixed here.
 - An ended or cancelled tenancy takes no new invitations or joiners (already enforced).
 - The tenants are told in the app when their tenancy starts, ends or is cancelled
   ([Notifications](notifications.md)); the message has no contact details.
@@ -64,3 +70,5 @@ Statuses are `DRAFT` (set up, invitations out), `ACTIVE`, `ENDED` and `CANCELLED
   current from the day it is started.
 - Editing a tenancy's dates, notes, rent and bond is built; see [Tenancy terms](tenancy-terms.md).
 - Tenants leaving on their own, or a landlord removing one tenant from a running tenancy.
+- Starting a tenancy never checks or clears a unit's manually set occupancy first — see the gap
+  noted above.

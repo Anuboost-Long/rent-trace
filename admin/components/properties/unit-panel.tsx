@@ -1,14 +1,18 @@
 "use client";
 import { UserAtom } from "@/api/services/auth/jotai";
 import Button from "@/components/common/button";
+import SelectInput from "@/components/common/inputs/select-input";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import {
+  labelOptions,
+  MANUAL_OCCUPANCY_STATUSES,
   OccupancyLabel,
   PropertyAccess,
   PropertyRoutes,
   UnitTypeLabel,
 } from "@/constants/properties";
 import useUnitActions from "@/hooks/form/useUnitActions";
+import useUnitOccupancy from "@/hooks/form/useUnitOccupancy";
 import type { PropertyAudience, PropertyUnit } from "@/types/properties/models";
 import { formatRent } from "@/utils/rent";
 import { useAtomValue } from "jotai";
@@ -17,6 +21,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import UnitForm from "./unit-form";
+
+const MANUAL_OCCUPANCY_OPTIONS = labelOptions(OccupancyLabel).filter(
+  ({ value }) => MANUAL_OCCUPANCY_STATUSES.includes(value),
+);
 
 type UnitPanelProp = Readonly<{
   audience: PropertyAudience;
@@ -36,8 +44,10 @@ export default function UnitPanel({
     propertyId,
     audience,
   );
+  const occupancy = useUnitOccupancy(audience, propertyId, unit.id);
   const [editing, setEditing] = useState(false);
   const [confirming, setConfirming] = useState(false);
+  const hasTenant = unit.occupancy_status === "OCCUPIED";
 
   const details: [string, string][] = [
     ["Type", UnitTypeLabel[unit.unit_type]],
@@ -110,6 +120,47 @@ export default function UnitPanel({
             </div>
           ))}
         </dl>
+      )}
+
+      {canManage && !editing && (
+        <section className="mt-6 space-y-3 rounded-xl border border-foreground/15 p-4">
+          <h2 className="font-medium">Occupancy</h2>
+          {hasTenant ? (
+            <p className="text-sm text-foreground/70">
+              Set automatically while this unit has a current tenant.
+            </p>
+          ) : (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                occupancy.change(
+                  String(
+                    new FormData(event.currentTarget).get("occupancy_status"),
+                  ),
+                );
+              }}
+              className="flex flex-wrap items-end gap-3 sm:justify-start"
+            >
+              <SelectInput
+                key={unit.occupancy_status}
+                label="Occupancy"
+                name="occupancy_status"
+                options={MANUAL_OCCUPANCY_OPTIONS}
+                defaultValue={unit.occupancy_status}
+                error={occupancy.error?.fields.occupancy_status}
+                className="max-w-xs"
+              />
+              <Button type="submit" pending={occupancy.pending}>
+                {occupancy.pending ? "Saving…" : "Update occupancy"}
+              </Button>
+            </form>
+          )}
+          {occupancy.error && !occupancy.error.fields.occupancy_status && (
+            <p role="alert" className="text-sm text-red-600">
+              {occupancy.error.message}
+            </p>
+          )}
+        </section>
       )}
 
       <ConfirmDialog
