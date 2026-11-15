@@ -123,3 +123,37 @@ class OverviewTests(TenancyApiTestCase):
     def test_needs_sign_in(self):
         self.client.credentials()
         self.assertEqual(self.client.get(URL).status_code, 401)
+
+
+class LandlordOverviewTests(TenancyApiTestCase):
+    URL = "/api/landlord/overview/"
+
+    def test_a_landlord_sees_figures_for_their_own_properties_only(self):
+        mine = self.new_tenancy()
+        self.invite(mine)
+        amy_place = self.new_property(self.amy)
+        amy_unit = PropertyUnit.objects.create(
+            property_id=amy_place["id"], name="Flat 9", unit_type="APARTMENT"
+        )
+        self.as_user(self.amy)
+        self.post(
+            "/api/landlord/tenancies/",
+            {"property_unit_id": amy_unit.pk, "start_date": "2026-12-01"},
+        )
+        self.as_user(self.lou)
+
+        response = self.client.get(self.URL)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["properties"], {"properties": 1, "units": 1})
+        self.assertEqual(response.data["tenancies"]["by_status"]["DRAFT"], 1)
+        self.assertEqual(response.data["tenancies"]["pending_invitations"], 1)
+        self.assertIsNone(response.data["people"])
+        self.assertIsNone(response.data["active_bans"])
+        self.assertIsNone(response.data["activity"])
+
+    def test_admins_and_tenants_cannot_use_it(self):
+        self.sign_in_as_admin(super_admin=True, email="boss@example.com")
+        self.assertEqual(self.client.get(self.URL).status_code, 403)
+        self.as_user(self.tina)
+        self.assertEqual(self.client.get(self.URL).status_code, 403)

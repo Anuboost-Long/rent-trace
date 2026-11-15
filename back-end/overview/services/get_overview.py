@@ -24,6 +24,18 @@ def get_overview(*, user):
     }
 
 
+def get_landlord_overview(*, user):
+    allowed = granted_codes(user)
+    now = timezone.now()
+    return {
+        "people": None,
+        "properties": _properties(user) if "properties.view" in allowed else None,
+        "tenancies": _tenancies(now, user) if "tenancies.view" in allowed else None,
+        "active_bans": None,
+        "activity": None,
+    }
+
+
 def _people():
     users = User.objects.not_deleted()
     return {
@@ -32,17 +44,20 @@ def _people():
     }
 
 
-def _properties():
+def _properties(owned_by=None):
+    places = live_properties(owned_by)
     return {
-        "properties": live_properties().count(),
-        "units": PropertyUnit.objects.filter(
-            deleted_at__isnull=True, property__in=live_properties()
-        ).count(),
+        "properties": places.count(),
+        "units": PropertyUnit.objects.filter(deleted_at__isnull=True, property__in=places).count(),
     }
 
 
-def _tenancies(now):
+def _tenancies(now, owned_by=None):
     tenancies = Tenancy.objects.live()
+    invitations = TenancyInvitation.objects.all()
+    if owned_by is not None:
+        tenancies = tenancies.in_properties(live_properties(owned_by))
+        invitations = invitations.filter(tenancy__in=tenancies)
     today = now.date()
     counts = tenancies.status_counts()
     return {
@@ -50,8 +65,8 @@ def _tenancies(now):
         "ending_soon": tenancies.with_status(TenancyStatus.ACTIVE)
         .ending_between(today, today + timedelta(days=ENDING_SOON_DAYS))
         .count(),
-        "pending_invitations": TenancyInvitation.objects.pending(now).count(),
-        "expired_invitations": TenancyInvitation.objects.expired(now).count(),
+        "pending_invitations": invitations.pending(now).count(),
+        "expired_invitations": invitations.expired(now).count(),
     }
 
 

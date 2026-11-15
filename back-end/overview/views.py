@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.security.mfa_permission import MfaCompleted
-from accounts.services.shared.account_rules import is_admin_side
+from accounts.services.shared.account_rules import has_role, is_admin_side
 from overview import resources, services
 
 
@@ -21,3 +21,20 @@ class OverviewView(APIView):
     @extend_schema(responses=resources.OverviewResource)
     def get(self, request):
         return Response(resources.OverviewResource(services.get_overview(user=request.user)).data)
+
+
+class IsLandlord(BasePermission):
+    message = "Only landlords can use this."
+
+    def has_permission(self, request, view):
+        return has_role(request.user, "LANDLORD")
+
+
+class LandlordOverviewView(APIView):
+    permission_classes = [IsAuthenticated, MfaCompleted, IsLandlord]
+
+    @extend_schema(operation_id="landlord_overview", responses=resources.OverviewResource)
+    def get(self, request):
+        return Response(
+            resources.OverviewResource(services.get_landlord_overview(user=request.user)).data
+        )

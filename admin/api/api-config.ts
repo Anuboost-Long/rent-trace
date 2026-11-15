@@ -71,6 +71,7 @@ export const EndPoints = {
     },
   },
   overview: byEndpoint("overview/"),
+  landlord_overview: byEndpoint("landlord/overview/"),
   providers: {
     list: byEndpoint("landlord/providers/"),
     detail: (id: number | string) => byEndpoint(`landlord/providers/${id}/`),

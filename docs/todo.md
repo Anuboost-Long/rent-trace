@@ -28,14 +28,9 @@ this to touch several components across admin, and possibly mobile if it renders
 Verify the fix by checking a date near a day boundary in a non-UTC-adjacent time, not just
 visually glancing at "today."
 
-### E. Build a basic landlord overview dashboard
+### E. Landlord overview — done 16 Nov 2026
 
-`admin/app/(app)/landlord/page.tsx` is currently only a header — a placeholder. User decided
-15 Nov 2026: build a basic version. **Check `docs/features/admin-overview.md` first**: as of this
-writing it says `GET /api/overview/` is "open to any admin (not landlords or tenants)" — so this
-likely needs a new landlord-scoped endpoint/view (filtered to the landlord's own properties), not
-just a new page reusing the existing one. Scope the first version to whatever `/api/overview/`
-already returns, landlord-filtered; don't invent new metrics.
+Built and walked through; see [Admin overview](features/admin-overview.md).
 
 ## Context a new session needs
 

@@ -2,7 +2,7 @@ import { handleGetOverview } from "@/api/services/overview/serve-action";
 import { ActivityLabel } from "@/constants/overview";
 import { TenancyStatusLabel } from "@/constants/tenancies";
 import { Route } from "@/constants/web-routes";
-import type { TenancyStatus } from "@/types/tenancies/models";
+import type { TenancyAudience, TenancyStatus } from "@/types/tenancies/models";
 import { formatDateTime } from "@/utils/format-date";
 import Link from "next/link";
 
@@ -17,8 +17,10 @@ const STATUS_SHADE: Record<TenancyStatus, string> = {
 const fullName = (person: { first_name: string; last_name: string }) =>
   `${person.first_name} ${person.last_name}`;
 
-export default async function Dashboard() {
-  const { data, error } = await handleGetOverview();
+export default async function Dashboard({
+  audience,
+}: Readonly<{ audience: TenancyAudience }>) {
+  const { data, error } = await handleGetOverview(audience);
   if (error) {
     return (
       <p role="alert" className="text-red-600">
@@ -77,7 +79,14 @@ export default async function Dashboard() {
             </p>
             <p className="mt-2 text-sm text-foreground/70">
               {total} {total === 1 ? "tenancy" : "tenancies"} in all.{" "}
-              <Link href={Route.admin.tenancies} className="underline">
+              <Link
+                href={
+                  audience === "landlord"
+                    ? Route.landlord.tenancies
+                    : Route.admin.tenancies
+                }
+                className="underline"
+              >
                 See all
               </Link>
             </p>

@@ -1,6 +1,11 @@
 # Admin overview
 
-## Status — 12 November 2026
+## Status — 16 November 2026
+
+Landlord overview added 16 Nov 2026: back end has 2 new tests (pass), admin typecheck and
+lint pass. Walked through in Chrome the same day as the test landlord: figures matched the
+database and "See all" opened the landlord tenancy list. Non-zero "needs attention" counts were
+not seen in the browser (the test data has none).
 
 Built. Back end: 8 tests pass (`back-end/overview/tests/`). Walked through in
 Chrome on 12 November 2026 as the super admin: the blocks render with real figures
@@ -31,11 +36,23 @@ real numbers, and what needs a follow-up.
 - The headline number is the count of active tenancies; the bar shows all
   statuses.
 
+## Landlord overview
+
+- `/landlord` shows the same dashboard, limited to the landlord's own properties.
+- `GET /api/landlord/overview/` is for landlords only (admins and tenants get 403).
+  It returns the same shape as the admin endpoint. **Properties** (`properties.view`)
+  and **Tenancies** (`tenancies.view`) are filled in for the landlord's own properties;
+  people, bans and activity are always `null`, so the screen leaves them out.
+- Invitation counts cover only invitations on the landlord's own tenancies.
+- "See all" links to the landlord's tenancy list.
+
 ## Source locations
 
 - Back end: `back-end/overview/` (`GET /api/overview/`); named queries in
   `TenancyQuerySet`, `TenancyInvitationQuerySet` and `AccountAccessHistoryQuerySet`.
-- Admin: `admin/app/(app)/admin/dashboard.tsx`, `admin/api/services/overview/`,
+- Landlord: `back-end/overview/landlord_urls.py`, `LandlordOverviewView` in `views.py`,
+  `get_landlord_overview` in `services/get_overview.py`; page `admin/app/(app)/landlord/page.tsx`.
+- Admin: `admin/components/overview/dashboard.tsx` (shared by both areas), `admin/api/services/overview/`,
   `admin/types/overview/models.ts`, `admin/constants/overview.ts`.
 
 ## Not done

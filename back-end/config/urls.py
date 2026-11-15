@@ -30,6 +30,7 @@ urlpatterns = [
     path("api/locations/", include("locations.urls")),
     path("api/public/listings/", include("listings.urls")),
     path("api/properties/", include("properties.urls")),
+    path("api/landlord/overview/", include("overview.landlord_urls")),
     path("api/landlord/properties/", include("properties.landlord_urls")),
     path("api/tenancies/", include("tenancies.urls")),
     path("api/landlord/tenancies/", include("tenancies.landlord_urls")),

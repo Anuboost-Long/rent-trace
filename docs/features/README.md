@@ -17,9 +17,9 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Public listings](public-listings.md)                | Walked through 14 Nov 2026; occupied units drop out (fixed and re-checked 14 Nov 2026)                                                                |
 | [Tenant invitations](tenant-invitations.md)          | Shipped; full invite/resend/revoke/accept loop walked through against real Gmail 15 Nov 2026                                                          |
 | [Admin tenancies](admin-tenancies.md)                | Built; invites and accept page walked through 14 Nov 2026 (landlord side); admin-side view/edit-gating/start/cancel/invite walked through 15 Nov 2026 |
-| [Admin overview](admin-overview.md)                  | Built and walked through                                                                                                                              |
+| [Admin overview](admin-overview.md)                  | Built and walked through; landlord version added 16 Nov 2026, not yet walked through                                                                  |
 | [Tenant area](tenant-area.md)                        | Walked through 14 Nov 2026                                                                                                                            |
-| [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page is a placeholder                                                                                            |
+| [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page built and walked through 16 Nov 2026                                                                        |
 | [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; received/answered emails confirmed against real Gmail 15 Nov 2026                                                         |
 | [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                                                                                            |
 | [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                                                                                            |
