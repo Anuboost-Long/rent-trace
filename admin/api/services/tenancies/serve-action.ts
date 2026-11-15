@@ -120,6 +120,19 @@ export const handleAcceptInvitation = async (token: string) => {
   }
 };
 
+export const handlePreviewInvitation = async (token: string) => {
+  try {
+    const data = await ApiServiceServer<MyInvitation>({
+      url: EndPoints.tenant_invitations.preview,
+      method: "GET",
+      params: { token },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
 export const handleGetMyInvitations = async () => {
   try {
     const data = await ApiServiceServer<MyInvitation[]>({

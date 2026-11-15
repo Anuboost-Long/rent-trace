@@ -46,8 +46,9 @@ by email. A tenant who gets the email can accept from a page in the app.
   invitations. Needs `tenancies.admin_manage` to **invite**, **resend** or
   **revoke**. Errors from the back end (already invited, already a tenant, a
   primary tenant already exists, tenancy ended) show on the form.
-- **Accept** (`/invitations/accept?token=…`): the page the invite email links to.
-  The tenant signs in (or signs up) as the invited email, then accepts. See
+- **Accept** (`/invitations/accept?token=…`): the page the invite email links to. Names the
+  property, unit and who invited them (`GET /api/tenant/invitations/preview/`, read-only, no
+  mutation) before the tenant signs in (or signs up) as the invited email and accepts. See
   [Tenant invitations](tenant-invitations.md) for who may accept.
 
 ## Source locations
@@ -55,6 +56,8 @@ by email. A tenant who gets the email can accept from a page in the app.
 - Back end: `back-end/tenancies/`. `GET /api/tenancies/` (and the landlord
   copy, `GET /api/landlord/tenancies/`, needs `tenancies.view`) is new:
   `services/list_tenancies.py`, `resources/tenancy_summary.py`, `TenancyQuerySet.search`.
+  `GET /api/tenant/invitations/preview/` (needs `tenancies.accept_invitation`, same as the
+  invitations list): `services/preview_invitation.py`, reuses `resources/my_invitation.py`.
 - Navigation: a Tenancies item under Rentals in `admin/constants/navigation.ts`.
 - Admin: `admin/app/(app)/admin/tenancies/` (thin pages over `admin/components/tenancies/`,
   shared with the landlord area), `admin/app/(app)/invitations/accept/`,
@@ -63,7 +66,8 @@ by email. A tenant who gets the email can accept from a page in the app.
 ## Not done
 
 - A tenant who has no account yet must sign up and verify first; the sign-up flow
-  does not carry them back to the accept link, so they open the email link again.
-- No preview of the invitation before accepting; the page only asks to accept.
+  does not carry them back to the accept link, so they open the email link again. Worse than
+  documented: the redirect on an unauthenticated visit goes straight to home, not to sign-in,
+  so the token is dropped entirely, not just delayed.
 - Start, end and cancel are built ([Tenancy lifecycle](tenancy-lifecycle.md)), and so are editing
   dates, notes, rent and bond ([Tenancy terms](tenancy-terms.md)).

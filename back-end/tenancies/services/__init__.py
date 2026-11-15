@@ -11,6 +11,7 @@ from tenancies.services.invite_tenant import invite_tenant
 from tenancies.services.list_my_invitations import list_my_invitations
 from tenancies.services.list_my_tenancies import list_my_tenancies
 from tenancies.services.list_tenancies import list_tenancies
+from tenancies.services.preview_invitation import preview_invitation
 from tenancies.services.request_housemate import request_housemate
 from tenancies.services.resend_invitation import resend_invitation
 from tenancies.services.respond_to_term_change import respond_to_term_change

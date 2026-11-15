@@ -114,6 +114,7 @@ export const EndPoints = {
     accept_by_id: (id: number) =>
       byEndpoint(`tenant/invitations/${id}/accept/`),
     accept: byEndpoint("tenant/invitations/accept/"),
+    preview: byEndpoint("tenant/invitations/preview/"),
   },
   bans: {
     list: byEndpoint("bans/"),

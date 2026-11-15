@@ -30,6 +30,18 @@ class MyInvitationsView(TenantView):
         return Response(resources.MyInvitationResource(pending, many=True).data)
 
 
+class PreviewByTokenView(TenantView):
+    @extend_schema(
+        operation_id="tenant_invitations_preview_by_token",
+        parameters=[dtos.PreviewInvitationDto],
+        responses=resources.MyInvitationResource,
+    )
+    def get(self, request):
+        query = validated(dtos.PreviewInvitationDto, request.query_params)
+        invitation = services.preview_invitation(token=query["token"])
+        return Response(resources.MyInvitationResource(invitation).data)
+
+
 class AcceptByTokenView(TenantView):
     @extend_schema(
         operation_id="tenant_invitations_accept_by_token",

@@ -20,7 +20,7 @@ export default function IssuesFilter({
     <Form
       scroll={false}
       action={IssueRoutes[audience].list}
-      className="mb-4 grid gap-4 sm:grid-cols-[12rem_auto] sm:items-end"
+      className="mb-4 grid gap-4 sm:grid-cols-[12rem_auto] sm:items-end sm:justify-start"
     >
       <SelectInput
         label="Status"

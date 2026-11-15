@@ -98,6 +98,9 @@ export default function PropertyListPage({
   );
 }
 
+const hasFilter = (filters: { q?: string; status?: string }) =>
+  Boolean(filters.q || filters.status);
+
 async function PropertyList({ audience, searchParams }: PropertyListProp) {
   const query = await searchParams;
   const filters = { q: first(query.q), status: first(query.status) };
@@ -131,15 +134,32 @@ async function PropertyList({ audience, searchParams }: PropertyListProp) {
             rows={data.results}
             rowKey={(property) => property.id}
             empty={
-              <>
-                <p className="font-medium">No properties match these filters</p>
-                <Link
-                  href={PropertyRoutes[audience].list}
-                  className="mt-2 inline-block text-sm underline"
-                >
-                  Clear filters
-                </Link>
-              </>
+              hasFilter(filters) ? (
+                <>
+                  <p className="font-medium">
+                    No properties match these filters
+                  </p>
+                  <Link
+                    href={PropertyRoutes[audience].list}
+                    className="mt-2 inline-block text-sm underline"
+                  >
+                    Clear filters
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="font-medium">No properties yet</p>
+                  <Can permission={PropertyAccess[audience].create}>
+                    <ButtonLink
+                      href={PropertyRoutes[audience].create}
+                      variant="quiet"
+                      className="mt-2"
+                    >
+                      Add your first property
+                    </ButtonLink>
+                  </Can>
+                </>
+              )
             }
           />
           <Pagination
