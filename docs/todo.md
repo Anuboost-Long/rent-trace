@@ -29,7 +29,9 @@ documents and `git log` (latest commits: `a420f8b` occupancy, `8771fdc` maintena
   behaviour, not a bug. Tenancies 1 (ended 15 Nov, was Active), 2 (ended), 3 (cancelled), 4 (ended),
   5 (cancelled), 6 (Active, see above), 7 (revoked invitation only, never started) exist. Maintenance
   issues 1 (closed) and 2 (open, Reported), contact request 2 (revoked) and 3 (accepted, 15 Nov),
-  tradesperson "Spark Electrical". Delete or reuse as needed.
+  tradesperson "Spark Electrical". Tenancy 6 also has a DECLINED rent change in its history
+  ($650/week → $700/week, declined by the housemate tenant) from verifying item 7's rent-history
+  fix — rent is still $650. Delete or reuse as needed.
 - Browser checks use Claude in Chrome. Signing in as another user means signing out first, because
   all roles share one cookie on localhost.
 

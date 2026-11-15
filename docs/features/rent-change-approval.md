@@ -10,7 +10,8 @@ now include `DECLINED` and `WITHDRAWN` alongside `APPLIED`, matching what the la
 side already showed. No front-end change needed — `components/tenancies/term-history.tsx` is
 shared with the landlord side and already had labels for every status. Verified live in Chrome:
 raised the rent on an active tenancy, declined it as a housemate, and it shows as "Declined" in
-the tenant's own history.
+the tenant's own history. `SUPERSEDED` and `CLOSED` proposals are still left out of the tenant's
+history (the landlord/admin side shows them) — deliberate, not an oversight; not asked for.
 
 ## Status — 12 November 2026
 
