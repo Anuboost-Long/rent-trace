@@ -1,159 +1,91 @@
 # To do
 
-Written 14 November 2026 at the end of a long walkthrough session, so a fresh session can pick
-up without the history. Everything here is work still to do. Done work is in the feature
-documents and `git log` (latest commits: `a420f8b` occupancy, `8771fdc` maintenance timeline,
-`166a080` closed-tenancy wording, `cae89d7` schema enum names).
+Rewritten 15 November 2026 after a long session that finished items A, B, C, F, G, H, I (see
+"Done this session" below) plus an admin walkthrough and real-email testing. Kept so a fresh
+session can pick up directly on what's left — **D** and **E** below — without re-deriving
+context. Older done-item detail lives in `git log` and the feature docs linked below, not here.
+
+## What's left
+
+### D. Convert displayed dates from UTC to local time
+
+User decided 15 Nov 2026: show local time everywhere, not UTC (symptom: "13 Nov 2026" showing
+late in the evening local time). **This is not a one-line fix** — read `admin/utils/format-date.ts`
+first, then grep every call site, because the same formatter is used for two different kinds of
+field and they need opposite treatment:
+
+- **Instants** (`created_at`, `decided_at`, and similar timestamps) are real moments in time and
+  should convert to the viewer's local time zone.
+- **Calendar dates** (`start_date`, `end_date`, `joined_at` and similar Django `DateField`s) are
+  not timestamps — they have no time-of-day component. Converting them with a timezone shift is
+  what would introduce an off-by-one-day bug (e.g. a December 1 start date rendering as
+  November 30 for anyone behind UTC) — the same bug class this fix is supposed to remove.
+
+Plan: split call sites by which kind of field they're rendering before changing anything, not a
+global find-and-replace on `formatDate`. Known call sites so far include
+`components/tenancies/term-history.tsx` (passes `decided_at ?? created_at`, an instant). Expect
+this to touch several components across admin, and possibly mobile if it renders the same fields.
+Verify the fix by checking a date near a day boundary in a non-UTC-adjacent time, not just
+visually glancing at "today."
+
+### E. Build a basic landlord overview dashboard
+
+`admin/app/(app)/landlord/page.tsx` is currently only a header — a placeholder. User decided
+15 Nov 2026: build a basic version. **Check `docs/features/admin-overview.md` first**: as of this
+writing it says `GET /api/overview/` is "open to any admin (not landlords or tenants)" — so this
+likely needs a new landlord-scoped endpoint/view (filtered to the landlord's own properties), not
+just a new page reusing the existing one. Scope the first version to whatever `/api/overview/`
+already returns, landlord-filtered; don't invent new metrics.
 
 ## Context a new session needs
 
 - Branch `feat/database-models`. Back end on :8000, admin on :3000, Postgres and Redis in Docker.
-  All were already running.
 - The back end sends **real email through the Gmail API** (`config/.env`). Never trigger a send to
-  a made-up address from the screens. For tests in the browser, call the service with
-  `mock.patch` on the email function (for example `tenancies.integrations.emails.send_invitation`,
-  `communications.integrations.emails._send`) and capture the link, then use the link in the browser.
-- Local test accounts (verified, same throwaway password, kept outside the repo): landlord
-  **`kimlongly57+landlord@gmail.com`** (was `test.landlord@renttrace.test` until 15 Nov 2026, when
-  its email was swapped to a real address to test outbound mail — see item 3), tenant
-  **`kimlongly57+tenant@gmail.com`** (was `test.tenant1@renttrace.test`, same reason), tenant
-  `test.tenant2@renttrace.test` (unchanged). Also new since 15 Nov: `kimlongly57+housemate@gmail.com`
-  (TENANT, pre-verified) and `kimlongly57@gmail.com` itself, now a real signed-up TENANT account.
-  The password file was in the session scratchpad and will be gone; to get back in, set a new
-  password with `make_password` on their `UserCredential` in `manage.py shell` — except
-  `kimlongly57@gmail.com`, which the user signed up themselves and whose password is theirs, not
-  ours to reset.
-- Test data left in the dev database: property 3 "Walkthrough house" (unit 4) is now **OCCUPIED**
-  (tenancy 6, Active, `kimlongly57@gmail.com` as primary tenant plus `kimlongly57+housemate@gmail.com`
-  as an approved housemate) — it dropped out of public listings as a result, which is correct
-  behaviour, not a bug. Tenancies 1 (ended 15 Nov, was Active), 2 (ended), 3 (cancelled), 4 (ended),
-  5 (cancelled), 6 (Active, see above), 7 (revoked invitation only, never started) exist. Maintenance
-  issues 1 (closed) and 2 (open, Reported), contact request 2 (revoked) and 3 (accepted, 15 Nov),
-  tradesperson "Spark Electrical". Tenancy 6 also has a DECLINED rent change in its history
-  ($650/week → $700/week, declined by the housemate tenant) from verifying item 7's rent-history
-  fix — rent is still $650. Delete or reuse as needed.
-- Browser checks use Claude in Chrome. Signing in as another user means signing out first, because
-  all roles share one cookie on localhost.
+  a made-up address from the screens. For automated tests, `mock.patch` the email function (e.g.
+  `tenancies.integrations.emails.send_invitation`, `communications.integrations.emails._send`).
+- Local test accounts (same throwaway password, recorded outside the repo in the session
+  scratchpad — gone between sessions; reset with `make_password` on `UserCredential` via
+  `manage.py shell` if needed): landlord `kimlongly57+landlord@gmail.com`, tenant
+  `kimlongly57+tenant@gmail.com`, tenant `kimlongly57+housemate@gmail.com`, tenant
+  `test.tenant2@renttrace.test`. **Never** sign into `kimlongly57@gmail.com` (bare, no alias) or
+  the regular admin account (`kimlongly53@gmail.com`) — those are the user's own real accounts;
+  the user logs into those themselves.
+- Test data in the dev database: property 3 "Walkthrough house" (unit 4) is **OCCUPIED** (tenancy
+  6, Active, `kimlongly57@gmail.com` primary tenant + `kimlongly57+housemate@gmail.com` approved
+  housemate) — correctly dropped out of public listings. It also has a DECLINED rent change in
+  its history ($650/week → $700/week) from verifying item A — rent is still $650. Tenancies 1–5
+  and 7 are ended/cancelled/revoked test data. Maintenance issues 1 (closed) and 2 (open), contact
+  requests 2 (revoked) and 3 (accepted), tradesperson "Spark Electrical". Delete or reuse as
+  needed.
+- Browser checks use Claude in Chrome. Signing in as another user means signing out first — all
+  roles share one cookie on localhost.
 
-## 1. Admin-side walkthrough (needs the user to log in first) — done 15 Nov 2026
+## Done this session (15 Nov 2026)
 
-Walked through in Chrome as the regular admin (`kimlongly53@gmail.com`, logged in by the user).
-Results are in `docs/features/admin-tenancies.md`, `tenancy-lifecycle.md`, `properties.md` and the
-"Known issues" list in `docs/features/README.md`. Summary:
+- **Admin walkthrough** (tenancies, properties, occupancy) — `docs/features/admin-tenancies.md`,
+  `tenancy-lifecycle.md`, `properties.md`, README "Known issues".
+- **Real-email tests**: tenant invitation + resend + revoke, housemate request (+ in-app
+  notification), contact request — all confirmed against real Gmail. See
+  `tenant-invitations.md`, `housemate-invitations.md`, `contact-requests.md`.
+- **A — declined/withdrawn rent proposals** now show in the tenant's rent history (`4c5a627`). See
+  [Rent change approval](features/rent-change-approval.md).
+- **B — rejected maintenance closing** shows "Closing rejected" in the issue timeline (`1c1dee9`).
+  See [Maintenance](features/maintenance.md).
+- **C — manual unit occupancy control** (Vacant/Partly occupied/Unavailable), refused while a
+  tenancy is active (`d3e5211`). See [Properties](features/properties.md).
+- **G — invitation preview**: accept page now names the property/unit before accepting
+  (`f0f62f7`).
+- **F, H — small UI fixes**: empty-properties state, maintenance filter button layout (`f0f62f7`).
+- **I — tradespeople pagination**: checked, not reproducible, no change needed.
+- **Decided, not building now**: `completed_by` on maintenance visits — only the landlord can mark
+  a visit done today, so current behaviour is already accurate; revisit only if that changes.
 
-- `admin/constants/navigation.ts` and `admin/app/(app)/admin/` confirmed: the admin app has
-  **no Maintenance, Contact requests or Tradespeople screens at all** — not unlinked, not built.
-  Only Overview, Users, Access, Properties, Tenancies, Bans, Access tokens exist.
-- Overview dashboard: numbers matched actions taken during the walkthrough.
-- Tenancies: viewed the list and detail pages; Edit correctly 404s for `ENDED`/`CANCELLED`
-  (by design); Start correctly refuses with "Add a tenant first" when no tenant has joined;
-  created a draft and cancelled it (worked); ended an active one (worked, unit went back to
-  `VACANT`, `updated_by` recorded the admin).
-- **The `on_behalf_of` check doesn't apply to tenancies at all** — only
-  `maintenance_status_history` and the unbuilt reviews tables have that column (confirmed against
-  the super-admin memory note). Since there's no admin maintenance screen, that check can't be
-  exercised from the UI anywhere right now.
-- Properties/units: viewed and confirmed (again) that there's no occupancy field anywhere in the
-  unit edit form — ties to decision item 2 below.
-- Not done: starting a tenancy all the way to `ACTIVE` from the admin side, because that needs an
-  invited-and-accepted tenant, which needs a real email send — see item 3.
+Full detail, code locations and live-verification notes for all of the above are in the commits
+and the linked feature docs — not duplicated here.
 
-## 2. Decisions to put to the user, then do — decided 15 Nov 2026, see item 7
+## Housekeeping
 
-All four were put to the user on 15 Nov 2026 and decided. Implementation tracked in item 7:
-declined/withdrawn rent proposals should show in history (yes), rejected maintenance closing
-should show in the timeline (yes), `completed_by` on maintenance visits (no, not yet),
-`PARTIALLY_OCCUPIED`/`UNAVAILABLE` unit status (yes, build it).
-
-## 3. Test the emails for real — done 15 Nov 2026
-
-Used `kimlongly57@gmail.com` (user-owned). All four real sends confirmed arriving with correct
-wording and working links: tenant invitation (+ resend, + revoke-without-accepting), housemate
-request (to the landlord and to the housemate, plus the landlord's in-app notification fired
-correctly alongside the email — no gap there), contact request received and answered. Full
-results in `docs/features/tenant-invitations.md`, `housemate-invitations.md`,
-`contact-requests.md`, `admin-tenancies.md`.
-
-Account/email changes made to run this (dev database only, not committed):
-
-- `test.landlord@renttrace.test` → `kimlongly57+landlord@gmail.com`
-- `test.tenant1@renttrace.test` → `kimlongly57+tenant@gmail.com`
-- New account created directly via shell (pre-verified, skipping the signup email loop):
-  `kimlongly57+housemate@gmail.com`, role TENANT
-- All three share a throwaway password, recorded in the session scratchpad, not here or in the
-  repo (same convention as the original test accounts).
-- `kimlongly57@gmail.com` itself (no alias) is now a real TENANT account, primary tenant and
-  Active on tenancy 6 ("Walkthrough house", unit 4) — a new, real piece of test data distinct
-  from the property-3/unit-4 state described below, which is unaffected.
-
-## 4. Screens not tried from the browser — done 15 Nov 2026
-
-All tried for real in Chrome: sending a contact request from the listing page (as `Tom Tenant`,
-swapped to `kimlongly57+tenant@gmail.com`) and accepting it as the landlord; the tenant's
-"Invite housemate" form; Resend and Revoke on a tenancy invitation. Declining/cancelling a
-contact request was not tried (the one sent was accepted, to also test the "answered" email) —
-still open if wanted.
-
-## 5. Small fixes found during the walkthrough
-
-- Landlord overview page (`admin/app/(app)/landlord/page.tsx`) is only a header: a placeholder.
-  User decided 15 Nov 2026: build a basic version. Not done yet — see item 7.
-- ~~Empty properties list says "No properties match these filters" when no filter is set.~~ Fixed
-  15 Nov 2026: shows "No properties yet" + an "Add your first property" button when there's no
-  filter active, matching the tradespeople list's pattern. `components/properties/property-list.tsx`.
-- ~~The invitation accept page says "Join a tenancy" without naming the property until after
-  accepting.~~ Fixed 15 Nov 2026: added a read-only `GET /api/tenant/invitations/preview/`
-  endpoint and the accept page now shows "Join <property> — <unit> · Invited by <name>" before
-  the Accept button. `tenancies/services/preview_invitation.py`,
-  `admin/app/(app)/invitations/accept/page.tsx`.
-- Dates show in UTC ("13 Nov 2026" late in the evening local time). User decided 15 Nov 2026:
-  show local time everywhere. Not done yet — needs care, see item 7: `admin/utils/format-date.ts`
-  must be read first, and calendar dates (`start_date`, `end_date`) must NOT be timezone-shifted
-  the way instants (`created_at`) should be, or it introduces the same bug class it's fixing.
-- ~~Tenant maintenance list: the Filter button stretches across the whole row.~~ Fixed 15 Nov
-  2026: `components/maintenance/issues-filter.tsx` was missing the `sm:justify-start` that every
-  other single-select-plus-button filter in the codebase already has (e.g.
-  `components/contact-requests/requests-filter.tsx`).
-- ~~Tradespeople list with zero results still renders a Next link to `?page=2`.~~ Checked 15 Nov
-  2026: not reproducible — `ClampedPaginator` already handles this correctly (confirmed in
-  Chrome: "0 results · Page 1 of 1", Next correctly disabled). Already fixed before this session,
-  or never actually behaved this way; no action taken.
-- `docs/features/README.md` table rows were rewritten by script and no longer align in columns;
-  run Prettier on it. Resolved itself — Lazify's on-save formatting realigned the table when the
-  file was next edited (15 Nov 2026); no manual Prettier run was needed.
-
-## 7. Decisions made 15 Nov 2026, not yet implemented
-
-- ~~**Declined/withdrawn rent proposals**: show them in the tenant's "Rent and bond history"~~
-  Done 15 Nov 2026: it was exactly a QuerySet filter (the tenant-side prefetch in
-  `my_tenancies.py` only fetched PENDING/APPLIED) plus the resource's own filter — the
-  landlord/admin side was never affected, it already showed everything. Verified live. See
-  [Rent change approval](rent-change-approval.md).
-- ~~**Rejected maintenance closing**: show "Closing rejected" in the issue timeline.~~ Done
-  15 Nov 2026: built from `MaintenanceClosureResponse` rows directly (same pattern as the
-  tradesperson-visit entries), no migration needed. Verified live against real historical data
-  from the 13 Nov walkthrough. See [Maintenance](maintenance.md).
-- ~~**Unit occupancy** (`PARTIALLY_OCCUPIED`/`UNAVAILABLE`): add a control to the unit form.~~ Done
-  15 Nov 2026: `POST …/units/<id>/occupancy/` (admin and landlord), refused while the unit has an
-  `ACTIVE` tenancy. `OCCUPIED` can't be set by hand. Verified live as a landlord. See
-  [Properties](properties.md) and [Tenancy lifecycle](tenancy-lifecycle.md) (the one known gap:
-  starting a tenancy never clears a manually set occupancy first).
-- **Landlord overview**: build a basic version, scoped to what `/api/overview/` already returns
-  filtered to the landlord's own properties — check first whether that endpoint supports a
-  landlord audience at all; `admin-overview.md` says today it's "open to any admin (not landlords
-  or tenants)", so this may need a new landlord endpoint, not just a page.
-- **`completed_by` on maintenance visits**: user decided **not** to add this now (only the
-  landlord can mark a visit done today, so the current behaviour is accurate). Add it only if
-  that changes.
-- **UTC dates**: see item 5 above — local time everywhere, not done yet.
-
-## 6. Housekeeping
-
-- Run `python manage.py migrate` on any other database. `notifications/0008` was not applied in
-  the dev database until this session, which made booking a tradesperson fail with
-  "Something went wrong". The generic error text hid the cause: consider a clearer message for
-  a 500 on that action.
-- Units that already had an active tenancy before the occupancy fix were corrected by hand once in
-  the dev database. If real data exists elsewhere, run `sync_occupancy` over active tenancies.
-- Before finishing any back-end change run the checklist in `back-end/AGENTS.md` section 7
-  (all of it passes as of `cae89d7`).
+- Run `python manage.py migrate` on any other database — `notifications/0008` was missing in dev
+  until this session and caused a generic 500 when booking a tradesperson. Consider a clearer
+  error message for that case.
+- Before finishing any back-end change, run the checklist in `back-end/AGENTS.md` section 7.

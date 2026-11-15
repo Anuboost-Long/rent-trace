@@ -11,7 +11,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Access control](access-control.md)                  | Shipped                                                                                                                                               |
 | [Bans and sessions](bans-and-sessions.md)            | Shipped                                                                                                                                               |
 | [Locations lookup](locations.md)                     | Shipped                                                                                                                                               |
-| [Properties, units, photos and files](properties.md) | Shipped; admin property/unit screens walked through 15 Nov 2026; manual unit occupancy control added 15 Nov 2026                                       |
+| [Properties, units, photos and files](properties.md) | Shipped; admin property/unit screens walked through 15 Nov 2026; manual unit occupancy control added 15 Nov 2026                                      |
 | [Unit rent](unit-rent.md)                            | Walked through 14 Nov 2026 (landlord and tenant)                                                                                                      |
 | [Listing status](listing-status.md)                  | Walked through 14 Nov 2026; see known issues                                                                                                          |
 | [Public listings](public-listings.md)                | Walked through 14 Nov 2026; occupied units drop out (fixed and re-checked 14 Nov 2026)                                                                |
