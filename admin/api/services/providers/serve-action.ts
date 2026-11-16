@@ -2,6 +2,8 @@
 import { EndPoints } from "@/api/api-config";
 import { ApiServiceServer } from "@/api/api-helper";
 import type {
+  PropertyProvider,
+  ProviderLinkBody,
   AdminProviderPage,
   ProviderBody,
   ProviderFilters,
@@ -124,6 +126,69 @@ export const handleGetMyPropertyProviders = async (
       method: "GET",
     });
     return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetPropertyProviders = async (
+  propertyId: number | string,
+) => {
+  try {
+    const data = await ApiServiceServer<PropertyProvider[]>({
+      url: EndPoints.property_providers.list(propertyId),
+      method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleLinkProviders = async (
+  propertyId: number,
+  providerIds: number[],
+) => {
+  try {
+    const data = await ApiServiceServer<PropertyProvider[]>({
+      url: EndPoints.property_providers.list(propertyId),
+      method: "POST",
+      data: { provider_ids: providerIds },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleUpdateProviderLink = async (
+  propertyId: number,
+  providerId: number,
+  body: ProviderLinkBody,
+) => {
+  try {
+    const data = await ApiServiceServer<PropertyProvider>({
+      url: EndPoints.property_providers.detail(propertyId, providerId),
+      method: "PATCH",
+      data: body,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleUnlinkProvider = async (
+  propertyId: number,
+  providerId: number,
+) => {
+  try {
+    await ApiServiceServer<null>({
+      url: EndPoints.property_providers.detail(propertyId, providerId),
+      method: "DELETE",
+      data: {},
+    });
+    return { data: true, error: null };
   } catch (error) {
     return handleSSRActionError(error, redirectOnUnauth);
   }

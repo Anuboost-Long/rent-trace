@@ -37,7 +37,12 @@ export type ProviderPage = {
   results: ServiceProvider[];
 };
 
-export type ProviderFilters = { q?: string; category?: string; page?: number };
+export type ProviderFilters = {
+  q?: string;
+  category?: string;
+  page?: number;
+  page_size?: number;
+};
 
 export type ProviderBody = {
   business_name: string;
@@ -53,6 +58,16 @@ export type ProviderBody = {
     is_recommended: boolean;
     contract_notes: string | null;
   }[];
+};
+
+export type PropertyProvider = Omit<ServiceProvider, "properties"> & {
+  is_recommended: boolean;
+  contract_notes: string | null;
+};
+
+export type ProviderLinkBody = {
+  is_recommended?: boolean;
+  contract_notes?: string | null;
 };
 
 export type TenantProvider = Omit<ServiceProvider, "properties"> & {

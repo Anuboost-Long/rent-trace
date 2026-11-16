@@ -4,6 +4,7 @@ import Can from "@/components/common/can";
 import LocalTime from "@/components/common/local-time";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
+import PropertyProvidersSection from "@/components/providers/property-providers-section";
 import {
   PropertyAccess,
   PropertyRoutes,
@@ -132,6 +133,9 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
         files={property.files.filter((file) => file.unit_id === null)}
         managePermission={access.update}
       />
+      {audience === "landlord" && (
+        <PropertyProvidersSection propertyId={property.id} />
+      )}
       <UnitsSection
         audience={audience}
         propertyId={property.id}

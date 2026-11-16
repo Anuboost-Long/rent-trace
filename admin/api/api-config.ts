@@ -77,6 +77,12 @@ export const EndPoints = {
     list: byEndpoint("admin/providers/"),
     categories: byEndpoint("admin/providers/categories/"),
   },
+  property_providers: {
+    list: (propertyId: number | string) =>
+      byEndpoint(`landlord/properties/${propertyId}/providers/`),
+    detail: (propertyId: number | string, providerId: number) =>
+      byEndpoint(`landlord/properties/${propertyId}/providers/${providerId}/`),
+  },
   providers: {
     list: byEndpoint("landlord/providers/"),
     detail: (id: number | string) => byEndpoint(`landlord/providers/${id}/`),

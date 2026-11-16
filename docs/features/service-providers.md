@@ -1,6 +1,35 @@
 # Service providers (preferred tradespeople)
 
-## Status — 16 November 2026
+## Status — 16 November 2026 (property-side linking)
+
+Built and walked through in Chrome as the test landlord on 16 Nov 2026: the property page shows its
+linked tradespeople, the picker lists only saved contacts not yet linked, adding one links it,
+**Mark preferred** moves the flag, and **Unlink** keeps the contact on the landlord's list with 0
+properties (Spark Electrical stayed linked). 8 new back-end tests pass (46 in providers). **Not
+seen in a browser:** the **Notes** dialog and the picker's trade filter. No schema change: `service_providers` (the contact, entered
+once) and `property_service_providers` (the link) already model this.
+
+### Linking from a property
+
+- A landlord opens one of their properties and sees a **Tradespeople** section: the contacts
+  linked to that property, preferred ones first and marked.
+- **Add from my tradespeople** opens a picker of the landlord's saved contacts that are not yet
+  linked to this property, filterable by trade, with several ticked at once. New links start as
+  not preferred.
+- Each link can be marked **preferred** and given private **contract notes**, and can be
+  **unlinked**. Unlinking removes the link only; the contact stays in the landlord's list and on
+  their other properties.
+- API under `/api/landlord/properties/<property_id>/providers/`: `GET` lists the linked contacts
+  (`providers.view`); `POST {provider_ids}` links several, skipping ones already linked;
+  `PATCH /<provider_id>/ {is_recommended, contract_notes}` and `DELETE /<provider_id>/`
+  (`providers.manage`). A property or contact that is not the landlord's own is a 404.
+- The form on a tradesperson still links properties from the other direction; both write the same
+  link rows.
+- Acceptance: link two saved contacts to a second property in one step; mark one preferred; unlink
+  one and it is still linked to the first property; another landlord's property or contact is a
+  404; tenants of that property see the change.
+
+## Status — 16 November 2026 (admin list)
 
 Admin read-only list: **built and walked through** in Chrome as an admin on 16 Nov 2026: two
 tradespeople from two landlords with the owner and linked properties, the trade filter and search
@@ -65,7 +94,8 @@ Rules:
   website, address, description, categories), because the list is a suggestion to them: the
   provider booked on their issue, and every provider linked to the property they rent, with the
   preferred ones first and marked. Only a tenant who is still in a live tenancy sees the list.
-  **Contract notes stay private** to the landlord side and admins and are never sent to tenants.
+  **Contract notes stay private** to the landlord and are never sent to tenants or shown in the
+  admin list.
 - Assigning a provider does not change the issue's status. Status keeps its own rules and its
   both-sides-agree closure ([Maintenance](maintenance.md)).
 
@@ -79,6 +109,11 @@ Rules:
 
 ## Source locations
 
+- Property-side linking: `back-end/providers/property_views.py`, `property_urls.py`,
+  `services/link_providers.py`, `update_property_provider.py`, `unlink_provider.py`,
+  `list_property_providers.py`; `admin/components/providers/property-providers*.tsx`,
+  `admin/hooks/form/usePropertyProviders.ts`, shown on `admin/components/properties/property-detail.tsx`
+  for landlords.
 - Admin read-only: `back-end/providers/admin_views.py`, `admin_urls.py`,
   `services/list_all_providers.py`; `admin/app/(app)/admin/providers/page.tsx`.
 - Back end: `back-end/providers/` (`views.py`, `urls.py`, `dtos/`, `resources/`, `services/`,
