@@ -86,6 +86,7 @@ PERMISSIONS = [
     ("providers.view", "View service providers", "providers", EVERYONE),
     ("providers.manage", "Manage providers and recommendations", "providers", {LANDLORD}),
     ("providers.manage_categories", "Manage service categories", "providers", {ADMIN}),
+    ("providers.admin_view", "View every landlord's service providers", "providers", {ADMIN}),
     ("communications.view", "View communication logs", "communications", EVERYONE),
     ("communications.log", "Log an external communication", "communications", PARTIES),
 ]

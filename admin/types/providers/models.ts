@@ -20,6 +20,15 @@ export type ServiceProvider = {
   properties: ProviderProperty[];
 };
 
+export type AdminServiceProvider = Omit<ServiceProvider, "properties"> & {
+  owner: { id: number; first_name: string; last_name: string };
+  properties: Omit<ProviderProperty, "contract_notes">[];
+};
+
+export type AdminProviderPage = Omit<ProviderPage, "results"> & {
+  results: AdminServiceProvider[];
+};
+
 export type ProviderPage = {
   count: number;
   page: number;

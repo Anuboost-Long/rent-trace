@@ -29,7 +29,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Rent change approval](rent-change-approval.md)      | Approve and decline walked through 14 Nov 2026; declined/withdrawn now show in tenant history 15 Nov 2026                                                  |
 | [Maintenance](maintenance.md)                        | Walked through 14 Nov 2026, report to close and reject; rejected-closing timeline trace added 15 Nov 2026; admin read-only view walked through 16 Nov 2026 |
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                                                                                    |
-| [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant)                                                                                                           |
+| [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant); admin read-only list walked through 16 Nov 2026                                                          |
 | [Date display](date-display.md)                      | In progress; nothing verified yet                                                                                                                          |
 
 "Shipped" docs were written from the code and the back-end README on
@@ -52,11 +52,10 @@ database):
 Known issues from the 15 November 2026 admin walkthrough (regular admin, `kimlongly53@gmail.com`,
 local database):
 
-- **The admin app has no Tradespeople screen at all** (Maintenance and Contact requests read-only added 16 Nov 2026) — not
-  unlinked, not built. `admin/constants/navigation.ts` and `admin/app/(app)/admin/` only have
-  Overview, Users, Access, Properties, Tenancies, Bans and Access tokens. This means the
-  `on_behalf_of` recording on `maintenance_status_history` (the only tenancy-adjacent history
-  table that has it) can't be exercised from the admin UI at all right now.
+- ~~The admin app has no Maintenance, Contact requests or Tradespeople screens.~~ Read-only lists
+  for all three were added 16 Nov 2026. Admins still cannot act on any of them, so the
+  `on_behalf_of` recording on `maintenance_status_history` (the only tenancy-adjacent history table
+  that has it) can't yet be exercised from the admin UI. That is phase 2.
 - Tenancies have no `on_behalf_of` concept to check in the first place — only
   `maintenance_status_history` and the unbuilt reviews tables carry that column. Admin actions on
   a tenancy are tracked only as `updated_by`, confirmed correct when an admin ended one.

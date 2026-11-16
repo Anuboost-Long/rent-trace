@@ -85,6 +85,14 @@ export const Navigation: Record<Audience, Navigation> = {
         description: "Tenants asking landlords for contact",
       },
       {
+        label: "Tradespeople",
+        href: Route.admin.providers,
+        icon: HardHat,
+        permission: "providers.admin_view",
+        group: "Rentals",
+        description: "Plumbers, electricians and others landlords use",
+      },
+      {
         label: "Maintenance",
         href: Route.admin.maintenance,
         icon: Wrench,

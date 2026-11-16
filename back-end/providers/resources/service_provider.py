@@ -38,3 +38,26 @@ class ServiceProviderResource(serializers.ModelSerializer):
             }
             for link in provider.live_links
         ]
+
+
+class AdminServiceProviderResource(ServiceProviderResource):
+    """What an admin sees: the landlord who keeps the provider, and no contract notes."""
+
+    owner = serializers.SerializerMethodField()
+
+    class Meta(ServiceProviderResource.Meta):
+        fields = [*ServiceProviderResource.Meta.fields, "owner"]
+
+    def get_owner(self, provider) -> dict:
+        owner = provider.owner
+        return {"id": owner.pk, "first_name": owner.first_name, "last_name": owner.last_name}
+
+    def get_properties(self, provider) -> list[dict]:
+        return [
+            {
+                "property_id": link.property_id,
+                "property_name": link.property.property_name or link.property.address_line_1,
+                "is_recommended": link.is_recommended,
+            }
+            for link in provider.live_links
+        ]

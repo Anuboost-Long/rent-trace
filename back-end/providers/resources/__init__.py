@@ -1,4 +1,7 @@
-from providers.resources.provider_page import ProviderPageResource
+from providers.resources.provider_page import AdminProviderPageResource, ProviderPageResource
 from providers.resources.service_category import ServiceCategoryResource
-from providers.resources.service_provider import ServiceProviderResource
+from providers.resources.service_provider import (
+    AdminServiceProviderResource,
+    ServiceProviderResource,
+)
 from providers.resources.tenant_service_provider import TenantServiceProviderResource

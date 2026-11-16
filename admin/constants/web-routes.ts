@@ -53,6 +53,7 @@ export const Route = {
     unit: (id: number, unitId: number) =>
       `/admin/properties/${id}/units/${unitId}`,
     contact_requests: "/admin/contact-requests",
+    providers: "/admin/providers",
     maintenance: "/admin/maintenance",
     issue: (id: number) => `/admin/maintenance/${id}`,
     tenancies: "/admin/tenancies",

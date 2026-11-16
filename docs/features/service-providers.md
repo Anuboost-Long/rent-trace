@@ -1,5 +1,25 @@
 # Service providers (preferred tradespeople)
 
+## Status — 16 November 2026
+
+Admin read-only list: **built and walked through** in Chrome as an admin on 16 Nov 2026: two
+tradespeople from two landlords with the owner and linked properties, the trade filter and search
+(`q=spark`) narrow the list. 7 back-end tests pass. The landlord's own list uses the same filter
+component and was not re-opened after it gained an `action` prop (type-checked only).
+
+### Admin view (read-only)
+
+- Admins with `providers.admin_view` list every landlord's tradespeople at
+  `/api/admin/providers/`: business and contact names, trades, which landlord keeps them and which
+  of that landlord's properties they are linked to (and whether preferred). Landlords, tenants and
+  admin-side people without the code get 403.
+- A landlord's **contract notes are not shown**: they are private to the landlord.
+- The list searches business and contact name and filters by trade.
+- Admin screen: `/admin/providers` (a list only). Admins cannot add, edit or delete a landlord's
+  tradespeople. The trade filter reads `/api/admin/providers/categories/`.
+- Acceptance: an admin sees tradespeople from two landlords with the owner named; the response has
+  no contract notes; landlords and tenants get 403.
+
 ## Status — 13 November 2026
 
 All three steps are built. Back end: 23 provider tests, 8 for the tenant's list, and 12 for the
@@ -59,6 +79,8 @@ Rules:
 
 ## Source locations
 
+- Admin read-only: `back-end/providers/admin_views.py`, `admin_urls.py`,
+  `services/list_all_providers.py`; `admin/app/(app)/admin/providers/page.tsx`.
 - Back end: `back-end/providers/` (`views.py`, `urls.py`, `dtos/`, `resources/`, `services/`,
   `tests/`), mounted at `/api/landlord/providers/`:
   - `GET` and `POST` `/api/landlord/providers/` (filters `q` and `category`, paged).
@@ -86,6 +108,8 @@ Rules:
   `admin/types/providers/models.ts`; hooks `useSaveProvider` and `useDeleteProvider`.
 
 ## Not done
+
+- Admins can read tradespeople but not change them.
 
 Not planned yet: ratings or reviews of providers, quotes and invoices,
 providers signing in themselves, and the landlord's own preferred contact details for tenants.

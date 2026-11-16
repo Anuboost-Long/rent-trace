@@ -2,6 +2,7 @@
 import { EndPoints } from "@/api/api-config";
 import { ApiServiceServer } from "@/api/api-helper";
 import type {
+  AdminProviderPage,
   ProviderBody,
   ProviderFilters,
   ProviderPage,
@@ -12,6 +13,31 @@ import type {
 import { handleSSRActionError } from "@/utils/server-side-error-handler";
 
 const redirectOnUnauth = { redirectOnUnauth: true };
+
+export const handleGetAdminProviders = async (params: ProviderFilters = {}) => {
+  try {
+    const data = await ApiServiceServer<AdminProviderPage>({
+      url: EndPoints.admin_providers.list,
+      method: "GET",
+      params,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleGetAdminServiceCategories = async () => {
+  try {
+    const data = await ApiServiceServer<ServiceCategory[]>({
+      url: EndPoints.admin_providers.categories,
+      method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
 
 export const handleGetProviders = async (params: ProviderFilters = {}) => {
   try {

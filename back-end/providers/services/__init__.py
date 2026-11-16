@@ -1,6 +1,7 @@
 from providers.services.create_provider import create_provider
 from providers.services.delete_provider import delete_provider
 from providers.services.get_provider import get_provider
+from providers.services.list_all_providers import list_all_providers
 from providers.services.list_categories import list_categories
 from providers.services.list_my_property_providers import list_my_property_providers
 from providers.services.list_providers import list_providers

@@ -105,7 +105,11 @@ async function ProviderList({ searchParams }: ProviderListProp) {
 
   return (
     <>
-      <ProviderFilter categories={categories.data ?? []} {...filters} />
+      <ProviderFilter
+        action={Route.landlord.providers}
+        categories={categories.data ?? []}
+        {...filters}
+      />
       {error ? (
         <p role="alert" className="text-red-600">
           {error.message}
