@@ -49,6 +49,12 @@ PERMISSIONS = [
     ),
     ("contact_requests.send", "Ask a landlord for contact", "communications", {TENANT}),
     ("contact_requests.respond", "Answer contact requests", "communications", {LANDLORD}),
+    (
+        "contact_requests.admin_view",
+        "View contact requests as an admin",
+        "communications",
+        {ADMIN},
+    ),
     ("files.upload", "Upload files", "files", PARTIES),
     ("files.download", "Download files", "files", EVERYONE),
     ("conditions.view", "View condition records", "conditions", EVERYONE),

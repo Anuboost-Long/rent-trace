@@ -93,6 +93,14 @@ class ContactRequestQuerySet(models.QuerySet):
     def with_status(self, status):
         return self.filter(status=status)
 
+    def matching(self, text):
+        return self.filter(
+            Q(property__property_name__icontains=text)
+            | Q(property__suburb__icontains=text)
+            | Q(tenant__first_name__icontains=text)
+            | Q(tenant__last_name__icontains=text)
+        )
+
     def with_details(self):
         primary_owners = PropertyOwner.objects.filter(
             is_primary_owner=True, valid_to__isnull=True, deleted_at__isnull=True

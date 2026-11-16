@@ -35,8 +35,14 @@ export type LandlordContactRequest = ContactRequestBase & {
   tenant_contact: TenantContact | null;
 };
 
+export type AdminContactRequest = ContactRequestBase & {
+  tenant: { id: number; first_name: string; last_name: string };
+  landlord: { id: number; first_name: string; last_name: string } | null;
+};
+
 export type ContactRequestFilters = {
   status?: string;
+  q?: string;
   page?: number;
   page_size?: number;
 };

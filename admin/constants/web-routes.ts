@@ -52,6 +52,7 @@ export const Route = {
     property_edit: (id: number) => `/admin/properties/${id}/edit`,
     unit: (id: number, unitId: number) =>
       `/admin/properties/${id}/units/${unitId}`,
+    contact_requests: "/admin/contact-requests",
     maintenance: "/admin/maintenance",
     issue: (id: number) => `/admin/maintenance/${id}`,
     tenancies: "/admin/tenancies",

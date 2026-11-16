@@ -20,7 +20,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Admin overview](admin-overview.md)                  | Built and walked through; landlord version added 16 Nov 2026, not yet walked through                                                                       |
 | [Tenant area](tenant-area.md)                        | Walked through 14 Nov 2026                                                                                                                                 |
 | [Landlord tenancies](landlord-tenancies.md)          | Walked through 14 Nov 2026; overview page built and walked through 16 Nov 2026                                                                             |
-| [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; received/answered emails confirmed against real Gmail 15 Nov 2026                                                              |
+| [Contact requests](contact-requests.md)              | Walked through 14 Nov 2026; received/answered emails confirmed against real Gmail 15 Nov 2026; admin read-only list walked through 16 Nov 2026             |
 | [Notifications](notifications.md)                    | Walked through 14 Nov 2026                                                                                                                                 |
 | [Tenant tenancies](tenant-tenancies.md)              | Walked through 14 Nov 2026                                                                                                                                 |
 | [Tenancy lifecycle](tenancy-lifecycle.md)            | Start, end and cancel walked through 14 Nov 2026 (landlord); end and cancel walked through from the admin side 15 Nov 2026                                 |
@@ -52,7 +52,7 @@ database):
 Known issues from the 15 November 2026 admin walkthrough (regular admin, `kimlongly53@gmail.com`,
 local database):
 
-- **The admin app has no Contact requests or Tradespeople screens at all** (Maintenance read-only added 16 Nov 2026) — not
+- **The admin app has no Tradespeople screen at all** (Maintenance and Contact requests read-only added 16 Nov 2026) — not
   unlinked, not built. `admin/constants/navigation.ts` and `admin/app/(app)/admin/` only have
   Overview, Users, Access, Properties, Tenancies, Bans and Access tokens. This means the
   `on_behalf_of` recording on `maintenance_status_history` (the only tenancy-adjacent history

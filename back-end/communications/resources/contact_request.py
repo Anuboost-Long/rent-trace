@@ -63,6 +63,28 @@ class LandlordContactRequestResource(ContactRequestBase):
         return {"email": tenant.email, "phone_number": tenant.phone_number}
 
 
+class AdminContactRequestResource(ContactRequestBase):
+    """Names only: contact details stay between the two parties."""
+
+    tenant = serializers.SerializerMethodField()
+    landlord = serializers.SerializerMethodField(help_text="The property's primary owner.")
+
+    class Meta:
+        model = ContactRequest
+        fields = [*FIELDS, "tenant", "landlord"]
+
+    def get_tenant(self, contact_request) -> dict:
+        return _person(contact_request.tenant)
+
+    def get_landlord(self, contact_request) -> dict | None:
+        owner = primary_owner(contact_request)
+        return _person(owner) if owner else None
+
+
+def _person(user) -> dict:
+    return {"id": user.pk, "first_name": user.first_name, "last_name": user.last_name}
+
+
 class TenantContactRequestPageResource(serializers.Serializer):
     count = serializers.IntegerField()
     page = serializers.IntegerField()
@@ -77,3 +99,11 @@ class LandlordContactRequestPageResource(serializers.Serializer):
     page_size = serializers.IntegerField()
     total_pages = serializers.IntegerField()
     results = LandlordContactRequestResource(many=True)
+
+
+class AdminContactRequestPageResource(serializers.Serializer):
+    count = serializers.IntegerField()
+    page = serializers.IntegerField()
+    page_size = serializers.IntegerField()
+    total_pages = serializers.IntegerField()
+    results = AdminContactRequestResource(many=True)

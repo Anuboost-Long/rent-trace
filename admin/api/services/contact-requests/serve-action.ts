@@ -3,6 +3,7 @@ import { EndPoints } from "@/api/api-config";
 import { ApiServiceServer } from "@/api/api-helper";
 import type { Page } from "@/types/access/models";
 import type {
+  AdminContactRequest,
   ContactRequestFilters,
   LandlordContactRequest,
   SendContactRequestBody,
@@ -51,6 +52,21 @@ export const handleCancelContactRequest = async (id: number) => {
     return { data, error: null };
   } catch (error) {
     return handleSSRActionError(error);
+  }
+};
+
+export const handleGetAdminContactRequests = async (
+  params: ContactRequestFilters = {},
+) => {
+  try {
+    const data = await ApiServiceServer<Page<AdminContactRequest>>({
+      url: EndPoints.contact_requests.admin.list,
+      method: "GET",
+      params,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
   }
 };
 

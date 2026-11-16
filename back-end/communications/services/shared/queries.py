@@ -16,6 +16,10 @@ def landlord_requests(landlord):
     )
 
 
+def all_requests():
+    return ContactRequest.objects.live().filter(property__in=live_properties()).with_details()
+
+
 def find_or_404(requests, request_id, *, lock=False):
     if lock:
         requests = requests.select_for_update(of=("self",))

@@ -1,5 +1,27 @@
 # Contact requests
 
+## Status — 16 November 2026
+
+Admin read-only view: **built and walked through** in Chrome as an admin on 16 Nov 2026: three
+requests across two landlords, accepted ones show no email or phone, search (`q=walkthrough`)
+and the status filter narrow the list. 6 back-end tests pass.
+
+### Admin view (read-only)
+
+- Admins with `contact_requests.admin_view` list and open every contact request, across all
+  landlords: `/api/admin/contact-requests/` and `/<id>/`. Landlords, tenants and admin-side people
+  without the code get 403.
+- Each row shows the property and unit, who asked, the property's primary owner, the message, the
+  status and when it was decided. **No tenant or landlord contact details**: those stay hidden
+  until a request is accepted and are only for the two parties. An admin finds a person's contact
+  details on their account page.
+- The list filters by status and searches the property name, suburb and the tenant's name.
+- Admin screen: `/admin/contact-requests` (a list only, like the other two sides; the detail
+  endpoint exists but has no screen). An admin cannot accept, decline or cancel; that stays with
+  the two parties.
+- Acceptance: an admin sees requests across two landlords; the response never contains contact
+  details, even for an accepted request; landlords and tenants get 403.
+
 ## Status — 15 November 2026
 
 Walked through end to end against the real Gmail backend on 15 November 2026: signed in as a
@@ -95,6 +117,9 @@ the role, as the other tenant and landlord routes do.
 
 ## Source locations
 
+- Admin read-only: `back-end/communications/admin_views.py`, `admin_urls.py`,
+  `services/list_all_contact_requests.py`, `get_any_contact_request.py`;
+  `admin/app/(app)/admin/contact-requests/page.tsx`.
 - `back-end/communications/`: `models.py` (`ContactRequest`, table
   `contact_requests`), `tenant_views.py`, `landlord_views.py`, `tenant_urls.py`,
   `landlord_urls.py`, `dtos/`, `resources/`, `services/`,
@@ -111,6 +136,8 @@ the role, as the other tenant and landlord routes do.
   `admin/types/contact-requests/models.ts`, `admin/constants/contact-requests.ts`.
 
 ## Not done
+
+- Admins can read contact requests but not act on them.
 
 - Chat or messaging on an accepted request.
 - Admin view of requests, and a cooldown after a decline.

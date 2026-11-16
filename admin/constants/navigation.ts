@@ -77,6 +77,14 @@ export const Navigation: Record<Audience, Navigation> = {
         description: "Tenancies and tenant invitations",
       },
       {
+        label: "Contact requests",
+        href: Route.admin.contact_requests,
+        icon: MessageSquare,
+        permission: "contact_requests.admin_view",
+        group: "Rentals",
+        description: "Tenants asking landlords for contact",
+      },
+      {
         label: "Maintenance",
         href: Route.admin.maintenance,
         icon: Wrench,

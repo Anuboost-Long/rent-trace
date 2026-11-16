@@ -64,6 +64,7 @@ export const EndPoints = {
       cancel: (id: number) =>
         byEndpoint(`tenant/contact-requests/${id}/cancel/`),
     },
+    admin: { list: byEndpoint("admin/contact-requests/") },
     landlord: {
       list: byEndpoint("landlord/contact-requests/"),
       respond: (id: number, action: string) =>

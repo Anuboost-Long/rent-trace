@@ -38,6 +38,7 @@ urlpatterns = [
     path("api/tenant/invitations/", include("tenancies.tenant_urls")),
     path("api/tenant/tenancies/", include("tenancies.tenant_tenancy_urls")),
     path("api/tenant/tenancies/<int:tenancy_id>/providers/", include("providers.tenant_urls")),
+    path("api/admin/contact-requests/", include("communications.admin_urls")),
     path("api/tenant/contact-requests/", include("communications.tenant_urls")),
     path("api/landlord/contact-requests/", include("communications.landlord_urls")),
     path("api/landlord/conditions/", include("conditions.urls")),
