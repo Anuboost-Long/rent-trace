@@ -56,7 +56,7 @@ class IssueDetailResource(IssueSummaryResource):
         }
 
     def get_history(self, issue) -> list[dict]:
-        rows = issue.status_history.select_related("actor").order_by("sequence_no")
+        rows = issue.status_history.select_related("actor", "on_behalf_of").order_by("sequence_no")
         entries = [
             {
                 "kind": "STATUS",
@@ -64,6 +64,7 @@ class IssueDetailResource(IssueSummaryResource):
                 "to_status": row.to_status,
                 "trigger": row.trigger,
                 "actor": _name(row.actor),
+                "on_behalf_of": _name(row.on_behalf_of) if row.on_behalf_of else None,
                 "reason": row.reason,
                 "created_at": row.created_at,
             }
@@ -95,6 +96,7 @@ class IssueDetailResource(IssueSummaryResource):
                 "to_status": None,
                 "trigger": "CLOSING_REJECTED",
                 "actor": _name(proposal.response.responded_by),
+                "on_behalf_of": None,
                 "reason": proposal.reason,
                 "created_at": proposal.response.created_at,
             }
@@ -179,6 +181,7 @@ def _visit_entry(kind, booking, created_at, provider) -> dict:
         "to_status": None,
         "trigger": kind,
         "actor": _name(booking.recorded_by),
+        "on_behalf_of": None,
         "reason": provider,
         "created_at": created_at,
     }

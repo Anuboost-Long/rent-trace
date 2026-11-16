@@ -24,7 +24,9 @@ export default function IssueTimeline({
               </p>
             </div>
             <p className="text-sm text-foreground/70">
-              {entry.actor} · {entry.reason}
+              {entry.actor}
+              {entry.on_behalf_of && `, for ${entry.on_behalf_of}`} ·{" "}
+              {entry.reason}
             </p>
           </li>
         ))}

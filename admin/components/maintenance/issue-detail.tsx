@@ -77,7 +77,7 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
       />
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold">{issue.title}</h1>
-        {audience !== "admin" && (
+        {(audience !== "admin" || issue.actions.length > 0) && (
           <IssueActions audience={audience} issue={issue} />
         )}
       </div>

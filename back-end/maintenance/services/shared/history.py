@@ -5,7 +5,9 @@ from django.db.models import Max
 from maintenance.models import MaintenanceStatusHistory
 
 
-def record_transition(issue, to_status, trigger, actor, reason, *, from_status=None, proposal=None):
+def record_transition(
+    issue, to_status, trigger, actor, reason, *, from_status=None, proposal=None, on_behalf_of=None
+):
     """Writes the status history row for a move. Call it with the issue row locked."""
     last = issue.status_history.aggregate(last=Max("sequence_no"))["last"] or 0
     return MaintenanceStatusHistory.objects.create(
@@ -15,6 +17,7 @@ def record_transition(issue, to_status, trigger, actor, reason, *, from_status=N
         to_status=to_status,
         trigger=trigger,
         actor=actor,
+        on_behalf_of=on_behalf_of,
         closure_proposal=proposal,
         reason=reason,
         created_by=actor,

@@ -34,7 +34,7 @@ const useIssueActions = (audience: MaintenanceAudience, issueId?: number) => {
     if (issueId === undefined) return false;
     setPending(true);
     setError(null);
-    const { error } = await handleIssueAction(issueId, path, body);
+    const { error } = await handleIssueAction(issueId, path, body, audience);
     return finish(error);
   };
 

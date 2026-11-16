@@ -77,10 +77,14 @@ export const handleIssueAction = async (
     | "assignment"
     | "assignment/complete",
   body?: ClosureBody | AssignBody,
+  audience?: MaintenanceAudience,
 ) => {
   try {
     const data = await ApiServiceServer<IssueDetail>({
-      url: EndPoints.maintenance.action(id, path),
+      url:
+        audience === "admin"
+          ? EndPoints.admin_maintenance.action(id, path)
+          : EndPoints.maintenance.action(id, path),
       method: "POST",
       data: body,
     });

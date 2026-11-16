@@ -44,9 +44,9 @@ class AdminIssuesTests(MaintenanceApiTestCase):
         self.assertEqual([row["id"] for row in by_suburb], [theirs["id"]])
         self.assertEqual(closed, [])
 
-    def test_the_detail_offers_an_admin_no_actions(self):
+    def test_the_detail_offers_a_normal_admin_no_actions(self):
         issue = self.reported()
-        self.sign_in_boss()
+        self.sign_in_as_admin(email="plain@example.com")
 
         response = self.client.get(f"{ADMIN_URL}{issue['id']}/")
 

@@ -104,6 +104,8 @@ export const EndPoints = {
   admin_maintenance: {
     list: byEndpoint("admin/maintenance/"),
     detail: (id: number | string) => byEndpoint(`admin/maintenance/${id}/`),
+    action: (id: number, path: string) =>
+      byEndpoint(`admin/maintenance/${id}/${path}/`),
   },
   notifications: {
     list: byEndpoint("notifications/"),

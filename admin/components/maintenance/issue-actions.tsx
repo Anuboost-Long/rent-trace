@@ -108,6 +108,10 @@ export default function IssueActions({ audience, issue }: IssueActionsProp) {
 
   const showForm = dialog === "propose" || dialog === "close";
   const copy = dialog ? DIALOG_COPY[dialog] : DIALOG_COPY.assign;
+  const message =
+    dialog === "close" && audience === "admin"
+      ? "Nobody lives here now, so you can close it for the owner."
+      : copy.message;
 
   return (
     <>
@@ -173,7 +177,7 @@ export default function IssueActions({ audience, issue }: IssueActionsProp) {
         <ConfirmDialog
           open
           title={copy.title}
-          message={copy.message}
+          message={message}
           confirmLabel={copy.confirm}
           pending={pending}
           confirmDisabled={

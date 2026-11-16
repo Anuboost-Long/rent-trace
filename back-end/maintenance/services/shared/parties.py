@@ -17,6 +17,20 @@ def current_tenant_users(issue):
     return [party.tenant for party in parties.select_related("tenant")]
 
 
+def primary_owner_user(issue):
+    owner = (
+        PropertyOwner.objects.filter(
+            property=issue.property_unit.property_id,
+            is_primary_owner=True,
+            valid_to__isnull=True,
+            deleted_at__isnull=True,
+        )
+        .select_related("owner")
+        .first()
+    )
+    return owner.owner if owner else None
+
+
 def side_of(user, issue):
     """Which side the person acts for on this issue today, or None if they only get to read it."""
     if any(owner.pk == user.pk for owner in current_owner_users(issue)):

@@ -6,13 +6,25 @@ from maintenance.services.shared.parties import current_tenant_users, side_of
 def allowed_actions(issue, user):
     """What this person can do with the issue right now. One place decides, and the screens follow it."""
     side = side_of(user, issue)
-    if side is None or issue.status == MaintenanceStatus.CLOSED:
+    if issue.status == MaintenanceStatus.CLOSED:
         return []
+    if side is None:
+        return _admin_actions(issue) if user.is_top_level_admin else []
     proposal = issue.open_closure_proposal
     if proposal is not None:
         return _answer_actions(proposal, user, side)
     extra = _landlord_actions(issue) if side == PartySide.LANDLORD else []
     return [*extra, "PROPOSE_CLOSURE"]
+
+
+ADMIN_ACTIONS = {"ACKNOWLEDGE", "START", "CLOSE_VACANT"}
+
+
+def _admin_actions(issue):
+    """A super admin acts for the landlord, but only on the status moves."""
+    if issue.open_closure_proposal is not None:
+        return []
+    return [action for action in _landlord_actions(issue) if action in ADMIN_ACTIONS]
 
 
 def _landlord_actions(issue):

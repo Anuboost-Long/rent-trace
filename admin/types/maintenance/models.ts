@@ -48,6 +48,7 @@ export type IssueHistoryEntry = {
   to_status: IssueStatus | null;
   trigger: string;
   actor: string;
+  on_behalf_of: string | null;
   reason: string;
   created_at: string;
 };

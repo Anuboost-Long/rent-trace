@@ -22,8 +22,8 @@ def all_issues():
     return MaintenanceIssue.objects.on_properties(live_properties()).with_details()
 
 
-def find_issue(user, issue_id, *, lock=False):
-    issues = visible_issues(user)
+def find_issue(user, issue_id, *, lock=False, as_admin=False):
+    issues = all_issues() if as_admin else visible_issues(user)
     if lock:
         issues = issues.select_for_update(of=("self",))
     found = issues.filter(pk=issue_id).first()

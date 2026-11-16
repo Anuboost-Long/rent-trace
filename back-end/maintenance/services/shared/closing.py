@@ -17,7 +17,7 @@ def answer_proposal(proposal, decision, responder, reason=None):
     )
 
 
-def close_issue(issue, outcome, trigger, actor, reason, *, proposal=None):
+def close_issue(issue, outcome, trigger, actor, reason, *, proposal=None, on_behalf_of=None):
     previous = issue.status
     issue.status = MaintenanceStatus.CLOSED
     issue.closed_at = timezone.now()
@@ -32,6 +32,7 @@ def close_issue(issue, outcome, trigger, actor, reason, *, proposal=None):
         reason,
         from_status=previous,
         proposal=proposal,
+        on_behalf_of=on_behalf_of,
     )
 
 

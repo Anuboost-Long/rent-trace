@@ -1,5 +1,33 @@
 # Maintenance
 
+## Status — 17 November 2026 (phase 2: super admin acts for the landlord)
+
+Built; **not yet walked through in a browser** (needs a signed-in super admin). 10 new back-end
+tests pass, and so do all 67 in maintenance and notifications; admin typecheck and lint pass.
+
+- **Who:** only a super admin (`is_top_level_admin`). A normal admin stays read-only.
+- **What (first cut):** the landlord's status moves only: **acknowledge**, **start work**, and
+  **close directly** when no tenant lives there. Closing proposals, booking a tradesperson and
+  marking a visit done stay with the parties.
+- **Acting for:** automatic. The admin acts for the property's **primary owner**; there is nothing
+  to pick. If the property has no current primary owner the action is refused. A super admin who
+  is themselves the landlord of the issue just acts as the landlord, with nobody recorded as
+  acted for.
+- **Record:** the status history row shows the admin as `actor` and the owner as `on_behalf_of`
+  (the only history table with that column in this feature). The timeline shows it as
+  "Admin name, for Owner name". The issue's `updated_by` is the admin. The usual notifications
+  go out as they do for the landlord.
+- **API:** `POST /api/admin/maintenance/<id>/acknowledge/`, `/start/` and `/close/` (outcome and
+  reason, as the landlord's). Non-super admins, landlords and tenants get 403. The same rules
+  apply as for the landlord: right status, no open closing proposal, vacant for `/close/`.
+- **Screens:** on `/admin/maintenance/<id>` a super admin sees the same Acknowledge, Start work
+  and Close buttons the landlord would; everyone else sees none. The detail's `actions` list is
+  what drives this.
+- Acceptance: a super admin acknowledges and starts an issue and the history rows carry
+  `on_behalf_of`; a normal admin, landlord of another property or tenant is refused; a property
+  with no primary owner is refused; a super admin who owns the property records no
+  `on_behalf_of`.
+
 ## Status — 16 November 2026
 
 Admin read-only view: **built and walked through** in Chrome as an admin on 16 Nov 2026: the list
@@ -111,6 +139,9 @@ tradesperson's contact details on the issue. Booking does not change the issue's
   becomes optional, because the review engine isn't built; a new `maintenance_closure_responses` table
   records each proposal's answer (approved, rejected or withdrawn), keeping proposals append-only; and
   `maintenance_issues.open_closure_proposal` points at the proposal waiting for an answer.
+- Admin acting (super admin): `AdminAcknowledgeIssueView`, `AdminStartWorkView`,
+  `AdminCloseVacantView` in the same file; `acting_landlord` in `services/shared/rules.py`;
+  `accounts/security/super_admin_permission.py`.
 - Admin read-only: `back-end/maintenance/admin_views.py`, `admin_urls.py`, `services/list_all_issues.py`,
   `get_any_issue.py`; `admin/app/(app)/admin/maintenance/` (shares `admin/components/maintenance/`).
 - Admin: `admin/app/tenant/maintenance/`, `admin/app/(app)/landlord/maintenance/`,
@@ -119,6 +150,7 @@ tradesperson's contact details on the issue. Booking does not change the issue's
 ## Not done
 
 - Everything under "Not in the first version" above.
-- Admins can read issues but not act on them. Acting for a party, and recording `on_behalf_of` on
-  `maintenance_status_history`, is phase 2.
+- Super admins can acknowledge, start and close-when-vacant for the primary owner (above). They
+  cannot propose or answer a closing, book a tradesperson or mark a visit done. Normal admins
+  cannot act at all.
 - Landlords reporting issues themselves (for a vacant unit or an inspection).
