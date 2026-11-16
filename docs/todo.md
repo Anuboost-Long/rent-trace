@@ -10,7 +10,7 @@ context. Older done-item detail lives in `git log` and the feature docs linked b
 ### D. Local time for displayed dates — done 16 Nov 2026
 
 Timestamps use `LocalTime`; calendar dates keep `formatDate`. See
-[Date display](features/date-display.md). The mobile app was not checked for the same fields.
+[Date display](features/date-display.md). The mobile app shows no dates yet. `npm test` in `admin/` covers the formatter.
 
 ### E. Landlord overview — done 16 Nov 2026
 

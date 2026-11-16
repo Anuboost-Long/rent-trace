@@ -25,11 +25,12 @@ Everyone sees times in their own time zone, and calendar dates never move by a d
 
 ## Source locations
 
+- `admin/utils/format-date.test.ts`: run with `npm test` in `admin/` (Node's built-in runner).
 - `admin/utils/format-date.ts`: `formatDate` (calendar dates, UTC) and `formatInstant`.
 - `admin/components/common/local-time.tsx`: `LocalTime`, used wherever a timestamp is shown.
 
 ## Not done
 
-- The mobile app was not checked for the same fields.
-- Only checked in one time zone; no automated test covers `formatInstant`.
+- The mobile app shows no dates yet, so there is nothing to change there. Use these two formatters if it starts to.
+- Browser-checked in one time zone only; the unit test also covers Sydney.
 - The first paint of a timestamp is in UTC until the browser takes over.
