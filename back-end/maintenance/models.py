@@ -56,6 +56,13 @@ class MaintenanceIssueQuerySet(models.QuerySet):
     def on_properties(self, properties):
         return self.filter(property_unit__property__in=properties)
 
+    def matching(self, text):
+        return self.filter(
+            Q(title__icontains=text)
+            | Q(property_unit__property__property_name__icontains=text)
+            | Q(property_unit__property__suburb__icontains=text)
+        )
+
     def with_details(self):
         return self.select_related(
             "property_unit__property",

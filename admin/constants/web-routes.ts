@@ -52,6 +52,8 @@ export const Route = {
     property_edit: (id: number) => `/admin/properties/${id}/edit`,
     unit: (id: number, unitId: number) =>
       `/admin/properties/${id}/units/${unitId}`,
+    maintenance: "/admin/maintenance",
+    issue: (id: number) => `/admin/maintenance/${id}`,
     tenancies: "/admin/tenancies",
     tenancy_new: "/admin/tenancies/new",
     tenancy: (id: number) => `/admin/tenancies/${id}`,

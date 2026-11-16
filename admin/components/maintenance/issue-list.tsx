@@ -56,7 +56,7 @@ const columnsFor = (audience: MaintenanceAudience): Column<IssueSummary>[] => [
       </>
     ),
   },
-  ...(audience === "landlord"
+  ...(audience !== "tenant"
     ? [
         {
           header: "Reported by",
@@ -85,11 +85,12 @@ async function IssueList({ audience, searchParams }: IssueListProp) {
   const query = await searchParams;
   const status = first(query.status);
   const page = Number(first(query.page)) || 1;
-  const { data, error } = await handleGetIssues({ status, page });
+  const q = first(query.q);
+  const { data, error } = await handleGetIssues({ status, q, page }, audience);
 
   const hrefForPage = (target: number) => {
     const params = new URLSearchParams(
-      Object.entries({ status, page: target }).flatMap(([key, value]) =>
+      Object.entries({ status, q, page: target }).flatMap(([key, value]) =>
         value ? [[key, String(value)]] : [],
       ),
     );
@@ -98,7 +99,7 @@ async function IssueList({ audience, searchParams }: IssueListProp) {
 
   return (
     <>
-      <IssuesFilter audience={audience} status={status} />
+      <IssuesFilter audience={audience} status={status} q={q} />
       {error ? (
         <p role="alert" className="text-red-600">
           {error.message}

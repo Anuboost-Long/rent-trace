@@ -28,4 +28,5 @@ export const ClosureOutcomeLabel: Record<string, string> = {
 export const IssueRoutes = {
   tenant: { list: Route.tenant.maintenance, detail: Route.tenant.issue },
   landlord: { list: Route.landlord.maintenance, detail: Route.landlord.issue },
+  admin: { list: Route.admin.maintenance, detail: Route.admin.issue },
 } as const;

@@ -18,6 +18,10 @@ def visible_issues(user):
     ).with_details()
 
 
+def all_issues():
+    return MaintenanceIssue.objects.on_properties(live_properties()).with_details()
+
+
 def find_issue(user, issue_id, *, lock=False):
     issues = visible_issues(user)
     if lock:

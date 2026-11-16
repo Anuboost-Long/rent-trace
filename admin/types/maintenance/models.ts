@@ -16,7 +16,7 @@ export type IssueAction =
   | "ASSIGN_PROVIDER"
   | "COMPLETE_VISIT";
 
-export type MaintenanceAudience = "tenant" | "landlord";
+export type MaintenanceAudience = "tenant" | "landlord" | "admin";
 
 export type IssueSummary = {
   id: number;
@@ -92,7 +92,7 @@ export type IssuePage = {
   results: IssueSummary[];
 };
 
-export type IssueFilters = { status?: string; page?: number };
+export type IssueFilters = { status?: string; q?: string; page?: number };
 
 export type ReportIssueBody = {
   tenancy_id: number;

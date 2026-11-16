@@ -32,7 +32,7 @@ export default function IssueDetailPage(props: IssueDetailProp) {
 
 async function IssueDetail({ audience, params }: IssueDetailProp) {
   const { id } = await params;
-  const { data: issue, error } = await handleGetIssue(id);
+  const { data: issue, error } = await handleGetIssue(id, audience);
   if (error?.status === 404) notFound();
   if (error) {
     return (
@@ -77,7 +77,9 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
       />
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold">{issue.title}</h1>
-        <IssueActions audience={audience} issue={issue} />
+        {audience !== "admin" && (
+          <IssueActions audience={audience} issue={issue} />
+        )}
       </div>
       {issue.open_closure && (
         <section

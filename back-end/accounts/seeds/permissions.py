@@ -73,6 +73,7 @@ PERMISSIONS = [
         {LANDLORD},
     ),
     ("maintenance.record_assignment", "Record provider engagement", "maintenance", PARTIES),
+    ("maintenance.admin_view", "View maintenance issues as an admin", "maintenance", {ADMIN}),
     ("documents.view", "View documents", "documents", EVERYONE),
     ("documents.publish", "Upload document versions", "documents", {LANDLORD}),
     ("documents.confirm", "Confirm or flag a document", "documents", {TENANT}),

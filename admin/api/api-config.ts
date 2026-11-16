@@ -90,6 +90,10 @@ export const EndPoints = {
     respond: (id: number, proposalId: number, answer: string) =>
       byEndpoint(`maintenance/${id}/closure/${proposalId}/${answer}/`),
   },
+  admin_maintenance: {
+    list: byEndpoint("admin/maintenance/"),
+    detail: (id: number | string) => byEndpoint(`admin/maintenance/${id}/`),
+  },
   notifications: {
     list: byEndpoint("notifications/"),
     unread_count: byEndpoint("notifications/unread-count/"),

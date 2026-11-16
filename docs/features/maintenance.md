@@ -1,5 +1,26 @@
 # Maintenance
 
+## Status — 16 November 2026
+
+Admin read-only view: **built and walked through** in Chrome as an admin on 16 Nov 2026: the list
+shows issues from every landlord, search narrows it (`q=hallway` returned only that issue), the
+detail shows the timeline (including "Closing rejected") with no action buttons. 6 back-end tests
+pass. Acting for a party (`on_behalf_of`) is phase 2 and not started.
+
+### Admin view (phase 1, read-only)
+
+- Admins with `maintenance.admin_view` list and open every issue across all landlords, at
+  `/api/admin/maintenance/` and `/api/admin/maintenance/<id>/` (the unprefixed path is the party
+  endpoint, so the admin one is under `admin/`). Landlords, tenants and admin-side people without
+  the code get 403.
+- The list filters by status and searches title, property name and suburb. The detail is the
+  same as the party detail (timeline, closing proposal, tradesperson) but never offers an action:
+  an admin is on neither side, so `actions` and `provider_options` are empty and `my_side` is null.
+- Admin screens: `/admin/maintenance` and `/admin/maintenance/<id>`, linked from the admin menu and
+  sidebar for anyone holding `maintenance.admin_view`.
+- Acceptance: an admin sees issues from two landlords; a landlord or tenant calling the admin
+  endpoint gets 403; the detail has no actions; the screens show no action buttons.
+
 ## Status — 15 November 2026
 
 A rejected closing now leaves a trace on the issue itself: the timeline shows a "Closing
@@ -90,11 +111,14 @@ tradesperson's contact details on the issue. Booking does not change the issue's
   becomes optional, because the review engine isn't built; a new `maintenance_closure_responses` table
   records each proposal's answer (approved, rejected or withdrawn), keeping proposals append-only; and
   `maintenance_issues.open_closure_proposal` points at the proposal waiting for an answer.
+- Admin read-only: `back-end/maintenance/admin_views.py`, `admin_urls.py`, `services/list_all_issues.py`,
+  `get_any_issue.py`; `admin/app/(app)/admin/maintenance/` (shares `admin/components/maintenance/`).
 - Admin: `admin/app/tenant/maintenance/`, `admin/app/(app)/landlord/maintenance/`,
   `admin/components/maintenance/`, `admin/hooks/form/useIssueActions.ts`, `admin/api/services/maintenance/`.
 
 ## Not done
 
 - Everything under "Not in the first version" above.
-- Admins: no list or detail yet. It needs its own endpoint and tests rather than a half version.
+- Admins can read issues but not act on them. Acting for a party, and recording `on_behalf_of` on
+  `maintenance_status_history`, is phase 2.
 - Landlords reporting issues themselves (for a vacant unit or an inspection).

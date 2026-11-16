@@ -8,6 +8,7 @@ import type {
   IssueDetail,
   IssueFilters,
   IssuePage,
+  MaintenanceAudience,
   ReportIssueBody,
 } from "@/types/maintenance/models";
 import type { ServiceCategory } from "@/types/providers/models";
@@ -15,10 +16,16 @@ import { handleSSRActionError } from "@/utils/server-side-error-handler";
 
 const redirectOnUnauth = { redirectOnUnauth: true };
 
-export const handleGetIssues = async (params: IssueFilters = {}) => {
+export const handleGetIssues = async (
+  params: IssueFilters = {},
+  audience?: MaintenanceAudience,
+) => {
   try {
     const data = await ApiServiceServer<IssuePage>({
-      url: EndPoints.maintenance.list,
+      url:
+        audience === "admin"
+          ? EndPoints.admin_maintenance.list
+          : EndPoints.maintenance.list,
       method: "GET",
       params,
     });
@@ -28,10 +35,16 @@ export const handleGetIssues = async (params: IssueFilters = {}) => {
   }
 };
 
-export const handleGetIssue = async (id: number | string) => {
+export const handleGetIssue = async (
+  id: number | string,
+  audience?: MaintenanceAudience,
+) => {
   try {
     const data = await ApiServiceServer<IssueDetail>({
-      url: EndPoints.maintenance.detail(id),
+      url:
+        audience === "admin"
+          ? EndPoints.admin_maintenance.detail(id)
+          : EndPoints.maintenance.detail(id),
       method: "GET",
     });
     return { data, error: null };

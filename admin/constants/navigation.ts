@@ -77,6 +77,14 @@ export const Navigation: Record<Audience, Navigation> = {
         description: "Tenancies and tenant invitations",
       },
       {
+        label: "Maintenance",
+        href: Route.admin.maintenance,
+        icon: Wrench,
+        permission: "maintenance.admin_view",
+        group: "Rentals",
+        description: "Issues reported on any property",
+      },
+      {
         label: "Bans",
         href: Route.admin.bans,
         icon: Ban,
