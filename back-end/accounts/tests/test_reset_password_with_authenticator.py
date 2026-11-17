@@ -58,6 +58,15 @@ class ResetPasswordWithAuthenticatorTests(AuthApiTestCase):
             self.sign_in(email="tess@example.com", password=NEW_PASSWORD).status_code, 200
         )
 
+    def test_a_reset_tells_the_owner_by_email_that_the_password_changed(self):
+        self.set_up_account("TENANT", "tess@example.com")
+        token = self.request_link("tess@example.com")
+        mail.outbox.clear()
+
+        self.reset(token)
+
+        self.assertEqual([m.subject for m in mail.outbox], ["Your RentTrace password was changed"])
+
     def test_the_reset_email_links_to_the_web_app(self):
         self.set_up_account("TENANT", "tess@example.com")
         self.request_link("tess@example.com")

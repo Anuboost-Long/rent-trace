@@ -72,6 +72,18 @@ def send_password_reset(user, raw_token):
     )
 
 
+def send_password_changed(user):
+    _send(
+        user,
+        "Your RentTrace password was changed",
+        "Your password was changed",
+        ["The password for your RentTrace account was just changed."],
+        button=("Reset it again", f"{settings.WEB_APP_URL}/auth/forgot-password"),
+        footnote="If this was you, there is nothing more to do. If it wasn't, reset your "
+        "password now and contact support.",
+    )
+
+
 def send_wrong_method(user, attempted_method):
     if attempted_method == AuthMethod.GOOGLE:
         attempt, fix = "with Google", "Sign in with your email and password instead"

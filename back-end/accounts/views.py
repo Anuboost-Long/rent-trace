@@ -189,6 +189,9 @@ class SignOutView(APIView):
 
 
 class ChangePasswordView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "mfa"
+
     @extend_schema(request=dtos.ChangePasswordDto, responses=resources.MessageResource)
     def post(self, request):
         data = _validated(dtos.ChangePasswordDto, request)
@@ -198,6 +201,7 @@ class ChangePasswordView(APIView):
             current_password=data["current_password"],
             new_password=data["new_password"],
             sign_out_other_devices=data["sign_out_other_devices"],
+            code=data.get("code"),
         )
         return _message("Your password is changed.")
 

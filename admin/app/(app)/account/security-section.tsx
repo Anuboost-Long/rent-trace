@@ -10,6 +10,7 @@ type SecuritySectionProp = Readonly<{ user: Me }>;
 export default function SecuritySection({ user }: SecuritySectionProp) {
   const { pending, error, notice, change } = useChangePassword();
   const hasPassword = user.auth_method !== "GOOGLE";
+  const hasAuthenticator = user.mfa_status === "VERIFIED";
 
   return (
     <section aria-labelledby="security-heading">
@@ -28,6 +29,9 @@ export default function SecuritySection({ user }: SecuritySectionProp) {
               new_password: String(data.get("new_password")),
               sign_out_other_devices:
                 data.get("sign_out_other_devices") === "on",
+              ...(hasAuthenticator && {
+                code: String(data.get("code")).trim(),
+              }),
             });
             if (changed) form.reset();
           }}
@@ -50,6 +54,16 @@ export default function SecuritySection({ user }: SecuritySectionProp) {
             required
             error={error?.fields.new_password}
           />
+          {hasAuthenticator && (
+            <TextInput
+              label="Authenticator code"
+              name="code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              required
+              error={error?.fields.code}
+            />
+          )}
           <CheckInput
             name="sign_out_other_devices"
             label="Sign me out of my other devices"

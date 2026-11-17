@@ -13,6 +13,7 @@ from accounts.services.shared.account_rules import is_admin_side
 BACKUP_CODE_COUNT = 10
 CODE_ACCEPTED_STEPS = (-1, 0, 1)
 WRONG_CODE = "That code is incorrect or has already been used."
+CODE_NEEDED = "Enter the code from your authenticator app."
 
 
 class MfaStatus(StrEnum):
@@ -103,6 +104,17 @@ def accept_backup_code(user, code, now):
             backup.save()
             return True
     return False
+
+
+def require_code_if_enrolled(user, code, now):
+    """Two-step verification: people who set up an authenticator must give a code for sensitive
+    changes. A missing code is refused without saying more; a wrong one is refused as wrong."""
+    enrolment = UserMfa.objects.select_for_update().confirmed().filter(user=user).first()
+    if enrolment is None:
+        return
+    if not code:
+        raise ValidationError({"code": CODE_NEEDED})
+    require_correct(accept_totp_code(enrolment, code, now) or accept_backup_code(user, code, now))
 
 
 def require_correct(accepted):
