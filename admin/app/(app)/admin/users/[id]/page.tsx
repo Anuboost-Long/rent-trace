@@ -13,6 +13,7 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 
 import UserActions from "../user-actions";
+import ResetAuthenticatorButton from "./reset-authenticator-button";
 import UserPermissionsSection from "./user-permissions";
 
 export default function UserDetailPage({
@@ -53,6 +54,10 @@ async function UserDetail({
     ["Status", StatusLabel[user.account_status]],
     ["Phone", user.phone_number ?? "—"],
     [
+      "Two-step verification",
+      user.has_authenticator ? "Authenticator set up" : "Not set up",
+    ],
+    [
       "Sign-in method",
       user.auth_method === "GOOGLE" ? "Google" : "Email and password",
     ],
@@ -76,7 +81,14 @@ async function UserDetail({
         <h1 className="text-2xl font-semibold">
           {user.first_name} {user.last_name}
         </h1>
-        <UserActions user={user} variant="full" />
+        <div className="flex flex-wrap gap-2">
+          <ResetAuthenticatorButton
+            userId={user.id}
+            name={user.first_name}
+            hasAuthenticator={user.has_authenticator}
+          />
+          <UserActions user={user} variant="full" />
+        </div>
       </div>
       <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
         {details.map(([label, value]) => (
