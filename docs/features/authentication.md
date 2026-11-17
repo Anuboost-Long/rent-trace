@@ -11,6 +11,19 @@ password?". **Not seen in a browser:** the authenticator code field and a wrong-
 account with an authenticator was available; covered by back-end tests), submitting the forgot
 form and the real reset email.
 
+### Changing the password from the profile
+
+- Landlords and tenants: the current password, as before.
+- Admins with an authenticator set up (anyone with two-step verification on, shown by
+  `mfa_status` `VERIFIED`): the profile form also asks for a code from the app or a backup code.
+  A missing or wrong code is refused and nothing changes; a refused change sends no email and
+  leaves the code usable. The endpoint is limited to 5 attempts a minute (the `mfa` rate).
+- **Everyone** gets an email saying the password was changed, after both a change and a reset,
+  with a link to reset it again if it was not them.
+- Built; 7 new back-end tests pass and all 89 in accounts; the full suite (713 tests) passed
+  before this change. The profile page renders for a landlord with no code field. **Not seen in
+  a browser:** the code field for an admin, and a real change (it would email the account).
+
 ### Forgot and reset password
 
 - **Everyone:** on the sign-in page, "Forgot password?" takes an email and always answers "If an
