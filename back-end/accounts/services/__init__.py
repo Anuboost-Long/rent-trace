@@ -3,6 +3,7 @@ from accounts.services.change_password import change_password
 from accounts.services.complete_onboarding import complete_onboarding
 from accounts.services.confirm_mfa import confirm_mfa
 from accounts.services.enrol_mfa import enrol_mfa
+from accounts.services.preview_password_reset import preview_password_reset
 from accounts.services.refresh import refresh
 from accounts.services.request_password_reset import request_password_reset
 from accounts.services.resend_verification import resend_verification

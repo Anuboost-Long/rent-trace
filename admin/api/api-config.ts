@@ -182,6 +182,8 @@ export const EndPoints = {
     verify_email: byEndpoint("auth/verify-email/"),
     resend_verification: byEndpoint("auth/resend-verification/"),
     sign_in: byEndpoint("auth/sign-in/"),
+    forgot_password: byEndpoint("auth/forgot-password/"),
+    reset_password: byEndpoint("auth/reset-password/"),
     google: byEndpoint("auth/google/"),
     onboarding: byEndpoint("auth/onboarding/"),
     refresh: byEndpoint("auth/refresh/"),
