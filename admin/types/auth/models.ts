@@ -60,4 +60,13 @@ export type ChangePasswordBody = {
   sign_out_other_devices: boolean;
 };
 
+export type ResetPasswordBody = {
+  token: string;
+  new_password: string;
+  sign_out_other_devices: boolean;
+  code?: string;
+};
+
+export type ResetPreview = { requires_code: boolean };
+
 export type Message = { detail: string };

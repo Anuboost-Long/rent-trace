@@ -65,7 +65,7 @@ def send_password_reset(user, raw_token):
         ["We received a request to reset your password."],
         button=(
             "Choose a new password",
-            _link(settings.AUTH_LINK_BASE_URL, "reset-password", raw_token),
+            _link(settings.WEB_APP_URL, "reset-password", raw_token),
         ),
         footnote="The link expires in 1 hour. If you didn't ask for this, ignore this email; "
         "your password stays the same.",

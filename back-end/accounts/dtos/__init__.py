@@ -5,6 +5,7 @@ from accounts.dtos.google_sign_in import GoogleSignInDto
 from accounts.dtos.mfa_code import MfaCodeDto
 from accounts.dtos.onboarding import OnboardingDto
 from accounts.dtos.refresh import RefreshDto
+from accounts.dtos.reset_link_query import ResetLinkQueryDto
 from accounts.dtos.reset_password import ResetPasswordDto
 from accounts.dtos.sign_in import SignInDto
 from accounts.dtos.sign_up import SignUpDto

@@ -1,5 +1,41 @@
 # Authentication and sessions
 
+## Status — 18 November 2026 (forgot and reset password)
+
+Built. 8 new back-end tests pass (and all 81 in accounts); ruff, the migration check and the
+OpenAPI validation pass; admin typecheck and lint pass. Walked through in Chrome as the test
+landlord using a link issued from the shell (so no real email was sent): a bad link shows "Link
+expired"; a weak password shows an error and keeps the link usable; a valid password changes it;
+the same link is then refused; the new password signs in; the sign-in page shows "Forgot
+password?". **Not seen in a browser:** the authenticator code field and a wrong-code run (no admin
+account with an authenticator was available; covered by back-end tests), submitting the forgot
+form and the real reset email.
+
+### Forgot and reset password
+
+- **Everyone:** on the sign-in page, "Forgot password?" takes an email and always answers "If an
+  account exists, we've sent a reset link" (same as before). The emailed link opens
+  `/reset-password?token=…` on the web app, where the person chooses a new password. Landlords
+  and tenants need only that email link. Google-only accounts get the existing "your account
+  uses Google" email instead.
+- **Admins with an authenticator app set up** also have to enter a code from the app (or one of
+  their backup codes) on the reset page. A wrong code **uses up the link**, so a stolen link
+  can't be used to guess codes: the person asks for a new link. A missing code does not.
+- The reset page first asks the back end whether a code is needed (`GET
+/api/auth/reset-password/?token=…`, which does not use the link up), so it only shows the code
+  field when it must, and shows "link expired" straight away for a bad link.
+- A reset signs the person out of their other devices by default (tick box on the page), as
+  before, and clears the sign-in lock.
+- The reset email now links to the web app (`WEB_APP_URL`), like the verify-email link. The old
+  `AUTH_LINK_BASE_URL` setting (which pointed at a page that does not exist) is removed.
+- **Not covered:** an admin who has lost their authenticator and backup codes cannot reset by
+  themselves. A super admin resetting someone's authenticator is still not built
+  (`back-end/docs/authentication.md`, open items). Super admins are exempt from the sign-in
+  check unless they have set up an authenticator, in which case they are asked for the code too.
+- Acceptance: a tenant resets with the email link alone; an admin with an authenticator cannot
+  reset without a valid code; a wrong code burns the link; a bad or used link is refused on the
+  preview; after a reset the old password fails and the new one signs in.
+
 ## Status — 12 November 2026
 
 Shipped (back end 29 October and 11 November 2026, admin screens 11 November).
@@ -40,6 +76,9 @@ cookies and the signed-in user are handled in `admin/api/services/auth/`.
 
 ## Source locations
 
+- Forgot and reset: `back-end/accounts/services/reset_password.py`, `preview_password_reset.py`,
+  `shared/links.py` (`usable_link`); `admin/app/auth/forgot-password/`, `admin/app/reset-password/`,
+  `admin/hooks/form/usePasswordReset.ts`.
 - `back-end/accounts/`: `views.py`, `services/`, `security/` (token check, JWT,
   rate limits), `integrations/` (email, Supabase), `models/`.
 - `back-end/docs/authentication.md`: the full rules.

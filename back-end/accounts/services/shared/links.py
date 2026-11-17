@@ -19,10 +19,16 @@ def issue_link(user, purpose, lifetime, now):
     return raw
 
 
-def use_link(raw, purpose, now):
-    token = AuthToken.objects.select_for_update().matching(tokens.digest(raw), purpose).first()
+def usable_link(raw, purpose, now, *, lock=False):
+    links = AuthToken.objects.select_for_update() if lock else AuthToken.objects
+    token = links.matching(tokens.digest(raw), purpose).first()
     if token is None or token.used_at is not None or token.expires_at <= now:
         raise ValidationError({"token": INVALID_LINK})
+    return token
+
+
+def use_link(raw, purpose, now):
+    token = usable_link(raw, purpose, now, lock=True)
     token.used_at = now
     token.save()
     return token.user
