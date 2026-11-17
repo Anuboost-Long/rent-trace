@@ -1,0 +1,11 @@
+Django==5.2.18
+django-environ==0.14.0
+djangorestframework==3.18.3
+drf-spectacular==0.30.0
+psycopg[binary]==3.3.6
+PyJWT==2.15.1
+pyotp==2.9.0
+cryptography==46.0.3
+redis==8.1.0
+google-auth==2.40.3
+requests==2.32.4

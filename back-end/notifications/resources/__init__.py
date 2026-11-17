@@ -1,0 +1,4 @@
+from notifications.resources.marked_read import MarkedReadResource
+from notifications.resources.notification import NotificationResource
+from notifications.resources.notification_page import NotificationPageResource
+from notifications.resources.unread_count import UnreadCountResource

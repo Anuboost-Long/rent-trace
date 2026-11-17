@@ -1,0 +1,4 @@
+from listings.resources.listing_detail import ListingDetailResource
+from listings.resources.listing_page import ListingPageResource
+from listings.resources.listing_summary import ListingSummaryResource
+from listings.resources.place import PlaceResource

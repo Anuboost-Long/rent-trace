@@ -1,0 +1,6 @@
+from properties.resources.owner import OwnerOptionResource
+from properties.resources.property_detail import PropertyDetailResource
+from properties.resources.property_file import PropertyFileResource
+from properties.resources.property_page import PropertyPageResource
+from properties.resources.property_summary import PropertySummaryResource
+from properties.resources.unit import UnitResource

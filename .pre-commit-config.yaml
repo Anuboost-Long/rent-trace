@@ -1,0 +1,24 @@
+# Runs on every `git commit`. Set up once per clone, from back-end/ with the venv active:
+#   pip install -r requirements-dev.txt && pre-commit install
+# Only back-end files are checked; admin/ and mobile/ use their own tooling.
+files: ^back-end/
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.3  # keep in step with ruff in back-end/requirements-dev.txt
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+      - id: detect-private-key
+      - id: forbid-new-submodules

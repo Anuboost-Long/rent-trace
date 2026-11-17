@@ -1,0 +1,3 @@
+from maintenance.resources.issue_detail import IssueDetailResource
+from maintenance.resources.issue_page import IssuePageResource
+from maintenance.resources.issue_summary import IssueSummaryResource

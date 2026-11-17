@@ -1,0 +1,216 @@
+from drf_spectacular.utils import extend_schema
+from rest_framework.response import Response
+
+from accounts.security.permissioned_view import PermissionedView
+from common.pagination import PagePagination
+from tenancies import dtos, resources, services
+
+
+def validated(dto_class, data):
+    serializer = dto_class(data=data)
+    serializer.is_valid(raise_exception=True)
+    return serializer.validated_data
+
+
+class TenancyScope:
+    """Admins see every tenancy; the landlord views narrow this to the properties they own."""
+
+    def owned_by(self, request):
+        return None
+
+
+def detail(tenancy_id, owned_by):
+    return resources.TenancyDetailResource(
+        services.get_tenancy(tenancy_id=tenancy_id, owned_by=owned_by)
+    ).data
+
+
+class TenanciesView(TenancyScope, PermissionedView):
+    required_permissions = {
+        "GET": "tenancies.admin_view",
+        "POST": "tenancies.admin_manage",
+    }
+
+    @extend_schema(
+        operation_id="tenancies_list",
+        parameters=[dtos.TenancyListQueryDto],
+        responses=resources.TenancyPageResource,
+    )
+    def get(self, request):
+        query = validated(dtos.TenancyListQueryDto, request.query_params)
+        tenancies = services.list_tenancies(
+            q=query.get("q"), status=query.get("status"), owned_by=self.owned_by(request)
+        )
+        paginator = PagePagination()
+        page = paginator.paginate_queryset(tenancies, request, view=self)
+        return paginator.get_paginated_response(
+            resources.TenancySummaryResource(page, many=True).data
+        )
+
+    @extend_schema(
+        request=dtos.CreateTenancyDto,
+        responses={201: resources.TenancyDetailResource},
+    )
+    def post(self, request):
+        fields = validated(dtos.CreateTenancyDto, request.data)
+        created = services.create_tenancy(
+            actor=request.user, fields=fields, owned_by=self.owned_by(request)
+        )
+        return Response(detail(created.pk, self.owned_by(request)), status=201)
+
+
+class TenancyDetailView(TenancyScope, PermissionedView):
+    required_permissions = {"GET": "tenancies.admin_view", "PATCH": "tenancies.admin_manage"}
+
+    @extend_schema(responses=resources.TenancyDetailResource)
+    def get(self, request, tenancy_id):
+        return Response(detail(tenancy_id, self.owned_by(request)))
+
+    @extend_schema(request=dtos.UpdateTenancyDto, responses=resources.TenancyDetailResource)
+    def patch(self, request, tenancy_id):
+        changes = validated(dtos.UpdateTenancyDto, request.data)
+        owned_by = self.owned_by(request)
+        services.update_tenancy(
+            actor=request.user, tenancy_id=tenancy_id, changes=changes, owned_by=owned_by
+        )
+        return Response(detail(tenancy_id, owned_by))
+
+
+class InvitationsView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        request=dtos.InviteTenantDto,
+        responses={201: resources.InvitationResource},
+    )
+    def post(self, request, tenancy_id):
+        fields = validated(dtos.InviteTenantDto, request.data)
+        invitation = services.invite_tenant(
+            actor=request.user,
+            tenancy_id=tenancy_id,
+            fields=fields,
+            owned_by=self.owned_by(request),
+        )
+        return Response(resources.InvitationResource(invitation).data, status=201)
+
+
+class ResendInvitationView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        invitation = services.resend_invitation(
+            actor=request.user,
+            tenancy_id=tenancy_id,
+            invitation_id=invitation_id,
+            owned_by=self.owned_by(request),
+        )
+        return Response(resources.InvitationResource(invitation).data)
+
+
+class RevokeInvitationView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        invitation = services.revoke_invitation(
+            actor=request.user,
+            tenancy_id=tenancy_id,
+            invitation_id=invitation_id,
+            owned_by=self.owned_by(request),
+        )
+        return Response(resources.InvitationResource(invitation).data)
+
+
+class ActivateTenancyView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_activate", request=None, responses=resources.TenancyDetailResource
+    )
+    def post(self, request, tenancy_id):
+        owned_by = self.owned_by(request)
+        services.activate_tenancy(actor=request.user, tenancy_id=tenancy_id, owned_by=owned_by)
+        return Response(detail(tenancy_id, owned_by))
+
+
+class EndTenancyView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_end", request=None, responses=resources.TenancyDetailResource
+    )
+    def post(self, request, tenancy_id):
+        owned_by = self.owned_by(request)
+        services.end_tenancy(actor=request.user, tenancy_id=tenancy_id, owned_by=owned_by)
+        return Response(detail(tenancy_id, owned_by))
+
+
+class CancelTenancyView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_cancel", request=None, responses=resources.TenancyDetailResource
+    )
+    def post(self, request, tenancy_id):
+        owned_by = self.owned_by(request)
+        services.cancel_tenancy(actor=request.user, tenancy_id=tenancy_id, owned_by=owned_by)
+        return Response(detail(tenancy_id, owned_by))
+
+
+class ApproveHousemateView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_approve_housemate",
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        invitation = services.approve_housemate(
+            actor=request.user,
+            tenancy_id=tenancy_id,
+            invitation_id=invitation_id,
+            owned_by=self.owned_by(request),
+        )
+        return Response(resources.InvitationResource(invitation).data)
+
+
+class DeclineHousemateView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_decline_housemate",
+        request=None,
+        responses=resources.InvitationResource,
+    )
+    def post(self, request, tenancy_id, invitation_id):
+        invitation = services.decline_housemate(
+            actor=request.user,
+            tenancy_id=tenancy_id,
+            invitation_id=invitation_id,
+            owned_by=self.owned_by(request),
+        )
+        return Response(resources.InvitationResource(invitation).data)
+
+
+class WithdrawTermChangeView(TenancyScope, PermissionedView):
+    required_permissions = {"POST": "tenancies.admin_manage"}
+
+    @extend_schema(
+        operation_id="tenancies_withdraw_terms",
+        request=None,
+        responses=resources.TenancyDetailResource,
+    )
+    def post(self, request, tenancy_id, change_id):
+        owned_by = self.owned_by(request)
+        services.withdraw_term_change(
+            actor=request.user, tenancy_id=tenancy_id, change_id=change_id, owned_by=owned_by
+        )
+        return Response(detail(tenancy_id, owned_by))

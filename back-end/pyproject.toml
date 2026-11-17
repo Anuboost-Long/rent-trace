@@ -1,0 +1,46 @@
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes: unused imports and variables, undefined names
+    "I",    # import sorting
+    "B",    # likely bugs
+    "UP",   # modern Python syntax
+    "SIM",  # simpler equivalent code
+    "DJ",   # Django-specific checks
+    "C90",  # complexity limit (keeps services flat, see AGENTS.md)
+]
+ignore = [
+    "E501",   # line length is the formatter's job; long strings it can't split are allowed
+    "DJ001",  # nullable text fields are deliberate: the spec marks them NULL, not empty string
+    "DJ008",  # __str__ is for the Django admin, which isn't used; Ruff only sees direct models.Model subclasses
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # package __init__ files re-export their public names
+
+[tool.ruff.lint.mccabe]
+max-complexity = 6
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "accounts",
+    "common",
+    "communications",
+    "conditions",
+    "config",
+    "documents",
+    "files",
+    "history",
+    "maintenance",
+    "notifications",
+    "properties",
+    "providers",
+    "reviews",
+    "tenancies",
+]

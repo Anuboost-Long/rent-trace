@@ -1,0 +1,11 @@
+from django.urls import path
+
+from users import views
+
+urlpatterns = [
+    path("", views.UsersView.as_view(), name="users"),
+    path("all/", views.AllUsersView.as_view(), name="users-all"),
+    path("<int:user_id>/", views.UserDetailView.as_view(), name="user-detail"),
+    path("<int:user_id>/deactivate/", views.DeactivateUserView.as_view(), name="user-deactivate"),
+    path("<int:user_id>/activate/", views.ActivateUserView.as_view(), name="user-activate"),
+]
