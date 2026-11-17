@@ -84,6 +84,20 @@ def send_password_changed(user):
     )
 
 
+def send_authenticator_reset(user):
+    _send(
+        user,
+        "Your RentTrace authenticator was reset",
+        "Your authenticator was reset",
+        [
+            "A super admin reset the two-step verification on your RentTrace account, "
+            "and you were signed out everywhere.",
+            "The next time you sign in you will be asked to set up a new authenticator app.",
+        ],
+        footnote="If you did not ask for this, contact support straight away.",
+    )
+
+
 def send_wrong_method(user, attempted_method):
     if attempted_method == AuthMethod.GOOGLE:
         attempt, fix = "with Google", "Sign in with your email and password instead"

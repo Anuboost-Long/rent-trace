@@ -296,7 +296,7 @@ Required for every user with an active ADMIN role who is not a super admin. **De
 - **Enforcement:** `security/mfa_permission.MfaCompleted` denies a session whose status is `ENROL` or `VERIFY`. The MFA endpoints don't use it. **No admin API endpoint exists yet**, so server-side enforcement starts when admin endpoints add it; until then the Next app gates `/admin` by redirecting to `/auth/mfa`.
 - **No key, no MFA:** an empty or malformed `MFA_ENCRYPTION_KEY` makes the MFA endpoints answer 503.
 - **Password reset:** a person with a confirmed `user_mfa` row must also give a TOTP or backup code with the reset link (`POST reset-password/` field `code`). `GET reset-password/?token=` says whether a code is needed without using the link up. A wrong code uses the link up and commits that, so guesses against a stolen link stop at one; a missing code is a plain 400 that leaves the link usable.
-- **Reset:** a lost device is reset by a super admin (not built yet): delete the `user_mfa` and backup-code rows, revoke the user's sessions and record it in `account_access_history`.
+- **Reset:** a lost device is reset by a super admin (`POST users/<id>/reset-authenticator/`): delete the `user_mfa` and backup-code rows, revoke the user's sessions and record it in `account_access_history`.
 
 ## 10. Deferred
 
@@ -314,7 +314,8 @@ Required for every user with an active ADMIN role who is not a super admin. **De
 - [ ] Confirm the Supabase project's signing setup (JWKS or JWT secret) and add the Supabase keys to `.env`.
 - [ ] Update spec v3 §3 and §14, which still say we store no credentials.
 - [x] `MFA_ENCRYPTION_KEY` and the `cryptography` package are added for MFA.
-- [ ] MFA reset by a super admin, and regenerating backup codes.
+- [x] MFA reset by a super admin (`POST users/<id>/reset-authenticator/`, built 18 Nov 2026).
+- [ ] Regenerating backup codes.
 - [ ] Add `PyJWT` to `requirements.txt` and `expo-secure-store` to the mobile app when auth is built.
 - [ ] Run a Redis server for local development and provision one for production; set `REDIS_URL` for each.
 - [ ] Recovery path for users who lose access to their Google account (Admin-assisted).

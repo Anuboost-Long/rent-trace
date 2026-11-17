@@ -1,5 +1,33 @@
 # Admin users
 
+## Status — 18 November 2026 (reset authenticator)
+
+Built; **not yet seen in a browser** (needs a super admin session, and a real reset ends the
+person's sessions and emails them). 8 new back-end tests pass, and so do all 150 in users and
+accounts; ruff, the migration check and the OpenAPI validation pass; admin typecheck and lint pass.
+
+### Resetting someone's authenticator
+
+For an admin who has lost their phone and backup codes, so they cannot get past two-step
+verification or reset their password (which also needs a code).
+
+- **Who:** a super admin only, and not on their own account. The usual rule applies: you can't act
+  on someone who holds permissions you don't.
+- `POST /api/users/<id>/reset-authenticator/` with a required `reason`. It deletes the person's
+  authenticator and unused backup codes, ends all their sessions, and writes an
+  `ADMIN_RESET_AUTHENTICATOR` entry in the account history (reason, who, nothing secret). The
+  person gets an email saying it happened. A person with no authenticator set up gets a 400.
+- Next sign-in the person is asked to set up a new authenticator, as on first sign-in.
+- The user's page shows a "Two-step verification" row (set up or not), and a **Reset
+  authenticator** button for a super admin when it is set up. The button asks for the reason.
+- **Verify who is asking first.** After a reset, someone who knows the password can sign in and
+  set up their own authenticator, so a super admin should confirm the person's identity outside
+  the app before resetting.
+- Acceptance: a super admin resets an enrolled admin and the person must enrol again; a normal
+  admin, landlord or tenant is refused; resetting yourself or someone with no authenticator is
+  refused; the history entry exists and holds no secret; the sessions are ended and an email goes
+  out.
+
 ## Status — 12 November 2026
 
 Shipped 11 November 2026. Not re-verified when this was written.
@@ -26,6 +54,9 @@ Admins find, create, edit, suspend and remove accounts.
 
 ## Source locations
 
+- Reset authenticator: `back-end/users/services/reset_authenticator.py`, `ResetAuthenticatorView` in
+  `users/views.py`, `accounts/security/super_admin_permission.py`; the button is
+  `admin/app/(app)/admin/users/[id]/reset-authenticator-button.tsx`.
 - `back-end/users/`: `/api/users/`.
 - `admin/app/(app)/admin/users/`: `page.tsx`, `[id]/`, `new/`, `role-picker.tsx`,
   `user-actions.tsx`, `users-filter.tsx`.

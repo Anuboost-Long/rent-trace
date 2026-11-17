@@ -176,6 +176,8 @@ export const EndPoints = {
     detail: (id: number | string) => byEndpoint(`users/${id}/`),
     activate: (id: number | string) => byEndpoint(`users/${id}/activate/`),
     deactivate: (id: number | string) => byEndpoint(`users/${id}/deactivate/`),
+    reset_authenticator: (id: number | string) =>
+      byEndpoint(`users/${id}/reset-authenticator/`),
   },
   auth: {
     sign_up: byEndpoint("auth/sign-up/"),
