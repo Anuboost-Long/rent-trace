@@ -142,6 +142,17 @@ class ForgotPasswordView(EmailLinkView):
 class ResetPasswordView(PublicView):
     throttle_scope = "email_links"
 
+    @extend_schema(
+        parameters=[dtos.ResetLinkQueryDto],
+        responses=resources.ResetPreviewResource,
+        operation_id="auth_reset_password_preview",
+    )
+    def get(self, request):
+        query = dtos.ResetLinkQueryDto(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        found = services.preview_password_reset(query.validated_data["token"])
+        return Response(resources.ResetPreviewResource(found).data)
+
     @extend_schema(request=dtos.ResetPasswordDto, responses=resources.MessageResource)
     def post(self, request):
         data = _validated(dtos.ResetPasswordDto, request)
@@ -149,6 +160,7 @@ class ResetPasswordView(PublicView):
             raw_token=data["token"],
             new_password=data["new_password"],
             sign_out_other_devices=data["sign_out_other_devices"],
+            code=data.get("code"),
         )
         return _message("Your password is changed. Sign in with your new password.")
 
@@ -177,6 +189,9 @@ class SignOutView(APIView):
 
 
 class ChangePasswordView(APIView):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "mfa"
+
     @extend_schema(request=dtos.ChangePasswordDto, responses=resources.MessageResource)
     def post(self, request):
         data = _validated(dtos.ChangePasswordDto, request)
@@ -186,6 +201,7 @@ class ChangePasswordView(APIView):
             current_password=data["current_password"],
             new_password=data["new_password"],
             sign_out_other_devices=data["sign_out_other_devices"],
+            code=data.get("code"),
         )
         return _message("Your password is changed.")
 

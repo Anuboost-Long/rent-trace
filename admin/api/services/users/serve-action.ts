@@ -120,3 +120,19 @@ export const handleDeleteUser = async (id: number | string) => {
     return handleSSRActionError(error, redirectOnUnauth);
   }
 };
+
+export const handleResetAuthenticator = async (
+  id: number | string,
+  reason: string,
+) => {
+  try {
+    const data = await ApiServiceServer<UserDetail>({
+      url: EndPoints.users.reset_authenticator(id),
+      method: "POST",
+      data: { reason },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};

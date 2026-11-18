@@ -204,7 +204,6 @@ AUTH_PASSWORD_VALIDATORS = [
 JWT_SIGNING_KEY = env("JWT_SIGNING_KEY")
 API_KEY = env("API_KEY", default="")
 
-AUTH_LINK_BASE_URL = env("AUTH_LINK_BASE_URL", default="renttrace://auth")
 WEB_APP_URL = env("WEB_APP_URL", default="http://localhost:3000")
 
 MFA_ENCRYPTION_KEY = env("MFA_ENCRYPTION_KEY", default="")

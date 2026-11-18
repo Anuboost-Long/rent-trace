@@ -15,6 +15,8 @@ import type {
   MfaEnrolment,
   OnboardingBody,
   ProfileBody,
+  ResetPasswordBody,
+  ResetPreview,
   SignedIn,
   SignInBody,
   SignUpBody,
@@ -56,6 +58,45 @@ export const handleResendVerification = async (email: string) => {
       url: EndPoints.auth.resend_verification,
       method: "POST",
       data: { email },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error);
+  }
+};
+
+export const handleForgotPassword = async (email: string) => {
+  try {
+    const data = await ApiServiceServer<Message>({
+      url: EndPoints.auth.forgot_password,
+      method: "POST",
+      data: { email },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error);
+  }
+};
+
+export const handleGetResetPreview = async (token: string) => {
+  try {
+    const data = await ApiServiceServer<ResetPreview>({
+      url: EndPoints.auth.reset_password,
+      method: "GET",
+      params: { token },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error);
+  }
+};
+
+export const handleResetPassword = async (body: ResetPasswordBody) => {
+  try {
+    const data = await ApiServiceServer<Message>({
+      url: EndPoints.auth.reset_password,
+      method: "POST",
+      data: body,
     });
     return { data, error: null };
   } catch (error) {

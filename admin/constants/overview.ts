@@ -8,6 +8,7 @@ export const ActivityLabel: Record<string, string> = {
   ADMIN_LIFTED_BAN: "lifted a ban on an account",
   ADMIN_GRANTED_PERMISSION: "granted a permission to",
   ADMIN_REVOKED_PERMISSION: "revoked a permission from",
+  ADMIN_RESET_AUTHENTICATOR: "reset the authenticator for",
   ADMIN_REVOKED_SESSION: "ended a session for",
   UPDATED_OWN_PROFILE: "updated their profile",
   CREATED_ROLE: "created a role for",

@@ -66,6 +66,14 @@ export default function SignInForm({
           Send a new verification link
         </Button>
       )}
+      <p className="text-sm">
+        <Link
+          href={Route.auth.forgot_password}
+          className="font-medium underline"
+        >
+          Forgot password?
+        </Link>
+      </p>
       <p className="text-sm text-foreground/70">
         New to RentTrace?{" "}
         <Link href={Route.auth.sign_up} className="font-medium underline">

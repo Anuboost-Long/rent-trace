@@ -16,6 +16,7 @@ export type UserSummary = {
 export type UserDetail = UserSummary & {
   phone_number: string | null;
   auth_method: string;
+  has_authenticator: boolean;
 };
 
 export type UserOption = Pick<

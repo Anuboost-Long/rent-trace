@@ -65,10 +65,36 @@ def send_password_reset(user, raw_token):
         ["We received a request to reset your password."],
         button=(
             "Choose a new password",
-            _link(settings.AUTH_LINK_BASE_URL, "reset-password", raw_token),
+            _link(settings.WEB_APP_URL, "reset-password", raw_token),
         ),
         footnote="The link expires in 1 hour. If you didn't ask for this, ignore this email; "
         "your password stays the same.",
+    )
+
+
+def send_password_changed(user):
+    _send(
+        user,
+        "Your RentTrace password was changed",
+        "Your password was changed",
+        ["The password for your RentTrace account was just changed."],
+        button=("Reset it again", f"{settings.WEB_APP_URL}/auth/forgot-password"),
+        footnote="If this was you, there is nothing more to do. If it wasn't, reset your "
+        "password now and contact support.",
+    )
+
+
+def send_authenticator_reset(user):
+    _send(
+        user,
+        "Your RentTrace authenticator was reset",
+        "Your authenticator was reset",
+        [
+            "A super admin reset the two-step verification on your RentTrace account, "
+            "and you were signed out everywhere.",
+            "The next time you sign in you will be asked to set up a new authenticator app.",
+        ],
+        footnote="If you did not ask for this, contact support straight away.",
     )
 
 

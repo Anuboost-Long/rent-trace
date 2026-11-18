@@ -176,12 +176,16 @@ export const EndPoints = {
     detail: (id: number | string) => byEndpoint(`users/${id}/`),
     activate: (id: number | string) => byEndpoint(`users/${id}/activate/`),
     deactivate: (id: number | string) => byEndpoint(`users/${id}/deactivate/`),
+    reset_authenticator: (id: number | string) =>
+      byEndpoint(`users/${id}/reset-authenticator/`),
   },
   auth: {
     sign_up: byEndpoint("auth/sign-up/"),
     verify_email: byEndpoint("auth/verify-email/"),
     resend_verification: byEndpoint("auth/resend-verification/"),
     sign_in: byEndpoint("auth/sign-in/"),
+    forgot_password: byEndpoint("auth/forgot-password/"),
+    reset_password: byEndpoint("auth/reset-password/"),
     google: byEndpoint("auth/google/"),
     onboarding: byEndpoint("auth/onboarding/"),
     refresh: byEndpoint("auth/refresh/"),

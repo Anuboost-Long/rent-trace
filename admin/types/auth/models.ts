@@ -58,6 +58,16 @@ export type ChangePasswordBody = {
   current_password: string;
   new_password: string;
   sign_out_other_devices: boolean;
+  code?: string;
 };
+
+export type ResetPasswordBody = {
+  token: string;
+  new_password: string;
+  sign_out_other_devices: boolean;
+  code?: string;
+};
+
+export type ResetPreview = { requires_code: boolean };
 
 export type Message = { detail: string };

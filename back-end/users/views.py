@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 
 from accounts.security.mfa_permission import MfaCompleted
 from accounts.security.permission_required import HasRequiredPermission
+from accounts.security.super_admin_permission import IsSuperAdmin
 from common.pagination import PagePagination
 from users import dtos, resources, services
 
@@ -130,6 +131,24 @@ class DeactivateUserView(AdminView):
         serializer.is_valid(raise_exception=True)
         user = services.deactivate_user(
             actor=request.user, user_id=user_id, reason=serializer.validated_data.get("reason")
+        )
+        return Response(resources.UserDetailResource(user).data)
+
+
+class ResetAuthenticatorView(AdminView):
+    permission_classes = [*AdminView.permission_classes, IsSuperAdmin]
+    required_permissions = {"POST": "accounts.manage"}
+
+    @extend_schema(
+        operation_id="users_reset_authenticator",
+        request=dtos.ResetAuthenticatorDto,
+        responses=resources.UserDetailResource,
+    )
+    def post(self, request, user_id):
+        serializer = dtos.ResetAuthenticatorDto(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = services.reset_authenticator(
+            actor=request.user, user_id=user_id, reason=serializer.validated_data["reason"]
         )
         return Response(resources.UserDetailResource(user).data)
 
