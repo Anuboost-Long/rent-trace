@@ -1,10 +1,14 @@
 import uuid
+from datetime import timedelta
 
+from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from reviews.models import ReviewDecision, ReviewerSide, ReviewStatus
 
+EVIDENCE_WINDOW = timedelta(days=14)
 NOT_PENDING = "This has already been answered or withdrawn."
+EXPIRED = "This report expired after 14 days. The tenant can send a new one."
 KEY_USED = "That idempotency key was already used for a different request."
 
 
@@ -18,9 +22,19 @@ def was_already_decided(request, idempotency_key):
     return True
 
 
+def is_expired(request):
+    """Waiting too long is worked out when it is read; nothing is stored or scheduled."""
+    return (
+        request.status == ReviewStatus.PENDING_REVIEW
+        and request.submitted_at + EVIDENCE_WINDOW <= timezone.now()
+    )
+
+
 def require_pending(request):
     if request.status != ReviewStatus.PENDING_REVIEW:
         raise ValidationError({"request": NOT_PENDING})
+    if is_expired(request):
+        raise ValidationError({"request": EXPIRED})
 
 
 def record_decision(request, reviewer, decision, reason, idempotency_key):

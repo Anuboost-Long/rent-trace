@@ -15,6 +15,7 @@ const StatusLabel: Record<EvidenceStatus, string> = {
   APPROVED: "Approved",
   DISPUTED: "Rejected",
   CANCELLED: "Withdrawn by the tenant",
+  EXPIRED: "Expired",
 };
 
 export default function LandlordEvidence({

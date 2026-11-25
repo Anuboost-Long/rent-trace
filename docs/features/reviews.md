@@ -92,12 +92,28 @@ Assumptions (the spec does not say; change them if wrong):
   not shown to other tenants unless the landlord later chooses to.
 - Retrying the same decision (same idempotency key) returns the original result.
 
+## Expiry
+
+Decided 26 November 2026. A tenant's condition report that nobody has answered after **14 days**
+shows as `EXPIRED`. Like rent change proposals, it is worked out when read: the stored status
+stays `PENDING_REVIEW` and nothing runs on a schedule. An expired report cannot be approved,
+rejected or withdrawn (400, "This report expired after 14 days. The tenant can send a new one."),
+and the tenant sends a new report. Nobody is notified when it expires. Built and tested (15 tests
+in `reviews`); the admin screens show "Expired" and hide the buttons, not yet seen in a browser.
+
+## Escalation
+
+Decided 26 November 2026, not built. Escalation is manual: the landlord or the tenant presses a
+button, which calls an API that hands the request to an admin (permission `reviews.escalate`).
+Nothing escalates on a timer. Still to settle: which states can be escalated (a rejected report?
+an expired one?), and whether a reason is required.
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.
 
 1. **Tenant condition evidence** (the slice above): back end, then tenant and landlord screens.
-2. **Disputes and the admin queue.** Settle or escalate the disputes slice 1 creates, locked
+2. **Disputes and the admin queue.** Settle or escalate (the button above) the disputes slice 1 creates, locked
    corrections, `NEEDS_INFORMATION`, admin screens, a super admin acting with `on_behalf_of`.
 3. **Data removal.**
 4. **Move existing flows onto the engine** only if wanted (maintenance closure, rent change).
@@ -135,7 +151,8 @@ Existing:
    walked-through behaviour.
 2. **Admin review of party changes.** Which kinds go to an admin by default, rather than the
    opposite side?
-3. **Expiry.** Does a request waiting on the other side expire? Rent change proposals already do.
+3. ~~**Expiry.**~~ Decided 26 Nov 2026: a request waiting on the other side expires after 14 days, as
+   rent change proposals do. See "Expiry" above.
 4. **Evidence files.** Reuse `files` uploads as maintenance does?
 
 ## Not done

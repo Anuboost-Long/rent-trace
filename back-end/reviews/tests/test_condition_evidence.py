@@ -1,4 +1,7 @@
 import uuid
+from datetime import timedelta
+
+from django.utils import timezone
 
 from conditions.models import ConditionRecord
 from history.models import BusinessChangeHistory
@@ -186,3 +189,27 @@ class ConditionEvidenceTests(TenancyApiTestCase):
         self.as_user(self.sam)
 
         self.assertEqual(self.post(f"{self.tenant_url}{evidence['id']}/cancel/").status_code, 404)
+
+    def expire(self, evidence):
+        ReviewRequest.objects.filter(pk=evidence["id"]).update(
+            submitted_at=timezone.now() - timedelta(days=15)
+        )
+
+    def test_after_14_days_it_shows_as_expired_and_cannot_be_answered(self):
+        evidence = self.submitted()
+        self.expire(evidence)
+
+        self.assertEqual(self.reject(evidence).status_code, 400)
+        self.assertEqual(self.approve(evidence).status_code, 400)
+        listed = self.client.get(f"{LANDLORD_URL}?unit_id={self.unit.pk}")
+        self.assertEqual(listed.data[0]["status"], "EXPIRED")
+
+    def test_an_expired_account_cannot_be_withdrawn_and_the_tenant_can_send_a_new_one(self):
+        evidence = self.submitted()
+        self.expire(evidence)
+        self.as_user(self.tina)
+
+        self.assertEqual(self.post(f"{self.tenant_url}{evidence['id']}/cancel/").status_code, 400)
+        self.assertEqual(self.submit().status_code, 201)
+        listed = self.client.get(self.tenant_url).data
+        self.assertEqual(sorted(item["status"] for item in listed), ["EXPIRED", "PENDING_REVIEW"])

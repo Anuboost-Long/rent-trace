@@ -1,9 +1,15 @@
+from typing import Literal
+
 from rest_framework import serializers
 
-from reviews.models import ReviewDecisionType, ReviewRequest
+from reviews.models import ReviewDecisionType, ReviewRequest, ReviewStatus
+from reviews.services.shared.decisions import is_expired
 
 
 class EvidenceResource(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField(
+        help_text="EXPIRED when it waited 14 days for an answer; the stored status is unchanged."
+    )
     title = serializers.CharField(source="current_submission.proposed_condition_version.title")
     description = serializers.CharField(
         source="current_submission.proposed_condition_version.condition_description",
@@ -34,6 +40,9 @@ class EvidenceResource(serializers.ModelSerializer):
             "submitted_at",
             "completed_at",
         ]
+
+    def get_status(self, request) -> Literal[*ReviewStatus.values, "EXPIRED"]:
+        return "EXPIRED" if is_expired(request) else request.status
 
     def get_author(self, request) -> str:
         return f"{request.requested_by.first_name} {request.requested_by.last_name}"

@@ -5,4 +5,5 @@ export const EvidenceStatusLabel: Record<EvidenceStatus, string> = {
   APPROVED: "Approved",
   DISPUTED: "Rejected",
   CANCELLED: "Withdrawn",
+  EXPIRED: "Expired — send a new report",
 };

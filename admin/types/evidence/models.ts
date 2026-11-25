@@ -1,5 +1,5 @@
 export type EvidenceStatus =
-  "PENDING_REVIEW" | "APPROVED" | "DISPUTED" | "CANCELLED";
+  "PENDING_REVIEW" | "APPROVED" | "DISPUTED" | "CANCELLED" | "EXPIRED";
 
 export type ConditionEvidence = {
   id: number;
