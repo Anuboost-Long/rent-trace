@@ -1,22 +1,27 @@
 import { Route } from "@/constants/web-routes";
 import {
   Ban,
+  Bell,
   Building2,
-  KeyRound,
-  ShieldCheck,
   FileText,
+  HardHat,
+  KeyRound,
   LayoutDashboard,
+  LayoutGrid,
   MessageSquare,
+  MonitorSmartphone,
   Scale,
   Users,
   Wrench,
-  HardHat,
   type LucideIcon,
 } from "lucide-react";
 
 import type { Audience } from "./audience";
 
 export const SIDEBAR_COOKIE = "sidebar_collapsed";
+
+// Admin screens that are not in the Figma design sit in this group, below the main items.
+const OPERATIONS = "Operations";
 
 export type { Audience } from "./audience";
 
@@ -42,31 +47,29 @@ export const Navigation: Record<Audience, Navigation> = {
       {
         label: "Overview",
         href: Route.admin.index,
-        icon: LayoutDashboard,
+        icon: LayoutGrid,
         exact: true,
       },
       {
-        label: "Users",
+        label: "Accounts",
         href: Route.admin.users,
         icon: Users,
         permission: "accounts.view",
-        group: "People & access",
         description: "Accounts, roles and status",
       },
       {
-        label: "Access",
+        label: "Team and permissions",
         href: Route.admin.access,
-        icon: ShieldCheck,
+        icon: KeyRound,
         permission: "access.manage",
-        group: "People & access",
-        description: "Roles, permissions and grants",
+        description: "Admins, roles, permissions and grants",
       },
       {
         label: "Properties",
         href: Route.admin.properties,
         icon: Building2,
         permission: "properties.admin_view",
-        group: "Rentals",
+        group: OPERATIONS,
         description: "Set up properties for landlords",
       },
       {
@@ -74,7 +77,7 @@ export const Navigation: Record<Audience, Navigation> = {
         href: Route.admin.tenancies,
         icon: FileText,
         permission: "tenancies.admin_view",
-        group: "Rentals",
+        group: OPERATIONS,
         description: "Tenancies and tenant invitations",
       },
       {
@@ -82,7 +85,7 @@ export const Navigation: Record<Audience, Navigation> = {
         href: Route.admin.contact_requests,
         icon: MessageSquare,
         permission: "contact_requests.admin_view",
-        group: "Rentals",
+        group: OPERATIONS,
         description: "Tenants asking landlords for contact",
       },
       {
@@ -90,7 +93,7 @@ export const Navigation: Record<Audience, Navigation> = {
         href: Route.admin.providers,
         icon: HardHat,
         permission: "providers.admin_view",
-        group: "Rentals",
+        group: OPERATIONS,
         description: "Plumbers, electricians and others landlords use",
       },
       {
@@ -98,7 +101,7 @@ export const Navigation: Record<Audience, Navigation> = {
         href: Route.admin.maintenance,
         icon: Wrench,
         permission: "maintenance.admin_view",
-        group: "Rentals",
+        group: OPERATIONS,
         description: "Issues reported on any property",
       },
       {
@@ -114,16 +117,23 @@ export const Navigation: Record<Audience, Navigation> = {
         href: Route.admin.bans,
         icon: Ban,
         permission: "bans.view",
-        group: "Security",
+        group: OPERATIONS,
         description: "Blocked emails, domains and accounts",
       },
       {
         label: "Access tokens",
         href: Route.admin.tokens,
-        icon: KeyRound,
+        icon: MonitorSmartphone,
         permission: "tokens.view",
-        group: "Security",
+        group: OPERATIONS,
         description: "Signed-in sessions",
+      },
+      {
+        label: "Notifications",
+        href: Route.admin.notifications,
+        icon: Bell,
+        group: OPERATIONS,
+        description: "Updates sent to you",
       },
     ],
   },
