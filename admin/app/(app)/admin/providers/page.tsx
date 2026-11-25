@@ -2,6 +2,7 @@ import {
   handleGetAdminProviders,
   handleGetAdminServiceCategories,
 } from "@/api/services/providers/serve-action";
+import LoadError from "@/components/common/load-error";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import PageHeader from "@/components/layout/page-header";
@@ -110,9 +111,7 @@ async function Providers({
         {...filters}
       />
       {error ? (
-        <p role="alert" className="text-error">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable

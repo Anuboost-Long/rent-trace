@@ -1,4 +1,5 @@
 import { handleGetTokens } from "@/api/services/tokens/serve-action";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
@@ -122,9 +123,7 @@ async function TokenList({
     <>
       <TokensFilter {...filters} />
       {error ? (
-        <p role="alert" className="text-error">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable

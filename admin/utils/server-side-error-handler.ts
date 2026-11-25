@@ -1,4 +1,5 @@
 import { ApiRequestError } from "@/api/api-helper";
+import { SESSION_ENDED } from "@/constants/security";
 import { Route } from "@/constants/web-routes";
 import type { ApiFailure } from "@/types/api/common";
 import { redirect } from "next/navigation";
@@ -66,7 +67,7 @@ export const handleSSRActionError = async (
 ) => {
   const failure = toFailure(error);
   if (failure.is_unauth && options?.redirectOnUnauth) {
-    redirect(Route.auth.sign_in);
+    redirect(`${Route.auth.sign_in}?reason=${SESSION_ENDED}`);
   }
   return { data: null, error: failure };
 };

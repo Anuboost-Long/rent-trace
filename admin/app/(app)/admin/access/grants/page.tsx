@@ -4,6 +4,7 @@ import {
 } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
@@ -121,9 +122,7 @@ async function Grants({
     <>
       <GrantsFilter {...filters} permissions={permissions.data ?? []} />
       {error ? (
-        <p role="alert" className="text-error">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable

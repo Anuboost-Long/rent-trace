@@ -1,5 +1,6 @@
 import { handleGetPermissions } from "@/api/services/access/serve-action";
 import { handleGetAllUsers } from "@/api/services/users/serve-action";
+import LoadError from "@/components/common/load-error";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
@@ -44,11 +45,7 @@ async function NewGrant({
   ]);
   const error = users.error ?? permissions.error;
   if (error) {
-    return (
-      <p role="alert" className="text-error">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
   return (
     <GrantForm
