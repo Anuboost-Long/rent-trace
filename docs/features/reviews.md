@@ -105,8 +105,10 @@ in `reviews`); the admin screens show "Expired" and hide the buttons, not yet se
 
 Decided 26 November 2026, not built. Escalation is manual: the landlord or the tenant presses a
 button, which calls an API that hands the request to an admin (permission `reviews.escalate`).
-Nothing escalates on a timer. Still to settle: which states can be escalated (a rejected report?
-an expired one?), and whether a reason is required.
+Nothing escalates on a timer. Either party can escalate a **rejected** report (`DISPUTED`) or an **expired** one, so a tenant
+whose landlord never answers is not stuck. A reason is required every time. Not yet settled: who
+counts as a party (the report's author and the property's current owners, as for answering), what
+the admin sees, and who is told.
 
 ## Build order
 
