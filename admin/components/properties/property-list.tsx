@@ -1,6 +1,7 @@
 import { handleGetProperties } from "@/api/services/properties/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
@@ -14,6 +15,7 @@ import type {
   PropertyAudience,
   PropertySummary,
 } from "@/types/properties/models";
+import { PropertyStatusTone, toneFor } from "@/constants/status-tones";
 import { ownerName, propertyTitle } from "@/utils/property-address";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -69,7 +71,11 @@ const columnsFor = (audience: PropertyAudience): Column<PropertySummary>[] => [
   { header: "Units", cell: (property) => property.unit_count },
   {
     header: "Status",
-    cell: (property) => PropertyStatusLabel[property.property_status],
+    cell: (property) => (
+      <StatusBadge tone={toneFor(PropertyStatusTone, property.property_status)}>
+        {PropertyStatusLabel[property.property_status]}
+      </StatusBadge>
+    ),
   },
 ];
 
@@ -81,7 +87,7 @@ export default function PropertyListPage({
     <>
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Properties</h1>
+          <h1 className="text-heading">Properties</h1>
           <p className="mt-1 text-fg-secondary">{COPY[audience]}</p>
         </div>
         <Can permission={PropertyAccess[audience].create}>

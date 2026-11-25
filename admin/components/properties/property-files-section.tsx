@@ -50,7 +50,7 @@ export default function PropertyFilesSection({
 
   return (
     <section aria-labelledby={headingId} className="mt-10">
-      <h2 id={headingId} className="text-lg font-semibold">
+      <h2 id={headingId} className="text-section">
         Photos and files
       </h2>
 

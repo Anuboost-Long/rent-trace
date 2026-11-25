@@ -76,7 +76,7 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
           { label: placeName(tenancy) },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">
+      <h1 className="mt-4 mb-6 text-heading">
         {placeName(tenancy)}, {tenancy.unit.name}
       </h1>
       {tenancy.pending_change && (

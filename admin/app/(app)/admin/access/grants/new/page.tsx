@@ -23,7 +23,7 @@ export default function NewGrantPage({
           { label: "New grant" },
         ]}
       />
-      <h1 className="mt-4 text-2xl font-semibold">New grant</h1>
+      <h1 className="mt-4 text-heading">New grant</h1>
       <p className="mt-1 mb-6 text-fg-secondary">
         Give one person a permission on top of what their roles already give
         them. A reason is required and is kept in their history.

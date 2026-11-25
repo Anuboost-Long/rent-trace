@@ -15,7 +15,7 @@ export default function IssueProvider({ assignment }: IssueProviderProp) {
 
   return (
     <section aria-labelledby="provider-heading" className="mb-8">
-      <h2 id="provider-heading" className="text-lg font-semibold">
+      <h2 id="provider-heading" className="text-section">
         Tradesperson
       </h2>
       <div className="mt-2 rounded-xl border border-default p-4">

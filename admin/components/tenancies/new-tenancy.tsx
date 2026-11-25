@@ -43,7 +43,7 @@ export default async function NewTenancyPage({
           { label: "New tenancy" },
         ]}
       />
-      <h1 className="mt-4 text-2xl font-semibold">New tenancy</h1>
+      <h1 className="mt-4 text-heading">New tenancy</h1>
       <p className="mt-1 mb-6 text-fg-secondary">
         It starts as a draft. Invite tenants from its page afterwards.
       </p>

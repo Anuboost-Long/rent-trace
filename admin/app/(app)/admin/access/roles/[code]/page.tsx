@@ -62,7 +62,7 @@ async function EditRole({
           { label: role.name },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">{role.name}</h1>
+      <h1 className="mt-4 mb-6 text-heading">{role.name}</h1>
       <RoleEditor
         role={role}
         roles={roles.data!}

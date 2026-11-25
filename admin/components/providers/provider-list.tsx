@@ -66,7 +66,7 @@ export default function ProviderListPage({ searchParams }: ProviderListProp) {
     <>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Tradespeople</h1>
+          <h1 className="text-heading">Tradespeople</h1>
           <p className="mt-1 text-fg-secondary">
             Plumbers, electricians and others you call. Link them to your
             properties so tenants know who to contact.

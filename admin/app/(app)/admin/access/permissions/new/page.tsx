@@ -16,7 +16,7 @@ export default function NewPermissionPage() {
           { label: "New permission" },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">New permission</h1>
+      <h1 className="mt-4 mb-6 text-heading">New permission</h1>
       <PermissionForm permission={null} />
     </>
   );

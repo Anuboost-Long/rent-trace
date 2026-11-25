@@ -25,7 +25,7 @@ export default function NewPropertyPage({ audience }: NewPropertyProp) {
           { label: "New property" },
         ]}
       />
-      <h1 className="mt-4 text-2xl font-semibold">New property</h1>
+      <h1 className="mt-4 text-heading">New property</h1>
       <p className="mt-1 mb-6 text-fg-secondary">{COPY[audience]}</p>
       <Suspense fallback={<FormSkeleton />}>
         <NewProperty audience={audience} />

@@ -7,7 +7,7 @@ export default function IssueTimeline({
 }: Readonly<{ history: IssueHistoryEntry[] }>) {
   return (
     <section aria-labelledby="timeline-heading" className="mt-12">
-      <h2 id="timeline-heading" className="text-lg font-semibold">
+      <h2 id="timeline-heading" className="text-section">
         History
       </h2>
       <ol className="mt-2 divide-y divide-default">

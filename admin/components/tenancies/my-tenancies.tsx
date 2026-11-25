@@ -25,7 +25,7 @@ export default async function MyTenancies({ showHistory }: MyTenanciesProp) {
   return (
     <>
       <section aria-labelledby="current-heading">
-        <h2 id="current-heading" className="text-lg font-semibold">
+        <h2 id="current-heading" className="text-section">
           Where you live
         </h2>
         {current.length === 0 ? (
@@ -52,7 +52,7 @@ export default async function MyTenancies({ showHistory }: MyTenanciesProp) {
 
       {showHistory && history.length > 0 && (
         <section aria-labelledby="history-heading" className="mt-10">
-          <h2 id="history-heading" className="text-lg font-semibold">
+          <h2 id="history-heading" className="text-section">
             Rental history
           </h2>
           <ul className="mt-3 divide-y divide-default rounded-xl border border-default">

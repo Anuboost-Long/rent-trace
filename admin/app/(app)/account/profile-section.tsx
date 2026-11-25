@@ -22,7 +22,7 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
   return (
     <section aria-labelledby="profile-heading">
       <div className="flex items-center justify-between gap-4">
-        <h2 id="profile-heading" className="text-lg font-semibold">
+        <h2 id="profile-heading" className="text-section">
           Profile
         </h2>
         {!editing && (

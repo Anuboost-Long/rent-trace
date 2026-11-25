@@ -19,6 +19,7 @@ const SHOWN_PERMISSIONS = 6;
 export default function TeamPage() {
   return (
     <>
+      <h1 className="sr-only">Team and permissions</h1>
       <p className="mb-5 rounded-xl border border-default bg-background px-4 py-3 text-body-sm text-fg-secondary">
         Admin accounts are created by RentTrace operations, not through sign-up.
         Each admin only has the permissions shown here. You can&apos;t change

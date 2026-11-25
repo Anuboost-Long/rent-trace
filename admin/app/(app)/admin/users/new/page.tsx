@@ -19,7 +19,7 @@ export default function NewUserPage() {
           { label: "New user" },
         ]}
       />
-      <h1 className="mt-4 text-2xl font-semibold">New user</h1>
+      <h1 className="mt-4 text-heading">New user</h1>
       <p className="mt-1 mb-6 text-fg-secondary">
         The account is created verified. Share the starting password with the
         person securely; no email is sent.

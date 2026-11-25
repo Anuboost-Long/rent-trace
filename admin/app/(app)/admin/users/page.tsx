@@ -18,9 +18,12 @@ import UsersFilter from "./users-filter";
 
 export default function UsersPage({ searchParams }: PageProps<"/admin/users">) {
   return (
-    <Suspense fallback={<ListSkeleton />}>
-      <UsersList searchParams={searchParams} />
-    </Suspense>
+    <>
+      <h1 className="sr-only">Accounts</h1>
+      <Suspense fallback={<ListSkeleton />}>
+        <UsersList searchParams={searchParams} />
+      </Suspense>
+    </>
   );
 }
 

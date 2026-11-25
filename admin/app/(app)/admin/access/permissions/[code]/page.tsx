@@ -47,13 +47,11 @@ async function PermissionDetail({
           { label: data.permission.name },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">
-        {data.permission.name}
-      </h1>
+      <h1 className="mt-4 mb-6 text-heading">{data.permission.name}</h1>
       <PermissionForm permission={data.permission} />
 
       <section className="mt-10">
-        <h2 className="text-lg font-semibold">Who has it</h2>
+        <h2 className="text-section">Who has it</h2>
         <div className="mt-3 divide-y divide-default rounded-xl border border-default">
           <div className="p-4">
             <h3 className="mb-2 text-sm font-medium">Through roles</h3>

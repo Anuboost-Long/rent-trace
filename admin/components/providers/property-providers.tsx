@@ -83,7 +83,7 @@ export default function PropertyProviders({
   return (
     <section aria-labelledby="providers-heading" className="mt-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="providers-heading" className="text-lg font-semibold">
+        <h2 id="providers-heading" className="text-section">
           Tradespeople
         </h2>
         <Can permission="providers.manage">

@@ -2,18 +2,19 @@
 
 ## Status — 25 November 2026
 
-In progress. Planned in phases, using only APIs that already exist (no back-end changes):
+All eight phases are built, using only APIs that already exist (no back-end changes). Type check,
+lint and `npm test` pass. `next build` compiled every route and then stopped at Next.js's
+security-version check, which is separate from this work. **Nothing has been seen in a browser
+yet**, so every screen below is unverified against Figma.
 
 1. Foundations: Figma design tokens, the Inter font and restyled shared components (whole app)
 2. Admin shell: navy sidebar, top bar, new menu
-3. Sign-in and MFA screens (Figma A1)
-4. Accounts list and detail (A4)
-5. Team and permissions (A5)
-6. Overview (A2, partial)
+3. Log in and MFA screens (Figma A1). See [Authentication](authentication.md).
+4. Accounts list and detail (A4). See [Admin users](admin-users.md).
+5. Team and permissions (A5). See [Access control](access-control.md).
+6. Overview (A2, partial). See [Admin overview](admin-overview.md).
 7. No access and Session ended (A8)
-8. Sweep of the Operations, tenant and landlord pages
-
-Nothing has been seen in a browser yet.
+8. Sweep: status badges in the list tables, and headings on the Figma type scale
 
 ## Goal
 
@@ -23,20 +24,41 @@ pages keep their layouts but share the new look, since they stay as API test pag
 
 ## How it works
 
-- **Look:** colours, spacing, radius and type come from the Figma variables, defined once as
-  `--rt-*` tokens in `admin/app/globals.css` and exposed as Tailwind colours (`text-fg-secondary`,
-  `border-default`, `bg-subtle`, `bg-brand`, `text-error` and so on). The font is Inter.
-- **Admin menu:** Overview, Accounts (`/admin/users`), Team and permissions (`/admin/access`).
-  The admin screens that are not in Figma sit under **Operations**: Properties, Tenancies,
-  Contact requests, Tradespeople, Maintenance, Bans, Access tokens and Notifications. Cases,
-  Removal requests and Audit log are hidden until their APIs exist.
-- **Reasons:** suspending, banning and changing an admin's permissions all ask for a reason,
-  as Figma does.
+- **Look:** colours, radius, shadow and type come from the Figma variables, defined once as
+  `--rt-*` tokens in `admin/app/globals.css` and exposed as Tailwind classes:
+  - text colours: `text-fg-primary`, `-secondary`, `-tertiary`, `text-fg-brand`, `text-on-brand`
+  - backgrounds: `bg-subtle`, `bg-muted`, `bg-brand`, `bg-brand-subtle`, `bg-admin`, `bg-admin-active`
+  - borders: `border-default`, `border-strong`, `border-brand-border`
+  - status colours: `text-error` / `-success` / `-warning` / `-attention` / `-neutral`, each with
+    `-background`, `-border` and `-accent`
+  - type scale: `text-display`, `text-heading`, `text-section`, `text-body`, `text-body-sm`,
+    `text-caption`
+
+  The font is Inter. The old `text-foreground/70`-style classes were rewritten to these across the
+  app.
+- **Shared components:**
+  - Buttons: `primary` (brand), `secondary` (outlined; `quiet` is the old name for it) and `danger`.
+  - Inputs, the data table (card style, optional whole-row link through `rowHref`) and the
+    confirm dialog (optional required reason through `reasonLabel`).
+  - New: `StatusBadge`, `Card`, `Avatar`, `FilterChips`, `SwitchInput`, `OtpInput`, `NoAccess`
+    and `LoadError`.
+- **Admin menu:** Overview, Accounts (`/admin/users`), Team and permissions (`/admin/access`). The
+  admin screens that are not in Figma sit under **Operations**: Properties, Tenancies, Contact
+  requests, Tradespeople, Maintenance, Bans, Access tokens and Notifications. Cases, Removal
+  requests and Audit log are hidden until their APIs exist.
+- **Reasons:** suspending, reactivating, banning and changing an admin's permissions all ask for a
+  reason, as Figma does.
+- **No access:** an admin page that gets a 403 shows a "You don't have permission to see this"
+  panel instead of a bare error line.
+- **Session ended:** when a session can't be refreshed, log in shows "Your session ended".
+- **Status badges:** list tables show statuses as coloured badges. The colour for each status is
+  in `admin/constants/status-tones.ts`; anything not listed is grey.
 
 ## Source locations
 
 - Admin: `admin/app/globals.css`, `admin/app/layout.tsx`, `admin/components/common/`,
-  `admin/components/layout/`, `admin/constants/navigation.ts`
+  `admin/components/layout/`, `admin/constants/navigation.ts`, `admin/constants/status-tones.ts`,
+  `admin/proxy.ts`
 - Admin pages: `admin/app/auth/`, `admin/app/(app)/admin/users/`, `admin/app/(app)/admin/access/`,
   `admin/app/(app)/admin/page.tsx`, `admin/components/overview/`
 
@@ -52,4 +74,11 @@ Figma shows things the API can't give yet:
 - **Not built at all:** Cases (A3), Removal requests (A6) and Audit log (A7) have no API.
 - **Permission codes** differ from Figma (`reviews.decide` rather than `cases.decide`); the real
   codes are shown.
+
+Other gaps:
+
 - **Dark mode:** Figma has no dark theme, so the app is light only for now.
+- **Repeated titles:** list pages that already had a heading (Bans, Properties and others) repeat
+  the page title under the top bar. Those headings are shared with tenant pages, which have no top
+  bar, so they were kept.
+- **Last active** shows a date, not "Today" or "3 days ago" as in Figma.

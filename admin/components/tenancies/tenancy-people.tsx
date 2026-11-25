@@ -108,7 +108,7 @@ export default function TenancyPeople({
     <section aria-labelledby="people-heading" className="mt-12">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div className="flex items-baseline gap-3">
-          <h2 id="people-heading" className="text-lg font-semibold">
+          <h2 id="people-heading" className="text-section">
             People
           </h2>
           <p className={clsx(mutedText, "tabular-nums")}>

@@ -87,7 +87,7 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
         ]}
       />
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{title}</h1>
+        <h1 className="text-heading">{title}</h1>
         <Can permission={access.update}>
           <div className="flex gap-2">
             <Can permission={TenancyAccess[audience].create}>

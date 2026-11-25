@@ -1,8 +1,10 @@
 import { handleGetIssues } from "@/api/services/maintenance/serve-action";
 import LocalTime from "@/components/common/local-time";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
+import { IssueStatusTone, toneFor } from "@/constants/status-tones";
 import {
   IssuePriorityLabel,
   IssueRoutes,
@@ -49,7 +51,9 @@ const columnsFor = (audience: MaintenanceAudience): Column<IssueSummary>[] => [
     header: "Status",
     cell: (issue) => (
       <>
-        {IssueStatusLabel[issue.status]}
+        <StatusBadge tone={toneFor(IssueStatusTone, issue.status)}>
+          {IssueStatusLabel[issue.status]}
+        </StatusBadge>
         {issue.has_open_closure && (
           <p className="text-xs text-fg-tertiary">Closure waiting</p>
         )}
