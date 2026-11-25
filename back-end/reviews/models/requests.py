@@ -43,6 +43,27 @@ class ReviewRoute(models.TextChoices):
     OWNER_DIRECT = "OWNER_DIRECT"
 
 
+class ReviewRequestQuerySet(models.QuerySet):
+    def evidence(self):
+        return self.filter(kind=ReviewKind.EVIDENCE_REVIEW)
+
+    def on_properties(self, properties):
+        return self.filter(target__condition_record__property_unit__property__in=properties)
+
+    def on_unit(self, unit_id):
+        return self.filter(target__condition_record__property_unit_id=unit_id)
+
+    def in_tenancy(self, tenancy_id):
+        return self.filter(scopes__tenancy_id=tenancy_id)
+
+    def with_details(self):
+        return self.select_related(
+            "requested_by",
+            "target__condition_record",
+            "current_submission__proposed_condition_version",
+        ).prefetch_related("decisions", "scopes")
+
+
 class ReviewRequest(MutableRecord):
     target = models.ForeignKey(ReviewTarget, models.PROTECT, related_name="requests")
     kind = models.TextField(choices=ReviewKind)
@@ -61,6 +82,8 @@ class ReviewRequest(MutableRecord):
     submitted_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
     applied_at = models.DateTimeField(null=True, blank=True)
+
+    objects = ReviewRequestQuerySet.as_manager()
 
     class Meta(MutableRecord.Meta):
         db_table = "review_requests"

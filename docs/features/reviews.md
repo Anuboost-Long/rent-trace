@@ -2,8 +2,10 @@
 
 ## Status — 25 November 2026
 
-Planned. The tables exist (`back-end/reviews/`, migration `0001_initial`) and the permission
-codes are seeded. There is no API, no service and no screen. Nothing here is verified.
+Slice 1 (tenant condition evidence) is built in the **back end only**, on branch `feat/reviews`:
+13 new tests pass, and so does the full suite (750), with ruff, the migration check and the
+OpenAPI validation. There are **no admin screens yet**, so nothing has been seen in a browser.
+Everything else in this document is still planned.
 
 ## Goal
 
@@ -51,22 +53,57 @@ Intended behaviour, taken from the existing models. Rules marked "decide" need a
   `reviews.escalate`, `reviews.request_removal` (parties), `reviews.admin_review`,
   `reviews.review_removal` (admins).
 
+## First slice — tenant condition evidence
+
+Reading spec v3 (`RentTrace_Database_Structure_and_Processes_v3.md`, §6 "Review routing and
+lifecycle") changed the first slice. A landlord's accepted condition note is locked, and only an
+admin can correct it. So the first slice is not "a tenant corrects a landlord's note". It is the
+route the spec gives to **new evidence**:
+
+1. A tenant of a unit adds their own condition account (a `DISCREPANCY` record, source
+   `TENANT`: title, description, date observed). It starts `PENDING_REVIEW`.
+2. One current owner of the property approves or rejects it. This is the "one eligible
+   opposite-side party" rule. Approving sets the record's accepted version. Rejecting needs a
+   reason and marks the request `DISPUTED`.
+3. The tenant can cancel it while it is pending.
+4. Only a current tenant of that unit can add one; only a current owner can answer. Anyone else
+   gets a 404.
+
+Statuses used: `PENDING_REVIEW`, `APPROVED`, `DISPUTED`, `CANCELLED`. Not in this slice:
+`NEEDS_INFORMATION`, the admin route, `STALE`, attachments, settling or escalating a dispute.
+
+Assumptions (the spec does not say; change them if wrong):
+
+- A rejection creates the linked dispute case the spec requires (`disputes` row plus a `DISPUTE`
+  request, opposite-side route, status `PENDING_REVIEW`, parent = the rejected request). Nothing
+  can act on that dispute yet.
+- A pending account is invisible to everyone but its author and the owners. An approved one is
+  not shown to other tenants unless the landlord later chooses to.
+- Retrying the same decision (same idempotency key) returns the original result.
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.
 
-1. **Engine core.** Targets, create and submit a request, decide, status history, stale check,
-   notifications. No UI; covered by tests. First user: unit conditions.
-2. **Condition corrections (first screens).** A tenant questions a landlord's condition note,
-   the landlord answers; a landlord corrects a locked note. Landlord and tenant screens.
-3. **Admin queue and disputes.** Admin list of requests waiting on an admin, escalate,
-   resolve, super admin acting with `on_behalf_of`. Admin screens.
-4. **Data removal.** Request, admin decision, hiding.
-5. **Move existing flows onto the engine.** Maintenance closure and rent change approval were
-   built without it. Decide whether to move them or leave them (see Open questions).
-6. **Documents.** Confirmation and contract changes, once documents have an API.
+1. **Tenant condition evidence** (the slice above): back end, then tenant and landlord screens.
+2. **Disputes and the admin queue.** Settle or escalate the disputes slice 1 creates, locked
+   corrections, `NEEDS_INFORMATION`, admin screens, a super admin acting with `on_behalf_of`.
+3. **Data removal.**
+4. **Move existing flows onto the engine** only if wanted (maintenance closure, rent change).
+5. **Documents.**
 
 ## Source locations
+
+Shipped (slice 1):
+
+- API, tenant: `GET/POST /api/tenant/tenancies/<id>/condition-evidence/` (list yours, add one),
+  `POST .../<request_id>/cancel/`. Permissions `reviews.view`, `reviews.submit`.
+- API, landlord: `GET /api/landlord/condition-evidence/?unit_id=`,
+  `POST .../<request_id>/approve/` and `.../reject/` (a reason and an `idempotency_key`, a fresh
+  UUID per click). Permissions `reviews.view`, `reviews.decide`.
+- Back end: `back-end/reviews/` (`services/` one use case per file, `tenant_views.py`,
+  `landlord_views.py`, `tests/test_condition_evidence.py`); three new notification kinds
+  (`CONDITION_EVIDENCE_SUBMITTED/APPROVED/REJECTED`, migration `notifications/0009`).
 
 Existing:
 
@@ -76,20 +113,18 @@ Existing:
 
 To add:
 
-- Back end: `back-end/reviews/` services (one use case per file), resources, views, urls, tests
-- Admin: `admin/` landlord and tenant review panels, and an admin queue
+- Admin: a tenant "add a condition account" form and list on the tenancy page, a landlord
+  review list on the unit page, and how the inbox links the three new notification kinds
 
 ## Open questions
 
-1. **Scope of the first release.** Condition corrections (phase 2) is the smallest useful
-   screen. Is that the right first user?
-2. **Existing flows.** Move maintenance closure and rent change approval onto the engine, or
+1. **Existing flows.** Move maintenance closure and rent change approval onto the engine, or
    leave them as they are? Moving makes one history and one inbox, but changes working,
    walked-through behaviour.
-3. **Admin review of party changes.** Which kinds go to an admin by default, rather than the
+2. **Admin review of party changes.** Which kinds go to an admin by default, rather than the
    opposite side?
-4. **Expiry.** Does a request waiting on the other side expire? Rent change proposals already do.
-5. **Evidence files.** Reuse `files` uploads as maintenance does?
+3. **Expiry.** Does a request waiting on the other side expire? Rent change proposals already do.
+4. **Evidence files.** Reuse `files` uploads as maintenance does?
 
 ## Not done
 
