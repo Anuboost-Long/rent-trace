@@ -92,24 +92,28 @@ export function FormSkeleton({ withHeader }: WithHeader) {
 export function DashboardSkeleton() {
   return (
     <Busy>
-      <div className="grid gap-10 lg:grid-cols-3 lg:gap-12">
-        <div className="lg:col-span-2">
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="mt-3 h-14 w-40" />
-          <Skeleton className="mt-3 h-4 w-72 max-w-full" />
-          <Skeleton className="mt-6 h-2 w-full rounded-full" />
-          <div className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
-            {[0, 1, 2, 3].map((index) => (
-              <Skeleton key={index} className="h-4 w-20" />
-            ))}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[0, 1, 2, 3].map((index) => (
+          <div
+            key={index}
+            className="rounded-xl border border-default bg-background p-5"
+          >
+            <Skeleton className="h-8 w-12" />
+            <Skeleton className="mt-3 h-5 w-40 max-w-full" />
+            <Skeleton className="mt-2 h-3 w-28" />
           </div>
+        ))}
+      </div>
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
+        <div className="rounded-xl border border-default bg-background p-5">
+          <Skeleton className="h-5 w-28" />
+          <Skeleton className="mt-4 h-8 w-32" />
+          <Skeleton className="mt-4 h-2 w-full rounded-full" />
         </div>
-        <div className="space-y-6">
+        <div className="rounded-xl border border-default bg-background p-5">
+          <Skeleton className="h-5 w-40" />
           {[0, 1, 2].map((index) => (
-            <div key={index}>
-              <Skeleton className="h-4 w-28" />
-              <Skeleton className="mt-2 h-8 w-16" />
-            </div>
+            <Skeleton key={index} className="mt-4 h-4 w-full" />
           ))}
         </div>
       </div>
