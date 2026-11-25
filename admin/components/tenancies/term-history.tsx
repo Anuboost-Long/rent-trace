@@ -13,7 +13,7 @@ export default function TermHistory({
 
   return (
     <section aria-labelledby="term-history-heading" className="mt-12">
-      <h2 id="term-history-heading" className="text-lg font-semibold">
+      <h2 id="term-history-heading" className="text-section">
         Rent and bond history
       </h2>
       <ul className="mt-2 divide-y divide-default">

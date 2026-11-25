@@ -98,7 +98,7 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
         ]}
       />
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{tenancy.reference_no}</h1>
+        <h1 className="text-heading">{tenancy.reference_no}</h1>
         <div className="flex flex-wrap items-center gap-2">
           {!closed && (
             <Can permission={TenancyAccess[audience].update}>
@@ -136,7 +136,7 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
       </dl>
 
       <section className="mt-10">
-        <h2 className="text-lg font-semibold">Tenants</h2>
+        <h2 className="text-section">Tenants</h2>
         {tenancy.tenants.length === 0 ? (
           <p className="mt-2 text-fg-secondary">
             {closed

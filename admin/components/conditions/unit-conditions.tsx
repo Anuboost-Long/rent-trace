@@ -38,7 +38,7 @@ export default function UnitConditions({ unitId, notes }: UnitConditionsProp) {
     <section aria-labelledby="conditions-heading" className="mt-12">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div className="flex items-baseline gap-3">
-          <h2 id="conditions-heading" className="text-lg font-semibold">
+          <h2 id="conditions-heading" className="text-section">
             Condition
           </h2>
           {notes.length > 0 && (

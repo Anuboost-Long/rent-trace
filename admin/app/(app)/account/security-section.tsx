@@ -14,7 +14,7 @@ export default function SecuritySection({ user }: SecuritySectionProp) {
 
   return (
     <section aria-labelledby="security-heading">
-      <h2 id="security-heading" className="text-lg font-semibold">
+      <h2 id="security-heading" className="text-section">
         Security
       </h2>
 

@@ -58,7 +58,7 @@ export default function UnitsSection({
   return (
     <section aria-labelledby="units-heading" className="mt-10">
       <div className="flex items-center justify-between gap-4">
-        <h2 id="units-heading" className="text-lg font-semibold">
+        <h2 id="units-heading" className="text-section">
           Units
         </h2>
         {canManage && !adding && (

@@ -1,10 +1,12 @@
 import { handleGetTokens } from "@/api/services/tokens/serve-action";
 import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { TokenStatusLabel } from "@/constants/security";
+import { TokenStatusTone, toneFor } from "@/constants/status-tones";
 import { Route } from "@/constants/web-routes";
 import type { AccessToken } from "@/types/security/models";
 import type { Metadata } from "next";
@@ -22,7 +24,7 @@ export default function TokensPage({
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Access tokens</h1>
+        <h1 className="text-heading">Access tokens</h1>
         <p className="mt-1 text-fg-secondary">
           Every signed-in session. Revoking one signs that device out straight
           away.
@@ -90,7 +92,14 @@ const columns: Column<AccessToken>[] = [
     header: "Expires",
     cell: (token) => <LocalTime iso={token.expires_at} withTime />,
   },
-  { header: "Status", cell: (token) => TokenStatusLabel[token.status] },
+  {
+    header: "Status",
+    cell: (token) => (
+      <StatusBadge tone={toneFor(TokenStatusTone, token.status)}>
+        {TokenStatusLabel[token.status]}
+      </StatusBadge>
+    ),
+  },
   {
     header: "Actions",
     className: "text-right",

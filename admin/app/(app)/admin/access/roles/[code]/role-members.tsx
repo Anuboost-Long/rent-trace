@@ -33,7 +33,7 @@ export default function RoleMembers({
 
   return (
     <section className="mt-10">
-      <h2 className="text-lg font-semibold">People in this role</h2>
+      <h2 className="text-section">People in this role</h2>
       <p className="mt-1 mb-3 text-sm text-fg-secondary">
         {total} {total === 1 ? "person holds" : "people hold"} {roleName}.
         {total > members.length && ` Showing the first ${members.length}.`}

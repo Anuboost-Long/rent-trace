@@ -106,7 +106,7 @@ export default function InvitationsSection({
 
   return (
     <section className="mt-10">
-      <h2 className="text-lg font-semibold">Invitations</h2>
+      <h2 className="text-section">Invitations</h2>
       <p className="mt-1 mb-4 text-fg-secondary">
         Invited people get an email link that lasts 7 days. Resending sends a
         new link and the old one stops working. When a tenant asks to add a

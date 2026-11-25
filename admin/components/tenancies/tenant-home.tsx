@@ -63,7 +63,7 @@ export default async function TenantHome() {
 function NoTenancy() {
   return (
     <div className="rounded-2xl border border-default p-8">
-      <p className="text-lg font-semibold">No current tenancy yet</p>
+      <p className="text-section">No current tenancy yet</p>
       <p className="mt-1 max-w-prose text-fg-secondary">
         When a landlord adds you to a tenancy, your home shows up here. Looking
         for a place?
@@ -100,7 +100,7 @@ function HomePanel({
         <p className="text-sm text-fg-tertiary">
           {TenantTenancyStatusLabel[tenancy.status]}
         </p>
-        <h3 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h3 className="mt-1 text-heading tracking-tight sm:text-3xl">
           {placeName(tenancy)}
         </h3>
         <p className="mt-1 text-fg-secondary">{addressText(tenancy)}</p>

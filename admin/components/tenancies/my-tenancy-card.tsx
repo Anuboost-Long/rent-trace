@@ -33,7 +33,7 @@ export default function MyTenancyCard({
       <p className="text-xs text-fg-tertiary">
         {TenantTenancyStatusLabel[tenancy.status]}
       </p>
-      <p className="mt-1 text-lg font-semibold">{placeName(tenancy)}</p>
+      <p className="mt-1 text-section">{placeName(tenancy)}</p>
       <p className="text-sm text-fg-secondary">
         {tenancy.unit.name} · {tenancy.property.suburb} {tenancy.property.state}
       </p>

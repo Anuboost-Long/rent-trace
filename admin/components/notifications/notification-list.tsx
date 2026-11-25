@@ -62,7 +62,7 @@ async function NotificationList({
     <>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Notifications</h1>
+          <h1 className="text-heading">Notifications</h1>
           <p className="mt-1 text-fg-secondary">
             Requests and updates that need your attention.
           </p>

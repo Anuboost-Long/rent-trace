@@ -8,7 +8,7 @@ export default function TenantConditions({
 
   return (
     <section aria-labelledby="unit-condition-heading" className="mt-12">
-      <h2 id="unit-condition-heading" className="text-lg font-semibold">
+      <h2 id="unit-condition-heading" className="text-section">
         Condition of the unit
       </h2>
       <p className="mt-1 text-sm text-fg-tertiary">

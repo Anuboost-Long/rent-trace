@@ -45,7 +45,7 @@ async function EditUser({
           { label: "Edit" },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">Edit user</h1>
+      <h1 className="mt-4 mb-6 text-heading">Edit user</h1>
       <EditUserForm
         user={user}
         roles={rolesResult.data ?? BUILT_IN_PARTY_ROLES}

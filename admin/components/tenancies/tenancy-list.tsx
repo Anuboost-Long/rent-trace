@@ -1,6 +1,7 @@
 import { handleGetTenancies } from "@/api/services/tenancies/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
@@ -9,6 +10,7 @@ import {
   TenancyRoutes,
   TenancyStatusLabel,
 } from "@/constants/tenancies";
+import { TenancyStatusTone, toneFor } from "@/constants/status-tones";
 import type { TenancyAudience, TenancySummary } from "@/types/tenancies/models";
 import { formatDate } from "@/utils/format-date";
 import { Plus } from "lucide-react";
@@ -51,7 +53,14 @@ const columnsFor = (audience: TenancyAudience): Column<TenancySummary>[] => [
       </>
     ),
   },
-  { header: "Status", cell: (tenancy) => TenancyStatusLabel[tenancy.status] },
+  {
+    header: "Status",
+    cell: (tenancy) => (
+      <StatusBadge tone={toneFor(TenancyStatusTone, tenancy.status)}>
+        {TenancyStatusLabel[tenancy.status]}
+      </StatusBadge>
+    ),
+  },
   {
     header: "Dates",
     cell: (tenancy) =>
@@ -69,7 +78,7 @@ export default function TenancyListPage({
     <>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Tenancies</h1>
+          <h1 className="text-heading">Tenancies</h1>
           <p className="mt-1 text-fg-secondary">{COPY[audience]}</p>
         </div>
         <Can permission={TenancyAccess[audience].create}>

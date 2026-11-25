@@ -54,7 +54,7 @@ export default function CreatePropertyForm({
   if (unsent) {
     return (
       <div role="alert" className="rounded-xl border border-default p-6">
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-section">
           Property created, but some files didn&apos;t upload
         </h2>
         <ul className="mt-3 space-y-0.5 text-sm">

@@ -9,7 +9,7 @@ export default async function MyInvitations() {
 
   return (
     <section aria-labelledby="invitations-heading" className="mb-10">
-      <h2 id="invitations-heading" className="text-lg font-semibold">
+      <h2 id="invitations-heading" className="text-section">
         Invitations waiting for you
       </h2>
       <ul className="mt-3 divide-y divide-default rounded-xl border border-default">

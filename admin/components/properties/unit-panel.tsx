@@ -75,7 +75,7 @@ export default function UnitPanel({
   return (
     <>
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{unit.name}</h1>
+        <h1 className="text-heading">{unit.name}</h1>
         {canManage && !editing && (
           <div className="flex gap-2">
             <Button

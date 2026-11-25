@@ -50,7 +50,7 @@ export default function TermChangeReview({
       aria-labelledby="review-heading"
       className="mb-8 rounded-xl border border-default p-5"
     >
-      <h2 id="review-heading" className="text-lg font-semibold">
+      <h2 id="review-heading" className="text-section">
         {expired
           ? "A proposed change expired"
           : "Your landlord proposed a change"}

@@ -2,6 +2,7 @@ import { handleGetRoles } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import LoadError from "@/components/common/load-error";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
@@ -69,7 +70,12 @@ async function Roles() {
     { header: "People", cell: (role) => role.holder_count },
     {
       header: "Status",
-      cell: (role) => (role.is_active ? "Active" : "Inactive"),
+      cell: (role) =>
+        role.is_active ? (
+          <StatusBadge tone="success">Active</StatusBadge>
+        ) : (
+          <StatusBadge tone="neutral">Inactive</StatusBadge>
+        ),
     },
   ];
 

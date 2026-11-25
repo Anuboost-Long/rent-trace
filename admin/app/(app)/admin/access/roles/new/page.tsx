@@ -22,7 +22,7 @@ export default function NewRolePage() {
           { label: "New role" },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">New role</h1>
+      <h1 className="mt-4 mb-6 text-heading">New role</h1>
       <Suspense fallback={<FormSkeleton />}>
         <NewRole />
       </Suspense>

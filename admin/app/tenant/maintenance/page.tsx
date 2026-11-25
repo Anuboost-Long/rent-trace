@@ -14,7 +14,7 @@ export default function Page({
     <>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Maintenance</h1>
+          <h1 className="text-heading">Maintenance</h1>
           <p className="mt-1 text-fg-secondary">
             Report something that needs fixing and follow what happens.
           </p>

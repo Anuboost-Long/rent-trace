@@ -47,7 +47,7 @@ export default function ListingSection({
 
   return (
     <section aria-labelledby="listing-heading" className="mt-10">
-      <h2 id="listing-heading" className="text-lg font-semibold">
+      <h2 id="listing-heading" className="text-section">
         Public listing
       </h2>
       <div className="mt-3 space-y-4 rounded-xl border border-default p-4">

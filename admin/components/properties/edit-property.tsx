@@ -46,7 +46,7 @@ async function EditProperty({ audience, params }: EditPropertyProp) {
           { label: "Edit" },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">Edit property</h1>
+      <h1 className="mt-4 mb-6 text-heading">Edit property</h1>
       <EditPropertyForm audience={audience} property={property} />
     </div>
   );

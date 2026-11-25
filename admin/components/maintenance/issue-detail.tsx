@@ -76,7 +76,7 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
         ]}
       />
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{issue.title}</h1>
+        <h1 className="text-heading">{issue.title}</h1>
         {(audience !== "admin" || issue.actions.length > 0) && (
           <IssueActions audience={audience} issue={issue} />
         )}
@@ -86,7 +86,7 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
           aria-labelledby="closure-heading"
           className="mb-8 rounded-xl border border-default p-5"
         >
-          <h2 id="closure-heading" className="text-lg font-semibold">
+          <h2 id="closure-heading" className="text-section">
             Closing was proposed
           </h2>
           <p className="mt-1 text-sm text-fg-secondary">

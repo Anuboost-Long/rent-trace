@@ -29,7 +29,7 @@ export default function TermChangePanel({
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 id="term-change-heading" className="text-lg font-semibold">
+          <h2 id="term-change-heading" className="text-section">
             {expired ? "Proposal expired" : "Waiting for tenants to approve"}
           </h2>
           <p className="mt-1 text-sm text-fg-secondary">

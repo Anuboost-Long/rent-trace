@@ -48,7 +48,7 @@ async function EditTenancy({ audience, params }: EditTenancyProp) {
           { label: "Edit" },
         ]}
       />
-      <h1 className="mt-4 text-2xl font-semibold">Edit tenancy</h1>
+      <h1 className="mt-4 text-heading">Edit tenancy</h1>
       <p className="mt-1 mb-6 text-fg-secondary">
         Dates and notes apply at once. A higher rent or bond waits until every
         tenant approves it.

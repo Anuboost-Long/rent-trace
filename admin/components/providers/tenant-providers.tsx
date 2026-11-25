@@ -7,7 +7,7 @@ type TenantProvidersProp = Readonly<{ tenancyId: number }>;
 export default function TenantProviders(props: TenantProvidersProp) {
   return (
     <section aria-labelledby="tradespeople-heading" className="mt-12">
-      <h2 id="tradespeople-heading" className="text-lg font-semibold">
+      <h2 id="tradespeople-heading" className="text-section">
         Tradespeople
       </h2>
       <p className="mt-1 mb-3 text-sm text-fg-tertiary">

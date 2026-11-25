@@ -115,7 +115,7 @@ export default function RoleEditor({
       </div>
 
       <section>
-        <h2 className="text-lg font-semibold">Permissions</h2>
+        <h2 className="text-section">Permissions</h2>
         <p className="mt-1 mb-3 text-sm text-fg-secondary">
           Greyed out: inherited from {parentName ?? "the parent role"}, not
           available to this kind of role, or not held by you, so you can&apos;t

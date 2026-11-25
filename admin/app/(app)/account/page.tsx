@@ -54,7 +54,7 @@ async function Account() {
     <div className="flex flex-col gap-10">
       <ProfileSection user={user} />
       <section aria-labelledby="details-heading">
-        <h2 id="details-heading" className="text-lg font-semibold">
+        <h2 id="details-heading" className="text-section">
           Account details
         </h2>
         <dl className="mt-3 divide-y divide-default rounded-xl border border-default">
