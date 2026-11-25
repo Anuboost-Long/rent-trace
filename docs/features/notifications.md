@@ -50,7 +50,7 @@ invitation in their Tenancies page too, because that list is built from their em
 Two more kinds, `REVIEW_CASE_ESCALATED` (admins who can decide; leads to Review cases) and
 `REVIEW_CASE_DECIDED` (the tenant and every current owner; leads to the tenancy), are written when
 someone asks an admin to decide and when an admin decides (migration `notifications/0010`). Not seen
-in a browser.
+in a browser except the admin's link, seen 26 Nov 2026.
 
 The three condition-evidence rows are the kinds `CONDITION_EVIDENCE_SUBMITTED`,
 `CONDITION_EVIDENCE_APPROVED` and `CONDITION_EVIDENCE_REJECTED` (migration `notifications/0009`).

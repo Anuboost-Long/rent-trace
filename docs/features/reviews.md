@@ -103,8 +103,14 @@ in `reviews`); the admin screens show "Expired" and hide the buttons, not yet se
 
 ## Escalation and the admin queue — phase 2a
 
-Decided 26 November 2026; built 26 November 2026 (back end tested, admin screens typecheck and lint
-clean, **not yet seen in a browser**). Escalation is manual: a person presses **Ask an admin to
+Decided 26 November 2026; built 26 November 2026. Back end: 772 tests pass in the full suite. Walked through in Chrome the
+same day with a throwaway test admin (`test.admin@renttrace.test`, regular admin): the tenant asked
+an admin to decide on a rejected report (reason box needs text; the report then read "With an
+admin"), the admin saw it in Review cases, approved it with a reason, the Waiting list emptied and
+the Approved tab showed it with both reasons; the inbox link opened Review cases; the database held
+the accepted version, an `ADMIN_APPROVED` resolution and the notifications. **Not seen:** the
+admin reject path, the landlord's "Ask an admin to decide" button, an expired report being escalated
+from the screen, the tenant's and landlord's view after the decision, and narrow screens. Escalation is manual: a person presses **Ask an admin to
 decide**, which calls an API. Nothing escalates on a timer.
 
 Rules:
