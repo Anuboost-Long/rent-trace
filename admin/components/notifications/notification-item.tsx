@@ -13,7 +13,7 @@ type NotificationItemProp = Readonly<{
 
 const rowClassName = clsx(
   "flex w-full items-start gap-3 p-4 text-left",
-  "hover:bg-foreground/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground",
+  "hover:bg-subtle focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border",
 );
 
 export default function NotificationItem({
@@ -35,7 +35,7 @@ export default function NotificationItem({
         aria-hidden
         className={clsx(
           "mt-2 size-2 shrink-0 rounded-full",
-          isUnread ? "bg-foreground" : "bg-transparent",
+          isUnread ? "bg-brand" : "bg-transparent",
         )}
       />
       <span className="min-w-0 flex-1">
@@ -45,10 +45,10 @@ export default function NotificationItem({
           {notification.title}
           {isUnread && <span className="sr-only"> (unread)</span>}
         </span>
-        <span className="mt-0.5 block text-sm text-foreground/70">
+        <span className="mt-0.5 block text-sm text-fg-secondary">
           {notification.body}
         </span>
-        <span className="mt-1 block text-xs text-foreground/60">
+        <span className="mt-1 block text-xs text-fg-tertiary">
           <LocalTime iso={notification.created_at} withTime />
         </span>
       </span>

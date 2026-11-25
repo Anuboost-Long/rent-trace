@@ -38,7 +38,7 @@ export default function OverviewViews({
       <div
         role="tablist"
         aria-label="Overview views"
-        className="relative mb-6 flex border-b border-foreground/15"
+        className="relative mb-6 flex border-b border-default"
       >
         {VIEWS.map((tab) => (
           <button
@@ -51,10 +51,10 @@ export default function OverviewViews({
             onClick={() => select(tab)}
             className={clsx(
               "w-28 py-2.5 text-sm transition-colors motion-reduce:transition-none",
-              "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground",
+              "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border",
               tab.value === view
                 ? "font-semibold"
-                : "text-foreground/70 hover:text-foreground",
+                : "text-fg-secondary hover:text-foreground",
             )}
           >
             {tab.label}
@@ -63,7 +63,7 @@ export default function OverviewViews({
         <span
           aria-hidden
           style={{ translate: `${activeIndex * 100}% 0` }}
-          className="absolute bottom-0 left-0 h-0.5 w-28 bg-foreground transition-[translate] duration-200 ease-out motion-reduce:transition-none"
+          className="absolute bottom-0 left-0 h-0.5 w-28 bg-brand transition-[translate] duration-200 ease-out motion-reduce:transition-none"
         />
       </div>
       <div

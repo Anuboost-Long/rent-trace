@@ -27,7 +27,7 @@ export default function AcceptInvitationButton({
         {pending ? "Joining…" : "Accept invitation"}
       </Button>
       {error && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

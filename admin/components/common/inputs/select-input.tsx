@@ -138,9 +138,9 @@ export default function SelectInput({
         onKeyDown={onKeyDown}
         className={clsx(
           "flex h-11 w-full items-center justify-between gap-2 rounded-lg bg-background",
-          error ? "border border-red-600" : "border border-foreground/15",
+          error ? "border border-error-accent" : "border border-default",
           "px-3 text-left text-base",
-          "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-foreground disabled:opacity-60",
+          "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-border disabled:opacity-60",
         )}
       >
         <span className="truncate">{options[selectedIndex]?.label}</span>
@@ -154,7 +154,7 @@ export default function SelectInput({
           id={listId}
           role="listbox"
           aria-label={label}
-          className="absolute top-full z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-foreground/15 bg-background p-1"
+          className="absolute top-full z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-default bg-background p-1"
         >
           {options.map((option, index) => (
             <li
@@ -166,7 +166,7 @@ export default function SelectInput({
               onClick={() => choose(index)}
               className={clsx(
                 "flex h-10 cursor-pointer items-center justify-between rounded-md px-3 text-sm",
-                index === activeIndex && "bg-foreground/10",
+                index === activeIndex && "bg-muted",
                 option.value === value && "font-semibold",
               )}
             >

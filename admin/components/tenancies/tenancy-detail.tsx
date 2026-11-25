@@ -44,7 +44,7 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -126,10 +126,10 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
           change={tenancy.pending_change}
         />
       )}
-      <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+      <dl className="divide-y divide-default rounded-xl border border-default">
         {details.map(([label, value]) => (
           <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">
-            <dt className="text-sm text-foreground/70">{label}</dt>
+            <dt className="text-sm text-fg-secondary">{label}</dt>
             <dd>{value}</dd>
           </div>
         ))}
@@ -138,13 +138,13 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
       <section className="mt-10">
         <h2 className="text-lg font-semibold">Tenants</h2>
         {tenancy.tenants.length === 0 ? (
-          <p className="mt-2 text-foreground/70">
+          <p className="mt-2 text-fg-secondary">
             {closed
               ? "No tenants are on this tenancy."
               : "No one has joined yet. Invite a tenant below."}
           </p>
         ) : (
-          <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+          <ul className="mt-3 divide-y divide-default rounded-xl border border-default">
             {tenancy.tenants.map((tenant) => (
               <li
                 key={tenant.user_id}
@@ -162,7 +162,7 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
                     {tenant.first_name} {tenant.last_name}
                   </span>
                 )}
-                <span className="text-sm text-foreground/70">
+                <span className="text-sm text-fg-secondary">
                   {tenant.is_primary && "Primary · "}Joined{" "}
                   {formatDate(tenant.joined_at)}
                 </span>

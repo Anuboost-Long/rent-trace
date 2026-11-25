@@ -75,12 +75,12 @@ export default function UnitsSection({
       </div>
 
       {units.length === 0 ? (
-        <p className="mt-3 text-foreground/70">
+        <p className="mt-3 text-fg-secondary">
           No units yet. A unit is the part of the property that gets rented,
           such as the whole house or one room.
         </p>
       ) : (
-        <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <ul className="mt-3 divide-y divide-default rounded-xl border border-default">
           {units.map((unit) => {
             const unitFiles = files.filter((file) => file.unit_id === unit.id);
             const unitCover = unitFiles.find((file) => file.is_cover);
@@ -91,9 +91,9 @@ export default function UnitsSection({
               <li key={unit.id}>
                 <Link
                   href={PropertyRoutes[audience].unit(propertyId, unit.id)}
-                  className="flex items-center gap-4 p-4 hover:bg-foreground/3 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+                  className="flex items-center gap-4 p-4 hover:bg-subtle focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border"
                 >
-                  <span className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-foreground/15 bg-foreground/5">
+                  <span className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-default bg-subtle">
                     {shownCover ? (
                       <Image
                         src={fileUrl(
@@ -111,7 +111,7 @@ export default function UnitsSection({
                     ) : (
                       <ImageIcon
                         aria-hidden
-                        className="size-5 text-foreground/50"
+                        className="size-5 text-fg-tertiary"
                         strokeWidth={1.5}
                       />
                     )}
@@ -120,13 +120,13 @@ export default function UnitsSection({
                     <span className="block font-medium">
                       {unit.name}
                       {unit.unit_number && (
-                        <span className="text-foreground/60">
+                        <span className="text-fg-tertiary">
                           {" "}
                           · {unit.unit_number}
                         </span>
                       )}
                     </span>
-                    <span className="block text-sm text-foreground/70">
+                    <span className="block text-sm text-fg-secondary">
                       {UnitTypeLabel[unit.unit_type]} ·{" "}
                       {OccupancyLabel[unit.occupancy_status]}
                       {unit.rent_amount &&
@@ -134,14 +134,14 @@ export default function UnitsSection({
                         ` · ${formatRent(unit.rent_amount, unit.rent_frequency)}`}
                       {unit.is_public && " · Public"}
                     </span>
-                    <span className="block text-sm text-foreground/60">
+                    <span className="block text-sm text-fg-tertiary">
                       {plural(photos.length, "photo")}
                       {documents > 0 && `, ${plural(documents, "document")}`}
                     </span>
                   </span>
                   <ChevronRight
                     aria-hidden
-                    className="size-4 shrink-0 text-foreground/50"
+                    className="size-4 shrink-0 text-fg-tertiary"
                   />
                 </Link>
               </li>

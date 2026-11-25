@@ -29,7 +29,7 @@ async function Greeting() {
       <h1 className="text-3xl font-semibold tracking-tight">
         Welcome back{user ? `, ${user.first_name}` : ""}
       </h1>
-      <p className="mt-1 text-foreground/70">
+      <p className="mt-1 text-fg-secondary">
         Your home, your rent and your landlord, in one place.
       </p>
     </div>

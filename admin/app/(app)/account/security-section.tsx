@@ -35,7 +35,7 @@ export default function SecuritySection({ user }: SecuritySectionProp) {
             });
             if (changed) form.reset();
           }}
-          className="mt-3 flex flex-col gap-4 rounded-xl border border-foreground/15 p-4"
+          className="mt-3 flex flex-col gap-4 rounded-xl border border-default p-4"
         >
           <h3 className="text-sm font-semibold">Change password</h3>
           <TextInput
@@ -69,7 +69,7 @@ export default function SecuritySection({ user }: SecuritySectionProp) {
             label="Sign me out of my other devices"
           />
           {error && Object.keys(error.fields).length === 0 && (
-            <p role="alert" className="text-sm text-red-600">
+            <p role="alert" className="text-sm text-error">
               {error.message}
             </p>
           )}
@@ -79,14 +79,14 @@ export default function SecuritySection({ user }: SecuritySectionProp) {
           </Button>
         </form>
       ) : (
-        <p className="mt-3 rounded-xl border border-foreground/15 p-4 text-foreground/70">
+        <p className="mt-3 rounded-xl border border-default p-4 text-fg-secondary">
           You sign in with Google, so there is no RentTrace password to change.
           Manage your password in your Google account.
         </p>
       )}
 
       {user.is_admin && (
-        <p className="mt-3 rounded-xl border border-foreground/15 p-4 text-foreground/70">
+        <p className="mt-3 rounded-xl border border-default p-4 text-fg-secondary">
           Two-step verification is required for admin accounts and is on for
           this account.
         </p>

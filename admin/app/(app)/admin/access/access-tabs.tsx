@@ -27,7 +27,7 @@ export default function AccessTabs() {
     <TabBar
       label="Access sections"
       tabs={tabs}
-      className="mb-6 border-b border-foreground/15"
+      className="mb-6 border-b border-default"
     />
   );
 }

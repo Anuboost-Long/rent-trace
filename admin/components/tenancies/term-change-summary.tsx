@@ -7,16 +7,16 @@ const ICON = { APPROVED: Check, DECLINED: X, WAITING: Clock } as const;
 
 export function ChangedTerms({ change }: Readonly<{ change: TermChange }>) {
   return (
-    <dl className="divide-y divide-foreground/10">
+    <dl className="divide-y divide-default">
       {changedRows(change.before, change.after).map((row) => (
         <div
           key={row.label}
           className="grid gap-1 py-3 sm:grid-cols-[8rem_1fr]"
         >
-          <dt className="text-sm text-foreground/60">{row.label}</dt>
+          <dt className="text-sm text-fg-tertiary">{row.label}</dt>
           <dd>
-            <span className="text-foreground/60">{row.before}</span>
-            <span className="text-foreground/60"> to </span>
+            <span className="text-fg-tertiary">{row.before}</span>
+            <span className="text-fg-tertiary"> to </span>
             <span className="font-medium">{row.after}</span>
           </dd>
         </div>
@@ -37,12 +37,12 @@ export function Approvals({ change }: Readonly<{ change: TermChange }>) {
             key={person.name}
             className={clsx(
               "flex items-center gap-2",
-              person.decision ? "text-foreground" : "text-foreground/60",
+              person.decision ? "text-foreground" : "text-fg-tertiary",
             )}
           >
             <Icon aria-hidden className="size-4 shrink-0" />
             <span>{person.name}</span>
-            <span className="text-foreground/60">
+            <span className="text-fg-tertiary">
               {state === "APPROVED"
                 ? "approved"
                 : state === "DECLINED"

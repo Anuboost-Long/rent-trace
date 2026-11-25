@@ -97,16 +97,16 @@ export default function PropertyProviders({
           </Button>
         </Can>
       </div>
-      <p className="mt-1 text-sm text-foreground/70">
+      <p className="mt-1 text-sm text-fg-secondary">
         Tenants here see these contacts, preferred ones first. You pick from the
         tradespeople you have already saved.
       </p>
       {linked.length === 0 ? (
-        <p className="mt-3 rounded-xl border border-foreground/15 p-4 text-foreground/70">
+        <p className="mt-3 rounded-xl border border-default p-4 text-fg-secondary">
           No tradespeople linked to this property yet.
         </p>
       ) : (
-        <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <ul className="mt-3 divide-y divide-default rounded-xl border border-default">
           {linked.map((provider) => (
             <li
               key={provider.id}
@@ -116,12 +116,12 @@ export default function PropertyProviders({
                 <p className="font-medium">
                   {provider.business_name}
                   {provider.is_recommended && (
-                    <span className="ml-2 text-sm font-normal text-foreground/70">
+                    <span className="ml-2 text-sm font-normal text-fg-secondary">
                       Preferred
                     </span>
                   )}
                 </p>
-                <p className="text-sm text-foreground/70">
+                <p className="text-sm text-fg-secondary">
                   {[tradesOf(provider), provider.phone_number, provider.email]
                     .filter(Boolean)
                     .join(" · ")}
@@ -169,7 +169,7 @@ export default function PropertyProviders({
         </ul>
       )}
       {error && !dialog && (
-        <p role="alert" className="mt-3 text-sm text-red-600">
+        <p role="alert" className="mt-3 text-sm text-error">
           {error.message}
         </p>
       )}
@@ -187,7 +187,7 @@ export default function PropertyProviders({
           onCancel={close}
         >
           {available.length === 0 ? (
-            <p className="text-sm text-foreground/70">
+            <p className="text-sm text-fg-secondary">
               {hasSavedProviders
                 ? "Everyone on your list is already linked to this property."
                 : "You have not saved any tradespeople yet."}{" "}
@@ -214,11 +214,11 @@ export default function PropertyProviders({
                 ]}
               />
               {shown.length === 0 ? (
-                <p className="text-sm text-foreground/70">
+                <p className="text-sm text-fg-secondary">
                   No saved tradespeople for this trade.
                 </p>
               ) : (
-                <ul className="max-h-64 divide-y divide-foreground/15 overflow-y-auto rounded-lg border border-foreground/15">
+                <ul className="max-h-64 divide-y divide-default overflow-y-auto rounded-lg border border-default">
                   {shown.map((provider) => (
                     <li key={provider.id} className="p-3">
                       <CheckInput
@@ -228,7 +228,7 @@ export default function PropertyProviders({
                         onChange={() => togglePicked(provider.id)}
                       />
                       {tradesOf(provider) && (
-                        <p className="pl-6 text-xs text-foreground/60">
+                        <p className="pl-6 text-xs text-fg-tertiary">
                           {tradesOf(provider)}
                         </p>
                       )}

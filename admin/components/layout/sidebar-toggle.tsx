@@ -25,8 +25,8 @@ export default function SidebarToggle({
         className={clsx(
           "flex h-10 w-full items-center rounded-lg",
           "px-2.5 group-data-collapsed:justify-center group-data-collapsed:px-0",
-          "text-sm text-foreground/70",
-          "hover:bg-foreground/5 hover:text-foreground focus-visible:outline-2 focus-visible:outline-foreground",
+          "text-sm text-fg-secondary",
+          "hover:bg-subtle hover:text-foreground focus-visible:outline-2 focus-visible:outline-brand-border",
         )}
       >
         <Icon aria-hidden className="size-5 shrink-0" />

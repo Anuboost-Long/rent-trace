@@ -55,7 +55,7 @@ async function Listing({
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -79,12 +79,12 @@ async function Listing({
           <h1 className="mt-8 text-3xl font-semibold tracking-tight">
             {listing.title}
           </h1>
-          <p className="mt-1 text-foreground/70">
+          <p className="mt-1 text-fg-secondary">
             {listing.suburb} {listing.state} {listing.postcode} ·{" "}
             {PropertyTypeLabel[listing.property_type]}
           </p>
           {listing.public_description && (
-            <p className="mt-6 max-w-[65ch] leading-relaxed whitespace-pre-line text-foreground/80">
+            <p className="mt-6 max-w-[65ch] leading-relaxed whitespace-pre-line text-fg-secondary">
               {listing.public_description}
             </p>
           )}
@@ -106,18 +106,18 @@ function Units({ listing }: Readonly<{ listing: ListingDetail }>) {
       <h2 id="units-heading" className="text-xl font-semibold tracking-tight">
         Available units
       </h2>
-      <ul className="mt-4 divide-y divide-foreground/15 rounded-2xl border border-foreground/15">
+      <ul className="mt-4 divide-y divide-default rounded-2xl border border-default">
         {listing.units.map((unit) => (
           <li key={unit.id} className="p-5">
             <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-1">
               <div className="min-w-0">
                 <p className="font-medium">{unit.name}</p>
-                <p className="text-sm text-foreground/70">
+                <p className="text-sm text-fg-secondary">
                   {UnitTypeLabel[unit.unit_type]},{" "}
                   {OCCUPANCY_COPY[unit.occupancy_status]}
                 </p>
                 {unit.description && (
-                  <p className="mt-2 max-w-[60ch] text-sm text-foreground/80">
+                  <p className="mt-2 max-w-[60ch] text-sm text-fg-secondary">
                     {unit.description}
                   </p>
                 )}
@@ -159,13 +159,13 @@ async function TenantRequest({
     <div className="mt-4 space-y-3 text-sm">
       {open.landlord ? (
         <>
-          <p className="text-foreground/70">
+          <p className="text-fg-secondary">
             The landlord accepted. Here&apos;s how to reach them:
           </p>
           <ContactCard contact={open.landlord} />
         </>
       ) : (
-        <p className="text-foreground/70">
+        <p className="text-fg-secondary">
           Request sent. We&apos;ll email you when the landlord answers.
         </p>
       )}
@@ -185,10 +185,10 @@ async function EnquiryPanel({ listing }: Readonly<{ listing: ListingDetail }>) {
   const signInHref = `${Route.auth.sign_in}?redirect=${encodeURIComponent(Route.listing(listing.id))}`;
 
   return (
-    <div className="rounded-2xl border border-foreground/15 p-6 lg:sticky lg:top-24">
+    <div className="rounded-2xl border border-default p-6 lg:sticky lg:top-24">
       {listing.from_rent ? (
         <>
-          <p className="text-sm text-foreground/70">From</p>
+          <p className="text-sm text-fg-secondary">From</p>
           <p className="text-2xl font-semibold tracking-tight">
             {formatRent(listing.from_rent.amount, listing.from_rent.frequency)}
           </p>
@@ -197,13 +197,13 @@ async function EnquiryPanel({ listing }: Readonly<{ listing: ListingDetail }>) {
         <p className="text-2xl font-semibold tracking-tight">Rent on request</p>
       )}
       {listing.listed_by && (
-        <p className="mt-3 text-sm text-foreground/70">
+        <p className="mt-3 text-sm text-fg-secondary">
           Listed by {listing.listed_by}
         </p>
       )}
       {!viewer && (
         <>
-          <p className="mt-4 text-sm text-foreground/70">
+          <p className="mt-4 text-sm text-fg-secondary">
             Sign in to get in touch about this place.
           </p>
           <ButtonLink href={signInHref} className="mt-4 w-full">
@@ -220,7 +220,7 @@ async function EnquiryPanel({ listing }: Readonly<{ listing: ListingDetail }>) {
       )}
       {viewer && audience === "tenant" && <TenantRequest listing={listing} />}
       {viewer && audience !== "tenant" && (
-        <p className="mt-4 text-sm text-foreground/70">
+        <p className="mt-4 text-sm text-fg-secondary">
           This is how the listing looks to the public.
         </p>
       )}

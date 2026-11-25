@@ -34,17 +34,17 @@ export default function RoleMembers({
   return (
     <section className="mt-10">
       <h2 className="text-lg font-semibold">People in this role</h2>
-      <p className="mt-1 mb-3 text-sm text-foreground/70">
+      <p className="mt-1 mb-3 text-sm text-fg-secondary">
         {total} {total === 1 ? "person holds" : "people hold"} {roleName}.
         {total > members.length && ` Showing the first ${members.length}.`}
       </p>
-      <div className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+      <div className="divide-y divide-default rounded-xl border border-default">
         {members.length === 0 ? (
-          <p className="p-4 text-sm text-foreground/70">
+          <p className="p-4 text-sm text-fg-secondary">
             Nobody has this role yet.
           </p>
         ) : (
-          <ul className="divide-y divide-foreground/15">
+          <ul className="divide-y divide-default">
             {members.map((member) => (
               <li
                 key={member.id}
@@ -57,7 +57,7 @@ export default function RoleMembers({
                   >
                     {member.first_name} {member.last_name}
                   </Link>
-                  <p className="text-foreground/70">
+                  <p className="text-fg-secondary">
                     {member.email} · {member.role_names.join(", ")}
                   </p>
                 </div>
@@ -103,7 +103,7 @@ export default function RoleMembers({
               Add to role
             </Button>
             {error && !removing && (
-              <p role="alert" className="text-sm text-red-600 sm:col-span-2">
+              <p role="alert" className="text-sm text-error sm:col-span-2">
                 {error.message}
               </p>
             )}

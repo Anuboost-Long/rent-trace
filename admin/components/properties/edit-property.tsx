@@ -28,7 +28,7 @@ async function EditProperty({ audience, params }: EditPropertyProp) {
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );

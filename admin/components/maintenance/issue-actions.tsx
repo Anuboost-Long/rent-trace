@@ -169,7 +169,7 @@ export default function IssueActions({ audience, issue }: IssueActionsProp) {
         )}
       </div>
       {error && !dialog && (
-        <p role="alert" className="mt-3 text-sm text-red-600">
+        <p role="alert" className="mt-3 text-sm text-error">
           {error.message}
         </p>
       )}
@@ -190,7 +190,7 @@ export default function IssueActions({ audience, issue }: IssueActionsProp) {
         >
           {dialog === "assign" &&
             (providerOptions.length === 0 ? (
-              <p className="text-sm text-foreground/70">
+              <p className="text-sm text-fg-secondary">
                 Link a tradesperson to this property first, under Tradespeople.
               </p>
             ) : (

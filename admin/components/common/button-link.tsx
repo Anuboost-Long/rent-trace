@@ -3,12 +3,16 @@ import { spawnRipple } from "@/utils/ripple";
 import clsx from "clsx";
 import Link from "next/link";
 
-import { buttonClassName } from "./button-class-name";
+import {
+  buttonClassName,
+  type ButtonSize,
+  type ButtonVariant,
+} from "./button-class-name";
 
 type ButtonLinkProp = Readonly<
   React.ComponentProps<typeof Link> & {
-    variant?: "primary" | "quiet";
-    size?: "md" | "sm" | "icon";
+    variant?: ButtonVariant;
+    size?: ButtonSize;
   }
 >;
 

@@ -15,7 +15,7 @@ export default function FeaturedListing({ listing }: FeaturedListingProp) {
   return (
     <Link
       href={Route.listing(listing.id)}
-      className="group relative block aspect-4/5 overflow-hidden rounded-3xl bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground sm:aspect-video lg:aspect-21/9"
+      className="group relative block aspect-4/5 overflow-hidden rounded-3xl bg-subtle focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-border sm:aspect-video lg:aspect-21/9"
     >
       <Image
         src={listingPhotoUrl(listing.id, listing.cover_file_id)}

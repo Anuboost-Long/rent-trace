@@ -109,13 +109,13 @@ export default function UnitPanel({
           }}
         />
       ) : (
-        <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <dl className="divide-y divide-default rounded-xl border border-default">
           {details.map(([label, value]) => (
             <div
               key={label}
               className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]"
             >
-              <dt className="text-sm text-foreground/70">{label}</dt>
+              <dt className="text-sm text-fg-secondary">{label}</dt>
               <dd className="whitespace-pre-line">{value}</dd>
             </div>
           ))}
@@ -123,10 +123,10 @@ export default function UnitPanel({
       )}
 
       {canManage && !editing && (
-        <section className="mt-6 space-y-3 rounded-xl border border-foreground/15 p-4">
+        <section className="mt-6 space-y-3 rounded-xl border border-default p-4">
           <h2 className="font-medium">Occupancy</h2>
           {hasTenant ? (
-            <p className="text-sm text-foreground/70">
+            <p className="text-sm text-fg-secondary">
               Set automatically while this unit has a current tenant.
             </p>
           ) : (
@@ -156,7 +156,7 @@ export default function UnitPanel({
             </form>
           )}
           {occupancy.error && !occupancy.error.fields.occupancy_status && (
-            <p role="alert" className="text-sm text-red-600">
+            <p role="alert" className="text-sm text-error">
               {occupancy.error.message}
             </p>
           )}

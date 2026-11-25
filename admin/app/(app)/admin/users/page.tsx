@@ -22,7 +22,7 @@ export default function UsersPage({ searchParams }: PageProps<"/admin/users">) {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Users</h1>
-          <p className="mt-1 text-foreground/70">Accounts on RentTrace.</p>
+          <p className="mt-1 text-fg-secondary">Accounts on RentTrace.</p>
         </div>
         <Can permission="accounts.create">
           <ButtonLink href={Route.admin.users_new} className="gap-2">
@@ -99,7 +99,7 @@ async function UsersList({
         roles={rolesResult.data ?? BUILT_IN_PARTY_ROLES}
       />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (

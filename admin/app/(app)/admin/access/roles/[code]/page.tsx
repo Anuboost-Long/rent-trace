@@ -36,7 +36,7 @@ async function EditRole({
   const error = roles.error ?? permissions.error;
   if (error) {
     return (
-      <p role="alert" className="mt-4 text-red-600">
+      <p role="alert" className="mt-4 text-error">
         {error.message}
       </p>
     );

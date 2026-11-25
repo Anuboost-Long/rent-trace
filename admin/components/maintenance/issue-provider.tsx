@@ -18,9 +18,9 @@ export default function IssueProvider({ assignment }: IssueProviderProp) {
       <h2 id="provider-heading" className="text-lg font-semibold">
         Tradesperson
       </h2>
-      <div className="mt-2 rounded-xl border border-foreground/15 p-4">
+      <div className="mt-2 rounded-xl border border-default p-4">
         <p className="font-medium">{provider.business_name}</p>
-        <p className="text-sm text-foreground/60">
+        <p className="text-sm text-fg-tertiary">
           {completed_at ? (
             <>
               Visit done <LocalTime iso={completed_at} />
@@ -38,7 +38,7 @@ export default function IssueProvider({ assignment }: IssueProviderProp) {
             ([label, value]) =>
               value && (
                 <div key={label} className="contents">
-                  <dt className="text-foreground/60">{label}</dt>
+                  <dt className="text-fg-tertiary">{label}</dt>
                   <dd className="break-words whitespace-pre-line">{value}</dd>
                 </div>
               ),

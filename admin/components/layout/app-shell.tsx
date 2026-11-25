@@ -76,7 +76,7 @@ export default function AppShell({
             "group hidden shrink-0 md:flex md:flex-col",
             "sticky top-0 h-screen",
             "w-60 data-collapsed:w-16",
-            "border-r border-foreground/15",
+            "border-r border-default",
             "transition-[width] duration-150 motion-reduce:transition-none",
           )}
         >
@@ -92,7 +92,7 @@ export default function AppShell({
           }}
           className={clsx(
             "m-0 h-full max-h-none w-64 p-0",
-            "border-r border-foreground/15 bg-background text-foreground",
+            "border-r border-default bg-background text-foreground",
             "-translate-x-full open:translate-x-0 starting:open:-translate-x-full",
             "backdrop:bg-black/0 open:backdrop:bg-black/40 starting:open:backdrop:bg-black/0",
             "transition-[translate,display,overlay] transition-discrete duration-200 backdrop:transition-[background-color,display,overlay] backdrop:transition-discrete backdrop:duration-200",

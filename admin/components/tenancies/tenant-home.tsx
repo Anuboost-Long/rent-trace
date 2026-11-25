@@ -20,7 +20,7 @@ export default async function TenantHome() {
   ]);
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -46,11 +46,11 @@ export default async function TenantHome() {
         </ul>
       )}
       {hasHistory && (
-        <p className="mt-6 text-sm text-foreground/70">
+        <p className="mt-6 text-sm text-fg-secondary">
           Looking for somewhere you lived before?{" "}
           <Link
             href={Route.tenant.tenancies}
-            className="font-medium text-foreground underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="font-medium text-foreground underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
           >
             See your rental history
           </Link>
@@ -62,9 +62,9 @@ export default async function TenantHome() {
 
 function NoTenancy() {
   return (
-    <div className="rounded-2xl border border-foreground/15 p-8">
+    <div className="rounded-2xl border border-default p-8">
       <p className="text-lg font-semibold">No current tenancy yet</p>
-      <p className="mt-1 max-w-prose text-foreground/70">
+      <p className="mt-1 max-w-prose text-fg-secondary">
         When a landlord adds you to a tenancy, your home shows up here. Looking
         for a place?
       </p>
@@ -95,32 +95,32 @@ function HomePanel({
   ];
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-foreground/15">
+    <article className="overflow-hidden rounded-2xl border border-default">
       <div className="p-6 sm:p-8">
-        <p className="text-sm text-foreground/60">
+        <p className="text-sm text-fg-tertiary">
           {TenantTenancyStatusLabel[tenancy.status]}
         </p>
         <h3 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
           {placeName(tenancy)}
         </h3>
-        <p className="mt-1 text-foreground/70">{addressText(tenancy)}</p>
+        <p className="mt-1 text-fg-secondary">{addressText(tenancy)}</p>
         <p className="mt-4 text-sm">
           <span className="font-medium">{tenancy.unit.name}</span>
-          <span className="text-foreground/60">
+          <span className="text-fg-tertiary">
             {" "}
             · {UnitTypeLabel[tenancy.unit.unit_type]}
           </span>
         </p>
       </div>
-      <dl className="grid grid-cols-2 gap-px border-t border-foreground/15 bg-foreground/15 sm:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-px border-t border-default bg-muted sm:grid-cols-4">
         {facts.map(([label, value]) => (
           <div key={label} className="bg-background p-4 sm:p-5">
-            <dt className="text-sm text-foreground/60">{label}</dt>
+            <dt className="text-sm text-fg-tertiary">{label}</dt>
             <dd className="mt-1 font-medium">{value}</dd>
           </div>
         ))}
       </dl>
-      <div className="flex flex-wrap items-center gap-3 border-t border-foreground/15 p-4 sm:px-8">
+      <div className="flex flex-wrap items-center gap-3 border-t border-default p-4 sm:px-8">
         {tenancy.status === "ACTIVE" && (
           <ReportIssueButton
             categories={categories}

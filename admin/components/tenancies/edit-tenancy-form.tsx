@@ -33,7 +33,7 @@ export default function EditTenancyForm({
         lockStart={tenancy.status === "ACTIVE"}
       />
       {error && Object.keys(fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

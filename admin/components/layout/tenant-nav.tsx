@@ -18,7 +18,7 @@ export default function TenantNav() {
     <TabBar
       label="Your rentals"
       tabs={tabs}
-      className="border-b border-foreground/10"
+      className="border-b border-default"
       listClassName="mx-auto w-full max-w-7xl px-4 sm:px-6"
     />
   );

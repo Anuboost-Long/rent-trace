@@ -48,7 +48,7 @@ export default function SignInForm({
         error={error?.fields.password}
       />
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}
@@ -74,7 +74,7 @@ export default function SignInForm({
           Forgot password?
         </Link>
       </p>
-      <p className="text-sm text-foreground/70">
+      <p className="text-sm text-fg-secondary">
         New to RentTrace?{" "}
         <Link href={Route.auth.sign_up} className="font-medium underline">
           Create an account

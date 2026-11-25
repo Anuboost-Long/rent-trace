@@ -37,14 +37,14 @@ export default function NotificationBell({ href }: Readonly<{ href: string }>) {
       }
       className={clsx(
         "relative grid size-10 place-items-center rounded-lg",
-        "hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+        "hover:bg-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border",
       )}
     >
       <Bell aria-hidden className="size-5" />
       {unread > 0 && (
         <span
           aria-hidden
-          className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-foreground px-1 text-[10px] leading-4 font-semibold text-background tabular-nums"
+          className="absolute top-1 right-1 grid min-w-4 place-items-center rounded-full bg-brand px-1 text-[10px] leading-4 font-semibold text-on-brand tabular-nums"
         >
           {unread > 99 ? "99+" : unread}
         </span>

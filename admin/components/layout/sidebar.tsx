@@ -17,7 +17,7 @@ function SidebarContent({ label, items, onNavigate }: SidebarProp) {
         <p className="text-xl font-bold">
           R<span className="group-data-collapsed:hidden">entTrace</span>
         </p>
-        <p className="text-sm text-foreground/70 group-data-collapsed:sr-only">
+        <p className="text-sm text-fg-secondary group-data-collapsed:sr-only">
           {label}
         </p>
       </div>
@@ -28,12 +28,12 @@ function SidebarContent({ label, items, onNavigate }: SidebarProp) {
               key={group}
               className={
                 group
-                  ? "border-t border-foreground/15 pt-3 group-data-collapsed:pt-4"
+                  ? "border-t border-default pt-3 group-data-collapsed:pt-4"
                   : undefined
               }
             >
               {group && (
-                <p className="mb-1 px-2.5 text-xs text-foreground/60 group-data-collapsed:sr-only">
+                <p className="mb-1 px-2.5 text-xs text-fg-tertiary group-data-collapsed:sr-only">
                   {group}
                 </p>
               )}

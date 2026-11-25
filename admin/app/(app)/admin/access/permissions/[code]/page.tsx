@@ -32,7 +32,7 @@ async function PermissionDetail({
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="mt-4 text-red-600">
+      <p role="alert" className="mt-4 text-error">
         {error.message}
       </p>
     );
@@ -54,13 +54,11 @@ async function PermissionDetail({
 
       <section className="mt-10">
         <h2 className="text-lg font-semibold">Who has it</h2>
-        <div className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <div className="mt-3 divide-y divide-default rounded-xl border border-default">
           <div className="p-4">
             <h3 className="mb-2 text-sm font-medium">Through roles</h3>
             {data.roles.length === 0 ? (
-              <p className="text-sm text-foreground/70">
-                No role gives it yet.
-              </p>
+              <p className="text-sm text-fg-secondary">No role gives it yet.</p>
             ) : (
               <>
                 <ul className="flex flex-wrap gap-2">
@@ -68,11 +66,11 @@ async function PermissionDetail({
                     <li key={role.code}>
                       <Link
                         href={Route.admin.role(role.code)}
-                        className="rounded-full border border-foreground/15 px-3 py-1 text-sm hover:bg-foreground/5"
+                        className="rounded-full border border-default px-3 py-1 text-sm hover:bg-subtle"
                       >
                         {role.name}
                         {role.inherited && (
-                          <span className="ml-1 text-foreground/60">
+                          <span className="ml-1 text-fg-tertiary">
                             (inherited)
                           </span>
                         )}
@@ -80,7 +78,7 @@ async function PermissionDetail({
                     </li>
                   ))}
                 </ul>
-                <p className="mt-3 text-sm text-foreground/70">
+                <p className="mt-3 text-sm text-fg-secondary">
                   {data.people_through_roles}{" "}
                   {data.people_through_roles === 1
                     ? "person has"
@@ -104,11 +102,9 @@ async function PermissionDetail({
               </ButtonLink>
             </div>
             {data.grants.length === 0 ? (
-              <p className="text-sm text-foreground/70">
-                No individual grants.
-              </p>
+              <p className="text-sm text-fg-secondary">No individual grants.</p>
             ) : (
-              <ul className="divide-y divide-foreground/15">
+              <ul className="divide-y divide-default">
                 {data.grants.map((grant) => {
                   const name = `${grant.user.first_name} ${grant.user.last_name}`;
                   return (
@@ -123,7 +119,7 @@ async function PermissionDetail({
                         >
                           {name}
                         </Link>
-                        <p className="text-foreground/70">
+                        <p className="text-fg-secondary">
                           {grant.reason} · <LocalTime iso={grant.created_at} />
                         </p>
                       </div>

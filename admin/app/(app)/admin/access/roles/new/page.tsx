@@ -37,7 +37,7 @@ async function NewRole() {
   const error = roles.error ?? permissions.error;
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );

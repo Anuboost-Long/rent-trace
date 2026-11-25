@@ -28,13 +28,13 @@ export default function ListingCard({
       <Link
         href={Route.listing(listing.id)}
         className={clsx(
-          "flex flex-col rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground",
+          "flex flex-col rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-border",
           featured && "h-full",
         )}
       >
         <span
           className={clsx(
-            "relative block overflow-hidden rounded-2xl bg-foreground/5",
+            "relative block overflow-hidden rounded-2xl bg-subtle",
             featured ? "min-h-64 flex-1" : "aspect-4/3",
           )}
         >
@@ -56,7 +56,7 @@ export default function ListingCard({
             <span className="absolute inset-0 flex items-center justify-center">
               <ImageIcon
                 aria-hidden
-                className="size-8 text-foreground/30"
+                className="size-8 text-fg-tertiary"
                 strokeWidth={1.5}
               />
             </span>
@@ -76,7 +76,7 @@ export default function ListingCard({
           >
             {listing.title}
           </span>
-          <span className="block text-sm text-foreground/70">
+          <span className="block text-sm text-fg-secondary">
             {listing.suburb} {listing.state} {listing.postcode}
           </span>
           <span className="mt-1 block text-sm">
@@ -89,13 +89,13 @@ export default function ListingCard({
                     listing.from_rent.frequency,
                   )}
                 </span>
-                <span className="text-foreground/70">
+                <span className="text-fg-secondary">
                   {" "}
                   · {PropertyTypeLabel[listing.property_type]}
                 </span>
               </>
             ) : (
-              <span className="text-foreground/70">
+              <span className="text-fg-secondary">
                 {PropertyTypeLabel[listing.property_type]} · Rent on request
               </span>
             )}

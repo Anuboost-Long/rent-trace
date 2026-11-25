@@ -19,12 +19,12 @@ export default function FilePicker({ staged, disabled }: FilePickerProp) {
         Photos and files (optional)
       </legend>
       <FileDropzone onFiles={staged.add} disabled={disabled} />
-      <p className="text-sm text-foreground/70">
+      <p className="text-sm text-fg-secondary">
         Files stay here until you create the property. The first photo becomes
         the cover.
       </p>
       {staged.rejected.length > 0 && (
-        <ul role="alert" className="space-y-0.5 text-sm text-red-600">
+        <ul role="alert" className="space-y-0.5 text-sm text-error">
           {staged.rejected.map((message) => (
             <li key={message}>{message}</li>
           ))}
@@ -43,7 +43,7 @@ export default function FilePicker({ staged, disabled }: FilePickerProp) {
         </ul>
       )}
       {documents.length > 0 && (
-        <ul className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <ul className="divide-y divide-default rounded-xl border border-default">
           {documents.map((item) => (
             <StagedDocumentRow
               key={item.id}

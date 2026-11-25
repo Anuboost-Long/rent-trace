@@ -59,7 +59,7 @@ async function Results({
 
   return (
     <>
-      <p className="mt-1 mb-6 text-foreground/70">
+      <p className="mt-1 mb-6 text-fg-secondary">
         {listings.data
           ? `${listings.data.count} ${listings.data.count === 1 ? "place" : "places"} to rent`
           : "Places to rent"}
@@ -67,15 +67,15 @@ async function Results({
       <ListingFilters places={places.data ?? []} values={filters} />
       <div className="mt-10">
         {listings.error ? (
-          <p role="alert" className="text-red-600">
+          <p role="alert" className="text-error">
             {listings.error.message}
           </p>
         ) : listings.data.results.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-foreground/25 p-10">
+          <div className="rounded-2xl border border-dashed border-strong p-10">
             <p className="text-lg font-medium">
               No rentals match these filters.
             </p>
-            <p className="mt-1 text-foreground/70">
+            <p className="mt-1 text-fg-secondary">
               Try a different suburb or widen the rent range.
             </p>
             <Link

@@ -35,7 +35,7 @@ async function ProviderEditor({ params }: ProviderEditorProp) {
       properties.error ??
       existing?.error)!;
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {message}
       </p>
     );
@@ -61,7 +61,7 @@ async function ProviderEditor({ params }: ProviderEditorProp) {
       <h1 className="mt-4 text-2xl font-semibold">
         {provider ? provider.business_name : "Add a tradesperson"}
       </h1>
-      <p className="mt-1 mb-6 text-foreground/70">
+      <p className="mt-1 mb-6 text-fg-secondary">
         Tenants of the properties you link them to can see their contact
         details.
       </p>

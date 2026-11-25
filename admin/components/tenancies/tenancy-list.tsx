@@ -44,7 +44,7 @@ const columnsFor = (audience: TenancyAudience): Column<TenancySummary>[] => [
         >
           {tenancy.reference_no}
         </Link>
-        <p className="text-xs text-foreground/60">
+        <p className="text-xs text-fg-tertiary">
           {tenancy.property.name ?? tenancy.property.suburb} ·{" "}
           {tenancy.unit.name}
         </p>
@@ -70,7 +70,7 @@ export default function TenancyListPage({
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Tenancies</h1>
-          <p className="mt-1 text-foreground/70">{COPY[audience]}</p>
+          <p className="mt-1 text-fg-secondary">{COPY[audience]}</p>
         </div>
         <Can permission={TenancyAccess[audience].create}>
           <ButtonLink href={TenancyRoutes[audience].create} className="gap-2">
@@ -108,7 +108,7 @@ async function TenancyList({ audience, searchParams }: TenancyListProp) {
     <>
       <TenanciesFilter audience={audience} {...filters} />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (

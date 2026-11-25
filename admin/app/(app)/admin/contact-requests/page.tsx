@@ -26,7 +26,7 @@ const columns: Column<AdminContactRequest>[] = [
     cell: (request) => (
       <>
         <p className="font-medium">{request.listing.title}</p>
-        <p className="text-xs text-foreground/60">
+        <p className="text-xs text-fg-tertiary">
           {request.unit ? `${request.unit.name}, ` : ""}
           {request.listing.suburb} {request.listing.state}
         </p>
@@ -51,7 +51,7 @@ const columns: Column<AdminContactRequest>[] = [
       <>
         {ContactRequestStatusLabel[request.status]}
         {request.decided_at && (
-          <p className="text-xs text-foreground/60">
+          <p className="text-xs text-fg-tertiary">
             <LocalTime iso={request.decided_at} />
           </p>
         )}
@@ -105,7 +105,7 @@ async function Requests({
         canSearch
       />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (
@@ -118,7 +118,7 @@ async function Requests({
             empty={
               <>
                 <p className="font-medium">No requests found</p>
-                <p className="mt-1 text-foreground/70">
+                <p className="mt-1 text-fg-secondary">
                   They appear here when a tenant asks about a listed property.
                 </p>
               </>

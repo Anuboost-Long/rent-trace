@@ -25,14 +25,14 @@ export default function TermChangePanel({
   return (
     <section
       aria-labelledby="term-change-heading"
-      className="mb-8 rounded-xl border border-foreground/15 p-5"
+      className="mb-8 rounded-xl border border-default p-5"
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 id="term-change-heading" className="text-lg font-semibold">
             {expired ? "Proposal expired" : "Waiting for tenants to approve"}
           </h2>
-          <p className="mt-1 text-sm text-foreground/70">
+          <p className="mt-1 text-sm text-fg-secondary">
             {expired ? (
               "The tenants didn't answer in time. Edit the tenancy to send it again."
             ) : (
@@ -63,7 +63,7 @@ export default function TermChangePanel({
         </div>
       )}
       {error && (
-        <p role="alert" className="mt-3 text-sm text-red-600">
+        <p role="alert" className="mt-3 text-sm text-error">
           {error.message}
         </p>
       )}

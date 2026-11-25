@@ -73,7 +73,7 @@ export default function MfaForm({ status, destination }: MfaFormProp) {
           <div className="mb-4 inline-block rounded-lg bg-white p-3">
             <QRCode value={mfa.enrolment!.provisioning_uri} size={160} />
           </div>
-          <p className="mb-6 text-sm text-foreground/70">
+          <p className="mb-6 text-sm text-fg-secondary">
             Can&apos;t scan? Enter this key instead:{" "}
             <span className="font-mono break-all">{mfa.enrolment!.secret}</span>
           </p>
@@ -96,7 +96,7 @@ export default function MfaForm({ status, destination }: MfaFormProp) {
           message="Admin accounts need a code from an authenticator app each time you sign in."
         >
           {mfa.error && (
-            <p role="alert" className="mb-4 text-sm text-red-600">
+            <p role="alert" className="mb-4 text-sm text-error">
               {mfa.error.message}
             </p>
           )}

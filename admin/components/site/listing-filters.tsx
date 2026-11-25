@@ -26,7 +26,7 @@ export default function ListingFilters({ places, values }: ListingFiltersProp) {
     <Form
       action={Route.listings}
       scroll={false}
-      className="grid gap-4 rounded-2xl border border-foreground/15 p-4 sm:grid-cols-2 lg:grid-cols-4"
+      className="grid gap-4 rounded-2xl border border-default p-4 sm:grid-cols-2 lg:grid-cols-4"
     >
       <TextInput
         label="Search"

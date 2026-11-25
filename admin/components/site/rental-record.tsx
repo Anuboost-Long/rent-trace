@@ -30,19 +30,19 @@ export default function RentalRecord() {
         >
           A record both sides can see
         </h2>
-        <p className="mt-4 max-w-[44ch] text-lg text-foreground/70">
+        <p className="mt-4 max-w-[44ch] text-lg text-fg-secondary">
           RentTrace keeps what happens in a tenancy in one place, so nobody has
           to rely on memory.
         </p>
       </div>
-      <dl className="border-t border-foreground/15 lg:col-span-7">
+      <dl className="border-t border-default lg:col-span-7">
         {RECORD.map(([title, detail]) => (
           <div
             key={title}
-            className="grid gap-2 border-b border-foreground/15 py-7 sm:grid-cols-3 sm:gap-8"
+            className="grid gap-2 border-b border-default py-7 sm:grid-cols-3 sm:gap-8"
           >
             <dt className="text-lg font-semibold">{title}</dt>
-            <dd className="text-foreground/70 sm:col-span-2">{detail}</dd>
+            <dd className="text-fg-secondary sm:col-span-2">{detail}</dd>
           </div>
         ))}
       </dl>

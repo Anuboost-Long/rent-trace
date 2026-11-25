@@ -31,7 +31,7 @@ async function UnitDetail({ audience, params }: UnitDetailProp) {
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -64,7 +64,7 @@ async function UnitDetail({ audience, params }: UnitDetailProp) {
       />
       <UnitPanel audience={audience} propertyId={property.id} unit={unit} />
       {showsPropertyPhotos && (
-        <p className="mt-6 text-sm text-foreground/70">
+        <p className="mt-6 text-sm text-fg-secondary">
           This unit has no photos yet, so the property&apos;s photos are shown
           for it.
         </p>

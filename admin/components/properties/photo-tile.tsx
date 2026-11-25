@@ -40,8 +40,8 @@ export default function PhotoTile({
   const description = file.caption ?? file.original_name;
 
   return (
-    <li className="group overflow-hidden rounded-xl border border-foreground/15">
-      <div className="relative aspect-4/3 bg-foreground/5">
+    <li className="group overflow-hidden rounded-xl border border-default">
+      <div className="relative aspect-4/3 bg-subtle">
         <Image
           src={fileUrl(audience, propertyId, file.id, unitId)}
           alt={description}
@@ -51,7 +51,7 @@ export default function PhotoTile({
           className="object-cover"
         />
         {file.is_cover && !removed && (
-          <span className="absolute top-2 left-2 rounded-md border border-foreground/15 bg-background px-2 py-0.5 text-xs font-medium">
+          <span className="absolute top-2 left-2 rounded-md border border-default bg-background px-2 py-0.5 text-xs font-medium">
             Cover
           </span>
         )}
@@ -109,7 +109,7 @@ export default function PhotoTile({
         ) : (
           <p className="truncate text-sm">
             {file.caption ?? (
-              <span className="text-foreground/60">No caption</span>
+              <span className="text-fg-tertiary">No caption</span>
             )}
           </p>
         )}
