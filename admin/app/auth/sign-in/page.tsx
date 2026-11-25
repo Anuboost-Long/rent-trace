@@ -1,21 +1,25 @@
 import AuthCard from "@/components/common/auth-card";
 import GoogleSignIn from "@/components/common/google-sign-in";
+import { SESSION_ENDED } from "@/constants/security";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import SignInForm from "./sign-in-form";
 
-export const metadata: Metadata = { title: "Sign in · RentTrace" };
+export const metadata: Metadata = { title: "Log in · RentTrace" };
 
 export default function SignInPage({
   searchParams,
 }: PageProps<"/auth/sign-in">) {
   return (
-    <AuthCard heading="Sign in">
+    <AuthCard
+      heading="Log in"
+      message="Your tenancy records, agreements and requests in one place."
+    >
       <Suspense>
         <RedirectAwareForm searchParams={searchParams} />
       </Suspense>
-      <GoogleSignIn label="Sign in with Google" />
+      <GoogleSignIn label="Log in with Google" />
     </AuthCard>
   );
 }
@@ -23,10 +27,15 @@ export default function SignInPage({
 async function RedirectAwareForm({
   searchParams,
 }: Readonly<Pick<PageProps<"/auth/sign-in">, "searchParams">>) {
-  const { redirect } = await searchParams;
+  const { redirect, reason } = await searchParams;
   const isLocalPath =
     typeof redirect === "string" &&
     redirect.startsWith("/") &&
     !redirect.startsWith("//");
-  return <SignInForm redirectTo={isLocalPath ? redirect : undefined} />;
+  return (
+    <SignInForm
+      redirectTo={isLocalPath ? redirect : undefined}
+      sessionEnded={reason === SESSION_ENDED}
+    />
+  );
 }
