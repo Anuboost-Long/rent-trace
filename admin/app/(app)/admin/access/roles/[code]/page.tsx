@@ -58,7 +58,7 @@ async function EditRole({
     <>
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Roles", href: Route.admin.roles },
           { label: role.name },
         ]}
       />

@@ -11,7 +11,7 @@ export default function NewPermissionPage() {
     <>
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Team and permissions", href: Route.admin.access },
           { label: "Permissions", href: Route.admin.permissions },
           { label: "New permission" },
         ]}

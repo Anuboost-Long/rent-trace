@@ -17,7 +17,7 @@ export default function NewGrantPage({
     <div className="max-w-xl">
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Team and permissions", href: Route.admin.access },
           { label: "Grants", href: Route.admin.grants },
           { label: "New grant" },
         ]}

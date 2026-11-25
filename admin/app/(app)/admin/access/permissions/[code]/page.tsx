@@ -42,7 +42,7 @@ async function PermissionDetail({
     <>
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Team and permissions", href: Route.admin.access },
           { label: "Permissions", href: Route.admin.permissions },
           { label: data.permission.name },
         ]}

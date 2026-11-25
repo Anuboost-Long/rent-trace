@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const SECTIONS = [
   Route.admin.access,
+  Route.admin.roles,
   Route.admin.permissions,
   Route.admin.grants,
 ];
