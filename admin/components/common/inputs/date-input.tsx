@@ -55,13 +55,13 @@ type View = "days" | "months" | "years";
 
 const pickerCellClassName = clsx(
   "grid h-10 w-full place-items-center rounded-md text-sm tabular-nums",
-  "focus-visible:outline-2 focus-visible:outline-foreground",
+  "focus-visible:outline-2 focus-visible:outline-brand-border",
   "disabled:cursor-not-allowed disabled:opacity-30",
 );
 
 const navButtonClassName = clsx(
   "grid size-9 place-items-center rounded-md",
-  "hover:bg-foreground/10 focus-visible:outline-2 focus-visible:outline-foreground",
+  "hover:bg-muted focus-visible:outline-2 focus-visible:outline-brand-border",
 );
 
 export default function DateInput({
@@ -223,7 +223,7 @@ export default function DateInput({
           disabled && "opacity-60",
         )}
       >
-        <span className={clsx(!value && "text-foreground/40")}>
+        <span className={clsx(!value && "text-fg-tertiary")}>
           {value ? formatDate(value) : "Choose a date"}
         </span>
         <CalendarDays aria-hidden className="size-4 shrink-0" />
@@ -231,7 +231,7 @@ export default function DateInput({
       {open && (
         <div
           id={`${id}-calendar`}
-          className="absolute top-full z-20 mt-1 w-72 rounded-lg border border-foreground/15 bg-background p-3"
+          className="absolute top-full z-20 mt-1 w-72 rounded-lg border border-default bg-background p-3"
         >
           <div className="mb-2 flex items-center justify-between">
             <button
@@ -259,10 +259,8 @@ export default function DateInput({
                   onKeyDown={onHeaderKeyDown}
                   className={clsx(
                     "flex h-9 items-center gap-1 rounded-md px-2 text-sm font-medium tabular-nums",
-                    "focus-visible:outline-2 focus-visible:outline-foreground",
-                    view === target
-                      ? "bg-foreground/10"
-                      : "hover:bg-foreground/10",
+                    "focus-visible:outline-2 focus-visible:outline-brand-border",
+                    view === target ? "bg-muted" : "hover:bg-muted",
                   )}
                 >
                   {text}
@@ -299,10 +297,10 @@ export default function DateInput({
                     className={clsx(
                       pickerCellClassName,
                       isChosen
-                        ? "bg-foreground font-semibold text-background"
+                        ? "bg-brand font-semibold text-on-brand"
                         : isShown
-                          ? "bg-foreground/10"
-                          : "hover:bg-foreground/10",
+                          ? "bg-muted"
+                          : "hover:bg-muted",
                     )}
                   >
                     {short}
@@ -327,10 +325,10 @@ export default function DateInput({
                     className={clsx(
                       pickerCellClassName,
                       isChosen
-                        ? "bg-foreground font-semibold text-background"
+                        ? "bg-brand font-semibold text-on-brand"
                         : candidate === year
-                          ? "bg-foreground/10"
-                          : "hover:bg-foreground/10",
+                          ? "bg-muted"
+                          : "hover:bg-muted",
                     )}
                   >
                     {candidate}
@@ -347,7 +345,7 @@ export default function DateInput({
                     <th
                       key={weekday.short}
                       scope="col"
-                      className="pb-1 text-xs font-normal text-foreground/60"
+                      className="pb-1 text-xs font-normal text-fg-tertiary"
                     >
                       <abbr title={weekday.long} className="no-underline">
                         {weekday.short}
@@ -372,14 +370,14 @@ export default function DateInput({
                           onKeyDown={onDayKeyDown}
                           className={clsx(
                             "grid size-9 w-full place-items-center rounded-md tabular-nums",
-                            "focus-visible:outline-2 focus-visible:outline-foreground",
+                            "focus-visible:outline-2 focus-visible:outline-brand-border",
                             "disabled:cursor-not-allowed disabled:opacity-30",
                             cell.iso === value
-                              ? "bg-foreground font-semibold text-background"
-                              : "hover:bg-foreground/10",
+                              ? "bg-brand font-semibold text-on-brand"
+                              : "hover:bg-muted",
                             !cell.inMonth &&
                               cell.iso !== value &&
-                              "text-foreground/40",
+                              "text-fg-tertiary",
                           )}
                         >
                           {cell.day}
@@ -396,7 +394,7 @@ export default function DateInput({
               type="button"
               onClick={() => choose(todayIso())}
               disabled={isBeforeMin(todayIso())}
-              className="rounded-md px-2 py-1 hover:bg-foreground/10 disabled:opacity-30"
+              className="rounded-md px-2 py-1 hover:bg-muted disabled:opacity-30"
             >
               Today
             </button>
@@ -404,7 +402,7 @@ export default function DateInput({
               <button
                 type="button"
                 onClick={clear}
-                className="rounded-md px-2 py-1 hover:bg-foreground/10"
+                className="rounded-md px-2 py-1 hover:bg-muted"
               >
                 Clear
               </button>

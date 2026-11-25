@@ -53,7 +53,7 @@ export default function CreatePropertyForm({
 
   if (unsent) {
     return (
-      <div role="alert" className="rounded-xl border border-foreground/15 p-6">
+      <div role="alert" className="rounded-xl border border-default p-6">
         <h2 className="text-lg font-semibold">
           Property created, but some files didn&apos;t upload
         </h2>
@@ -64,7 +64,7 @@ export default function CreatePropertyForm({
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-sm text-foreground/70">
+        <p className="mt-3 text-sm text-fg-secondary">
           You can add them again from the property page.
         </p>
         <ButtonLink
@@ -115,7 +115,7 @@ export default function CreatePropertyForm({
       <PropertyFields error={error} />
       <FilePicker staged={staged} disabled={pending} />
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

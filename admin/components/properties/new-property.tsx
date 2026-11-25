@@ -26,7 +26,7 @@ export default function NewPropertyPage({ audience }: NewPropertyProp) {
         ]}
       />
       <h1 className="mt-4 text-2xl font-semibold">New property</h1>
-      <p className="mt-1 mb-6 text-foreground/70">{COPY[audience]}</p>
+      <p className="mt-1 mb-6 text-fg-secondary">{COPY[audience]}</p>
       <Suspense fallback={<FormSkeleton />}>
         <NewProperty audience={audience} />
       </Suspense>
@@ -41,7 +41,7 @@ async function NewProperty({ audience }: NewPropertyProp) {
   const { data, error } = await handleGetOwnerOptions();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );

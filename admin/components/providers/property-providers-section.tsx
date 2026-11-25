@@ -28,7 +28,7 @@ async function Loaded({ propertyId }: PropertyProvidersSectionProp) {
   ]);
   if (linked.error) {
     return (
-      <p role="alert" className="mt-10 text-red-600">
+      <p role="alert" className="mt-10 text-error">
         {linked.error.message}
       </p>
     );

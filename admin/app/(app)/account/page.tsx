@@ -29,7 +29,7 @@ async function Account() {
   const { data: user, error } = await handleGetMe();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -57,13 +57,13 @@ async function Account() {
         <h2 id="details-heading" className="text-lg font-semibold">
           Account details
         </h2>
-        <dl className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <dl className="mt-3 divide-y divide-default rounded-xl border border-default">
           {details.map(([label, value]) => (
             <div
               key={label}
               className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]"
             >
-              <dt className="text-sm text-foreground/70">{label}</dt>
+              <dt className="text-sm text-fg-secondary">{label}</dt>
               <dd className="break-words">{value}</dd>
             </div>
           ))}

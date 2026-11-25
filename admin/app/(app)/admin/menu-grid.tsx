@@ -51,7 +51,7 @@ export default function MenuGrid() {
       />
       {groups.length === 0 && (
         <div role="status" className="flex flex-col items-start gap-3">
-          <p className="text-foreground/70">
+          <p className="text-fg-secondary">
             No modules match &ldquo;{query}&rdquo;.
           </p>
           <Button variant="quiet" size="sm" onClick={() => setQuery("")}>
@@ -73,13 +73,13 @@ export default function MenuGrid() {
             <h2 id={`group-${group}`} className="text-sm font-semibold">
               {group || "Other"}
             </h2>
-            <p className="mt-0.5 text-sm text-foreground/60">
+            <p className="mt-0.5 text-sm text-fg-tertiary">
               {items.length} {items.length === 1 ? "module" : "modules"}
             </p>
           </div>
           <div
             onPointerMove={followPointer}
-            className="group/list relative overflow-hidden rounded-2xl border border-foreground/15"
+            className="group/list relative overflow-hidden rounded-2xl border border-default"
           >
             <div
               aria-hidden
@@ -89,14 +89,14 @@ export default function MenuGrid() {
               }}
               className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/list:opacity-100 motion-reduce:hidden"
             />
-            <ul className="relative divide-y divide-foreground/15">
+            <ul className="relative divide-y divide-default">
               {items.map((app) => (
                 <li key={app.href}>
                   <Link
                     href={app.href}
-                    className="group/row flex items-center gap-4 px-4 py-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+                    className="group/row flex items-center gap-4 px-4 py-4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border"
                   >
-                    <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-foreground/15 bg-background">
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-default bg-background">
                       <app.icon
                         aria-hidden
                         className="size-5"
@@ -106,7 +106,7 @@ export default function MenuGrid() {
                     <span className="min-w-0 flex-1">
                       <span className="block font-medium">{app.label}</span>
                       {app.description && (
-                        <span className="block text-sm text-foreground/70">
+                        <span className="block text-sm text-fg-secondary">
                           {app.description}
                         </span>
                       )}

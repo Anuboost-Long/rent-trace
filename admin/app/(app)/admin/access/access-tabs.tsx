@@ -19,7 +19,7 @@ export default function AccessTabs() {
   return (
     <nav
       aria-label="Access sections"
-      className="mb-6 flex gap-1 border-b border-foreground/15"
+      className="mb-6 flex gap-1 border-b border-default"
     >
       {TABS.map((tab) => {
         const active = tab.exact ? onRoles : pathname.startsWith(tab.href);
@@ -31,8 +31,8 @@ export default function AccessTabs() {
             className={clsx(
               "-mb-px border-b-2 px-4 py-2.5 text-sm",
               active
-                ? "border-foreground font-semibold"
-                : "border-transparent text-foreground/70 hover:text-foreground",
+                ? "border-brand-border font-semibold"
+                : "border-transparent text-fg-secondary hover:text-foreground",
             )}
           >
             {tab.label}

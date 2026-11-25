@@ -41,9 +41,7 @@ const columns: Column<PermissionItem>[] = [
         >
           {permission.name}
         </Link>
-        <p className="font-mono text-xs text-foreground/60">
-          {permission.code}
-        </p>
+        <p className="font-mono text-xs text-fg-tertiary">{permission.code}</p>
       </>
     ),
   },
@@ -66,7 +64,7 @@ async function Permissions() {
   const { data, error } = await handleGetPermissions();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );

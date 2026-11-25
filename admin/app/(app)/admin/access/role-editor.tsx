@@ -110,13 +110,13 @@ export default function RoleEditor({
           />
         )}
         {error?.fields.is_active && (
-          <p className="text-sm text-red-600">{error.fields.is_active}</p>
+          <p className="text-sm text-error">{error.fields.is_active}</p>
         )}
       </div>
 
       <section>
         <h2 className="text-lg font-semibold">Permissions</h2>
-        <p className="mt-1 mb-3 text-sm text-foreground/70">
+        <p className="mt-1 mb-3 text-sm text-fg-secondary">
           Greyed out: inherited from {parentName ?? "the parent role"}, not
           available to this kind of role, or not held by you, so you can&apos;t
           hand it out.
@@ -127,10 +127,10 @@ export default function RoleEditor({
             .map((side) => (
               <div key={side.label}>
                 <h3 className="text-sm font-semibold">{side.label}</h3>
-                <p className="mt-0.5 mb-2 text-sm text-foreground/70">
+                <p className="mt-0.5 mb-2 text-sm text-fg-secondary">
                   {side.hint}
                 </p>
-                <div className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+                <div className="divide-y divide-default rounded-xl border border-default">
                   {side.modules.map(([module, items]) => (
                     <fieldset key={module} className="p-4">
                       <legend className="px-1 text-sm font-medium capitalize">
@@ -170,14 +170,12 @@ export default function RoleEditor({
             ))}
         </div>
         {error?.fields.permissions && (
-          <p className="mt-2 text-sm text-red-600">
-            {error.fields.permissions}
-          </p>
+          <p className="mt-2 text-sm text-error">{error.fields.permissions}</p>
         )}
       </section>
 
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

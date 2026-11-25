@@ -32,7 +32,7 @@ export default function Pagination({
       aria-label="Pagination"
       className="mt-4 flex items-center justify-between gap-4 text-sm"
     >
-      <p className="text-foreground/70">
+      <p className="text-fg-secondary">
         {count} {count === 1 ? "result" : "results"} · Page {page} of{" "}
         {totalPages}
       </p>

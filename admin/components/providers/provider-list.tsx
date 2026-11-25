@@ -33,7 +33,7 @@ const columns: Column<ServiceProvider>[] = [
           {provider.business_name}
         </Link>
         {provider.contact_name && (
-          <p className="text-xs text-foreground/60">{provider.contact_name}</p>
+          <p className="text-xs text-fg-tertiary">{provider.contact_name}</p>
         )}
       </>
     ),
@@ -49,7 +49,7 @@ const columns: Column<ServiceProvider>[] = [
       <>
         {provider.phone_number && <p>{provider.phone_number}</p>}
         {provider.email && (
-          <p className="text-xs text-foreground/60">{provider.email}</p>
+          <p className="text-xs text-fg-tertiary">{provider.email}</p>
         )}
         {!provider.phone_number && !provider.email && "—"}
       </>
@@ -67,7 +67,7 @@ export default function ProviderListPage({ searchParams }: ProviderListProp) {
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold">Tradespeople</h1>
-          <p className="mt-1 text-foreground/70">
+          <p className="mt-1 text-fg-secondary">
             Plumbers, electricians and others you call. Link them to your
             properties so tenants know who to contact.
           </p>
@@ -111,7 +111,7 @@ async function ProviderList({ searchParams }: ProviderListProp) {
         {...filters}
       />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (

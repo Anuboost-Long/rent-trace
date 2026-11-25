@@ -64,7 +64,7 @@ export default function PropertyFilesSection({
             }
           />
           {staged.rejected.length > 0 && (
-            <ul role="alert" className="space-y-0.5 text-sm text-red-600">
+            <ul role="alert" className="space-y-0.5 text-sm text-error">
               {staged.rejected.map((message) => (
                 <li key={message}>{message}</li>
               ))}
@@ -73,7 +73,7 @@ export default function PropertyFilesSection({
           {api.dirty && (
             <div
               role="status"
-              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-foreground/40 px-4 py-3"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-strong px-4 py-3"
             >
               <p className="text-sm font-medium">
                 Not saved yet:{" "}
@@ -99,7 +99,7 @@ export default function PropertyFilesSection({
 
       <h3 className="mt-8 text-sm font-semibold">Photos ({photos.length})</h3>
       {photos.length === 0 && stagedPhotos.length === 0 ? (
-        <p className="mt-2 text-foreground/70">
+        <p className="mt-2 text-fg-secondary">
           No photos yet. The first one you add becomes the cover.
         </p>
       ) : (
@@ -135,11 +135,11 @@ export default function PropertyFilesSection({
         Documents ({documents.length})
       </h3>
       {documents.length === 0 && stagedDocuments.length === 0 ? (
-        <p className="mt-2 text-foreground/70">
+        <p className="mt-2 text-fg-secondary">
           No documents yet. Add PDFs such as ownership papers or floor plans.
         </p>
       ) : (
-        <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <ul className="mt-3 divide-y divide-default rounded-xl border border-default">
           {documents.map((document) => {
             const removed = api.removedIds.includes(document.id);
             return (
@@ -158,7 +158,7 @@ export default function PropertyFilesSection({
                   >
                     {document.original_name}
                   </a>
-                  <p className="text-sm text-foreground/70">
+                  <p className="text-sm text-fg-secondary">
                     {removed
                       ? "Removed when you save"
                       : formatBytes(document.size_bytes)}
@@ -200,9 +200,9 @@ export default function PropertyFilesSection({
       {api.failures.length > 0 && (
         <div
           role="alert"
-          className="mt-4 rounded-xl border border-red-600 p-4 text-sm"
+          className="mt-4 rounded-xl border border-error-accent p-4 text-sm"
         >
-          <p className="font-medium text-red-600">
+          <p className="font-medium text-error">
             {api.failures.length === 1
               ? "1 change wasn't saved"
               : `${api.failures.length} changes weren't saved`}
@@ -214,7 +214,7 @@ export default function PropertyFilesSection({
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-foreground/70">
+          <p className="mt-2 text-fg-secondary">
             They are still listed above, so you can try saving again.
           </p>
           <Button

@@ -7,11 +7,11 @@ import type { TenancyAudience, TenancyStatus } from "@/types/tenancies/models";
 import Link from "next/link";
 
 const STATUS_SHADE: Record<TenancyStatus, string> = {
-  ACTIVE: "bg-foreground",
-  PENDING: "bg-foreground/60",
-  DRAFT: "bg-foreground/40",
-  ENDED: "bg-foreground/20",
-  CANCELLED: "bg-foreground/10",
+  ACTIVE: "bg-brand",
+  PENDING: "bg-brand/60",
+  DRAFT: "bg-brand/40",
+  ENDED: "bg-brand/20",
+  CANCELLED: "bg-muted",
 };
 
 const fullName = (person: { first_name: string; last_name: string }) =>
@@ -23,7 +23,7 @@ export default async function Dashboard({
   const { data, error } = await handleGetOverview(audience);
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -71,13 +71,13 @@ export default async function Dashboard({
             aria-labelledby="tenancies-heading"
             className="lg:col-span-2"
           >
-            <h2 id="tenancies-heading" className="text-sm text-foreground/70">
+            <h2 id="tenancies-heading" className="text-sm text-fg-secondary">
               Active tenancies
             </h2>
             <p className="mt-2 text-6xl font-semibold tabular-nums tracking-tight">
               {tenancies.by_status.ACTIVE}
             </p>
-            <p className="mt-2 text-sm text-foreground/70">
+            <p className="mt-2 text-sm text-fg-secondary">
               {total} {total === 1 ? "tenancy" : "tenancies"} in all.{" "}
               <Link
                 href={
@@ -112,7 +112,7 @@ export default async function Dashboard({
                     aria-hidden
                     className={`size-2 rounded-full ${STATUS_SHADE[part.status]}`}
                   />
-                  <span className="text-foreground/70">
+                  <span className="text-fg-secondary">
                     {TenancyStatusLabel[part.status]}
                   </span>
                   <span className="font-medium tabular-nums">{part.count}</span>
@@ -122,10 +122,10 @@ export default async function Dashboard({
           </section>
 
           <section aria-labelledby="attention-heading">
-            <h2 id="attention-heading" className="text-sm text-foreground/70">
+            <h2 id="attention-heading" className="text-sm text-fg-secondary">
               Needs attention
             </h2>
-            <ul className="mt-2 divide-y divide-foreground/15">
+            <ul className="mt-2 divide-y divide-default">
               {attention.map((item) => (
                 <li
                   key={item.label}
@@ -143,10 +143,10 @@ export default async function Dashboard({
       )}
 
       {figures.length > 0 && (
-        <dl className="grid grid-cols-2 gap-y-4 border-t border-foreground/15 pt-6 sm:grid-cols-5">
+        <dl className="grid grid-cols-2 gap-y-4 border-t border-default pt-6 sm:grid-cols-5">
           {figures.map((figure) => (
             <div key={figure.label}>
-              <dt className="text-xs text-foreground/70">{figure.label}</dt>
+              <dt className="text-xs text-fg-secondary">{figure.label}</dt>
               <dd className="mt-1 text-lg font-medium tabular-nums">
                 {figure.value.toLocaleString("en-GB")}
               </dd>
@@ -157,15 +157,15 @@ export default async function Dashboard({
 
       {activity && (
         <section aria-labelledby="activity-heading">
-          <h2 id="activity-heading" className="text-sm text-foreground/70">
+          <h2 id="activity-heading" className="text-sm text-fg-secondary">
             Recent activity
           </h2>
           {activity.length === 0 ? (
-            <p className="mt-2 text-sm text-foreground/70">
+            <p className="mt-2 text-sm text-fg-secondary">
               Nothing has changed yet.
             </p>
           ) : (
-            <ul className="mt-2 divide-y divide-foreground/15 border-y border-foreground/15">
+            <ul className="mt-2 divide-y divide-default border-y border-default">
               {activity.map((entry) => (
                 <li
                   key={`${entry.at}-${entry.action}-${entry.person.id}`}
@@ -181,7 +181,7 @@ export default async function Dashboard({
                       {fullName(entry.person)}
                     </Link>
                   </span>
-                  <span className="shrink-0 text-foreground/70">
+                  <span className="shrink-0 text-fg-secondary">
                     <LocalTime iso={entry.at} withTime />
                   </span>
                 </li>
@@ -192,7 +192,7 @@ export default async function Dashboard({
       )}
 
       {!tenancies && figures.length === 0 && !activity && (
-        <p className="text-foreground/70">
+        <p className="text-fg-secondary">
           Your role doesn&apos;t show any figures here yet.
         </p>
       )}

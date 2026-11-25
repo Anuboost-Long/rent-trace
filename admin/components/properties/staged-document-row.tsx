@@ -17,7 +17,7 @@ export default function StagedDocumentRow({
       <FileText aria-hidden className="size-5 shrink-0" strokeWidth={1.5} />
       <div className="min-w-0 flex-1">
         <p className="truncate font-medium">{item.file.name}</p>
-        <p className="text-sm text-foreground/70">
+        <p className="text-sm text-fg-secondary">
           New, {formatBytes(item.file.size)}
         </p>
       </div>

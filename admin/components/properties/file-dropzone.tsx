@@ -40,13 +40,13 @@ export default function FileDropzone({
         "flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed px-6 py-10 text-center",
         "transition-colors motion-reduce:transition-none",
         dragging
-          ? "border-foreground bg-foreground/5"
-          : "border-foreground/25 hover:border-foreground/50",
-        "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-foreground",
+          ? "border-brand-border bg-subtle"
+          : "border-strong hover:border-fg-tertiary",
+        "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-border",
         blocked && "pointer-events-none opacity-60",
       )}
     >
-      <span className="flex size-12 items-center justify-center rounded-xl border border-foreground/15 bg-background">
+      <span className="flex size-12 items-center justify-center rounded-xl border border-default bg-background">
         <ImagePlus aria-hidden className="size-6" strokeWidth={1.5} />
       </span>
       <span className="block">
@@ -54,7 +54,7 @@ export default function FileDropzone({
           {busyLabel ??
             (dragging ? "Drop to add" : "Drag photos and PDFs here")}
         </span>
-        <span className="mt-0.5 block text-sm text-foreground/70">
+        <span className="mt-0.5 block text-sm text-fg-secondary">
           {busyLabel ? (
             "Please wait a moment."
           ) : (
@@ -64,7 +64,7 @@ export default function FileDropzone({
           )}
         </span>
       </span>
-      <span className="block text-sm text-foreground/60">
+      <span className="block text-sm text-fg-tertiary">
         JPEG or PNG photos and PDF documents, up to 10 MB each
       </span>
       <input

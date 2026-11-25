@@ -8,10 +8,10 @@ export default function AuthCard({ heading, message, children }: AuthCardProp) {
   return (
     <main className="mx-auto w-full max-w-md px-4 py-12">
       <p className="mb-4 text-xl font-bold">RentTrace</p>
-      <section className="rounded-xl border border-foreground/15 p-8">
+      <section className="rounded-xl border border-default p-8">
         <h1 className="text-2xl font-semibold">{heading}</h1>
         {message && (
-          <p className="mt-3 text-foreground/70" role="status">
+          <p className="mt-3 text-fg-secondary" role="status">
             {message}
           </p>
         )}

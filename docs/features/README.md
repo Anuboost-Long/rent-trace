@@ -31,6 +31,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                                                                                                                                                        |
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant); admin read-only list and linking from a property walked through 16 Nov 2026                                                                                                  |
 | [Date display](date-display.md)                      | In progress; nothing verified yet                                                                                                                                                                                              |
+| [Admin design alignment](admin-design-alignment.md)  | In progress; restyling the admin area to the Figma design, nothing seen in a browser yet |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.

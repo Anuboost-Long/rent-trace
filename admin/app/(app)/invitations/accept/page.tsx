@@ -14,7 +14,7 @@ export default async function Page({
     return (
       <div className="max-w-md">
         <h1 className="text-2xl font-semibold">Join a tenancy</h1>
-        <p role="alert" className="mt-4 text-red-600">
+        <p role="alert" className="mt-4 text-error">
           This link is missing its invitation. Open the link from your email
           again.
         </p>
@@ -30,12 +30,12 @@ export default async function Page({
         {preview ? `Join ${preview.property_name}` : "Join a tenancy"}
       </h1>
       {preview && (
-        <p className="mt-1 text-foreground/70">
+        <p className="mt-1 text-fg-secondary">
           {preview.unit_name} · Invited by {preview.invited_by}
         </p>
       )}
       {error ? (
-        <p role="alert" className="mt-4 text-red-600">
+        <p role="alert" className="mt-4 text-error">
           {error.message}
         </p>
       ) : (

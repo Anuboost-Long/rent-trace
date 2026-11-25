@@ -22,7 +22,7 @@ export default function TokensPage({
     <>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold">Access tokens</h1>
-        <p className="mt-1 text-foreground/70">
+        <p className="mt-1 text-fg-secondary">
           Every signed-in session. Revoking one signs that device out straight
           away.
         </p>
@@ -48,7 +48,7 @@ const columns: Column<AccessToken>[] = [
         >
           {token.user.first_name} {token.user.last_name}
         </Link>
-        <p className="text-xs text-foreground/60">{token.user.email}</p>
+        <p className="text-xs text-fg-tertiary">{token.user.email}</p>
       </>
     ),
   },
@@ -62,7 +62,7 @@ const columns: Column<AccessToken>[] = [
         )}
         {token.user_agent && (
           <p
-            className="max-w-56 truncate text-xs text-foreground/60"
+            className="max-w-56 truncate text-xs text-fg-tertiary"
             title={token.user_agent}
           >
             {token.user_agent}
@@ -122,7 +122,7 @@ async function TokenList({
     <>
       <TokensFilter {...filters} />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (

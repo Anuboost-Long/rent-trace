@@ -36,7 +36,7 @@ export default function PermissionForm({
         error={error?.fields.code}
       />
       {permission === null && (
-        <p className="-mt-2 text-sm text-foreground/70">
+        <p className="-mt-2 text-sm text-fg-secondary">
           Lower case, like reports.export. The code can&apos;t be changed later,
           because the code that checks it uses this exact text.
         </p>
@@ -54,7 +54,7 @@ export default function PermissionForm({
         defaultChecked={permission?.is_admin_only}
       />
       {error?.fields.is_admin_only && (
-        <p className="text-sm text-red-600">{error.fields.is_admin_only}</p>
+        <p className="text-sm text-error">{error.fields.is_admin_only}</p>
       )}
       {permission && (
         <CheckInput
@@ -64,7 +64,7 @@ export default function PermissionForm({
         />
       )}
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

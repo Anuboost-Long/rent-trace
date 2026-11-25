@@ -28,7 +28,7 @@ const ENDED_LABEL: Record<string, string> = {
   EXPIRED: "Expired",
 };
 
-const mutedText = "text-sm text-foreground/60";
+const mutedText = "text-sm text-fg-tertiary";
 const rowClassName = "flex items-start gap-4 py-4";
 
 const initialOf = (text: string) => text.trim().charAt(0).toUpperCase();
@@ -42,8 +42,8 @@ function Mark({ letter, joined }: MarkProp) {
       className={clsx(
         "grid size-10 shrink-0 place-items-center rounded-full text-sm font-medium",
         joined
-          ? "bg-foreground/10"
-          : "border border-dashed border-foreground/30 text-foreground/60",
+          ? "bg-muted"
+          : "border border-dashed border-strong text-fg-tertiary",
       )}
     >
       {letter}
@@ -63,7 +63,7 @@ function Step({ done, doneText, waitingText }: StepProp) {
     <span
       className={clsx(
         "inline-flex items-center gap-1.5",
-        done ? "text-foreground" : "text-foreground/60",
+        done ? "text-foreground" : "text-fg-tertiary",
       )}
     >
       <Icon aria-hidden className="size-4 shrink-0" />
@@ -139,14 +139,14 @@ export default function TenancyPeople({
         </output>
       )}
 
-      <ul className="mt-2 divide-y divide-foreground/10">
+      <ul className="mt-2 divide-y divide-default">
         <li className={rowClassName}>
           <Mark letter={initialOf(myName)} joined />
           <div className="flex min-w-0 flex-1 items-center justify-between gap-3 self-center">
             <p className="truncate font-medium">
               {myName}
               {me && (
-                <span className="font-normal text-foreground/60"> (you)</span>
+                <span className="font-normal text-fg-tertiary"> (you)</span>
               )}
             </p>
             {youArePrimary && <p className={mutedText}>Primary tenant</p>}
@@ -169,7 +169,7 @@ export default function TenancyPeople({
       </ul>
 
       {livesAlone && (
-        <p className="mt-4 max-w-[65ch] text-sm text-foreground/70">
+        <p className="mt-4 max-w-[65ch] text-sm text-fg-secondary">
           Living with someone else? Invite them here. Your landlord and the
           person you invite both approve before they join.
         </p>
@@ -177,10 +177,10 @@ export default function TenancyPeople({
 
       {requests.length > 0 && (
         <>
-          <h3 className="mt-10 text-sm font-medium text-foreground/70">
+          <h3 className="mt-10 text-sm font-medium text-fg-secondary">
             Invites
           </h3>
-          <ul className="mt-1 divide-y divide-foreground/10">
+          <ul className="mt-1 divide-y divide-default">
             {requests.map((item) => {
               const isOpen = item.status === "PENDING";
               return (
@@ -218,7 +218,7 @@ export default function TenancyPeople({
                           doneText="They accepted"
                           waitingText="Waiting for them"
                         />
-                        <span className="text-foreground/60">
+                        <span className="text-fg-tertiary">
                           Expires <LocalTime iso={item.expires_at} />
                         </span>
                       </p>

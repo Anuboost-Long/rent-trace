@@ -34,7 +34,7 @@ async function Roles() {
   const { data: roles, error } = await handleGetRoles();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -54,7 +54,7 @@ async function Roles() {
             {role.name}
           </Link>
           {role.is_system && (
-            <span className="ml-2 text-xs text-foreground/60">Built in</span>
+            <span className="ml-2 text-xs text-fg-tertiary">Built in</span>
           )}
         </>
       ),

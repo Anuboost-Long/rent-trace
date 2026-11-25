@@ -72,12 +72,12 @@ export default function ResetPasswordForm({
           defaultChecked
         />
         {error && !error.fields.new_password && !error.fields.code && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-error">
             {error.fields.token ?? error.message}
           </p>
         )}
         {requiresCode && (
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm text-fg-secondary">
             Use the code from your authenticator app, or one of your backup
             codes.
           </p>

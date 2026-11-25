@@ -44,12 +44,12 @@ export default function InvitationsSection({
             ? waitingText(item.waiting_on)
             : InvitationStatusLabel[item.status]}
           {item.status === "PENDING" && (
-            <p className="text-xs text-foreground/60">
+            <p className="text-xs text-fg-tertiary">
               Expires <LocalTime iso={item.expires_at} />
             </p>
           )}
           {item.requested_by && (
-            <p className="text-xs text-foreground/60">
+            <p className="text-xs text-fg-tertiary">
               Asked by {item.requested_by}
             </p>
           )}
@@ -107,7 +107,7 @@ export default function InvitationsSection({
   return (
     <section className="mt-10">
       <h2 className="text-lg font-semibold">Invitations</h2>
-      <p className="mt-1 mb-4 text-foreground/70">
+      <p className="mt-1 mb-4 text-fg-secondary">
         Invited people get an email link that lasts 7 days. Resending sends a
         new link and the old one stops working. When a tenant asks to add a
         housemate, the person only joins once you approve and they accept.
@@ -143,7 +143,7 @@ export default function InvitationsSection({
         )}
       </Can>
       {error && !error.fields.email && (
-        <p role="alert" className="mb-4 text-sm text-red-600">
+        <p role="alert" className="mb-4 text-sm text-error">
           {error.message}
         </p>
       )}
@@ -152,7 +152,7 @@ export default function InvitationsSection({
         columns={columns}
         rows={invitations}
         rowKey={(item) => item.id}
-        empty={<p className="text-foreground/70">No invitations yet.</p>}
+        empty={<p className="text-fg-secondary">No invitations yet.</p>}
       />
     </section>
   );

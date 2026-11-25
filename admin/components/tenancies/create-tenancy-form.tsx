@@ -42,7 +42,7 @@ export default function CreateTenancyForm({
       />
       {tenancy.property &&
         (tenancy.units.length === 0 ? (
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm text-fg-secondary">
             This property has no units yet. Add a unit first.
           </p>
         ) : (
@@ -70,7 +70,7 @@ export default function CreateTenancyForm({
         errors={fields}
       />
       {tenancy.error && Object.keys(fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {tenancy.error.message}
         </p>
       )}

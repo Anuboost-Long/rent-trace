@@ -86,13 +86,13 @@ export default function RolePicker({
               defaultChecked={defaultRoles.includes(role.code)}
             />
           ))}
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm text-fg-secondary">
             An admin can hold several roles. They get everything from all of
             them.
           </p>
         </div>
       )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-error">{error}</p>}
     </fieldset>
   );
 }

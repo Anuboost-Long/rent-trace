@@ -17,7 +17,7 @@ export default function Navbar({ onOpenMenu }: NavbarProp) {
   const audience = user && audienceFor(user);
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-foreground/15 px-4">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-default px-4">
       <Button
         variant="quiet"
         onClick={onOpenMenu}

@@ -21,10 +21,10 @@ export default function ListingGallery({
 
   if (photos.length === 0) {
     return (
-      <div className="flex aspect-16/10 items-center justify-center rounded-2xl bg-foreground/5">
+      <div className="flex aspect-16/10 items-center justify-center rounded-2xl bg-subtle">
         <ImageIcon
           aria-hidden
-          className="size-10 text-foreground/30"
+          className="size-10 text-fg-tertiary"
           strokeWidth={1.5}
         />
         <span className="sr-only">No photos yet</span>
@@ -38,7 +38,7 @@ export default function ListingGallery({
 
   return (
     <div>
-      <div className="relative aspect-16/10 overflow-hidden rounded-2xl bg-foreground/5">
+      <div className="relative aspect-16/10 overflow-hidden rounded-2xl bg-subtle">
         <Image
           key={current.id}
           src={current.url}
@@ -55,7 +55,7 @@ export default function ListingGallery({
               type="button"
               aria-label="Previous photo"
               onClick={() => go(-1)}
-              className="absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-foreground/15 bg-background hover:bg-foreground hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              className="absolute top-1/2 left-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-default bg-background hover:bg-brand hover:text-on-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
             >
               <ChevronLeft aria-hidden className="size-5" />
             </button>
@@ -63,7 +63,7 @@ export default function ListingGallery({
               type="button"
               aria-label="Next photo"
               onClick={() => go(1)}
-              className="absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-foreground/15 bg-background hover:bg-foreground hover:text-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              className="absolute top-1/2 right-3 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-default bg-background hover:bg-brand hover:text-on-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
             >
               <ChevronRight aria-hidden className="size-5" />
             </button>
@@ -84,9 +84,9 @@ export default function ListingGallery({
                 onClick={() => setIndex(position)}
                 className={clsx(
                   "relative block aspect-square w-full overflow-hidden rounded-lg",
-                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border",
                   position === index
-                    ? "ring-2 ring-foreground"
+                    ? "ring-2 ring-brand-border"
                     : "opacity-70 hover:opacity-100",
                 )}
               >

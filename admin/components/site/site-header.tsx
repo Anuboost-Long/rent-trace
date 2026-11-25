@@ -10,16 +10,16 @@ import { Suspense } from "react";
 import AccountMenu from "./account-menu";
 
 const navLinkClassName =
-  "flex h-9 items-center rounded-lg px-3 text-sm font-medium text-foreground/80 hover:bg-foreground/5 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "flex h-9 items-center rounded-lg px-3 text-sm font-medium text-fg-secondary hover:bg-subtle hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border";
 
 export default function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-foreground/10 bg-background">
+    <header className="sticky top-0 z-30 border-b border-default bg-background">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex items-center gap-2">
           <Link
             href={Route.home}
-            className="mr-2 text-xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+            className="mr-2 text-xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
           >
             RentTrace
           </Link>

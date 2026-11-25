@@ -20,11 +20,11 @@ export default function NavLink({ item, onNavigate }: NavLinkProp) {
       aria-current={isActive ? "page" : undefined}
       className={clsx(
         "flex h-10 items-center rounded-lg",
-        isActive && "bg-foreground/10",
+        isActive && "bg-muted",
         "px-2.5 group-data-collapsed:justify-center group-data-collapsed:px-0",
         "text-sm",
-        isActive ? "font-semibold" : "text-foreground/70",
-        "hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-foreground",
+        isActive ? "font-semibold" : "text-fg-secondary",
+        "hover:bg-subtle focus-visible:outline-2 focus-visible:outline-brand-border",
       )}
     >
       <item.icon aria-hidden className="size-5 shrink-0" />

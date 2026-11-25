@@ -57,7 +57,7 @@ const columns: Column<GrantListItem>[] = [
         >
           {personName(grant)}
         </Link>
-        <p className="text-xs text-foreground/60">{grant.user.email}</p>
+        <p className="text-xs text-fg-tertiary">{grant.user.email}</p>
       </>
     ),
   },
@@ -121,7 +121,7 @@ async function Grants({
     <>
       <GrantsFilter {...filters} permissions={permissions.data ?? []} />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (
@@ -134,7 +134,7 @@ async function Grants({
             empty={
               <>
                 <p className="font-medium">No grants match</p>
-                <p className="mt-1 text-sm text-foreground/70">
+                <p className="mt-1 text-sm text-fg-secondary">
                   Grants give one person a permission on top of their roles.
                 </p>
               </>

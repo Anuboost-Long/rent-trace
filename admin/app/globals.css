@@ -1,15 +1,138 @@
 @import "tailwindcss";
 
+/* RentTrace design tokens, taken from the Figma variables (file iOHqEujF6MB5mDn1J01Q1i). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --rt-text-primary: #151920;
+  --rt-text-secondary: #4e5664;
+  --rt-text-tertiary: #636c7a;
+  --rt-text-brand: #1f4f94;
+  --rt-text-on-brand: #ffffff;
+
+  --rt-icon-primary: #363d49;
+  --rt-icon-secondary: #636c7a;
+
+  --rt-background-default: #ffffff;
+  --rt-background-subtle: #f7f8fa;
+  --rt-background-muted: #f0f2f5;
+  --rt-background-brand: #1f4f94;
+  --rt-background-brand-subtle: #eef4fb;
+
+  --rt-border-default: #e3e6eb;
+  --rt-border-strong: #cdd2da;
+  --rt-border-brand: #1f4f94;
+  --rt-border-error: #c8332f;
+
+  --rt-status-success-background: #edf7f0;
+  --rt-status-success-border: #bfe3cb;
+  --rt-status-success-foreground: #17693a;
+  --rt-status-success-accent: #1e8a48;
+  --rt-status-warning-background: #fdf5e7;
+  --rt-status-warning-border: #f5d9a6;
+  --rt-status-warning-foreground: #8f5500;
+  --rt-status-warning-accent: #b86e00;
+  --rt-status-error-background: #fdeeee;
+  --rt-status-error-border: #f4c4c2;
+  --rt-status-error-foreground: #a12824;
+  --rt-status-error-accent: #c8332f;
+  --rt-status-attention-background: #f4f1fd;
+  --rt-status-attention-border: #d6ccf7;
+  --rt-status-attention-foreground: #5236b0;
+  --rt-status-attention-accent: #6645d1;
+  --rt-status-neutral-background: #f0f2f5;
+  --rt-status-neutral-border: #e3e6eb;
+  --rt-status-neutral-foreground: #363d49;
+  --rt-status-neutral-accent: #636c7a;
+
+  --rt-admin-background: #1f4f94;
+  --rt-admin-active: #2e66b8;
+  --rt-admin-subtle: #eef4fb;
+  --rt-admin-text: #193f77;
+
+  --rt-radius-sm: 8px;
+  --rt-radius-md: 12px;
+  --rt-radius-full: 999px;
+
+  --rt-elevation-medium:
+    0 8px 24px -4px rgb(21 25 32 / 0.1), 0 2px 6px -1px rgb(21 25 32 / 0.06);
+
+  /* Older names, kept so existing `bg-background` / `text-foreground` classes follow the tokens. */
+  --background: var(--rt-background-default);
+  --foreground: var(--rt-text-primary);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+
+  --color-fg-primary: var(--rt-text-primary);
+  --color-fg-secondary: var(--rt-text-secondary);
+  --color-fg-tertiary: var(--rt-text-tertiary);
+  --color-fg-brand: var(--rt-text-brand);
+  --color-on-brand: var(--rt-text-on-brand);
+  --color-icon-primary: var(--rt-icon-primary);
+  --color-icon-secondary: var(--rt-icon-secondary);
+
+  --color-subtle: var(--rt-background-subtle);
+  --color-muted: var(--rt-background-muted);
+  --color-brand: var(--rt-background-brand);
+  --color-brand-subtle: var(--rt-background-brand-subtle);
+
+  --color-default: var(--rt-border-default);
+  --color-strong: var(--rt-border-strong);
+  --color-brand-border: var(--rt-border-brand);
+
+  --color-error: var(--rt-status-error-foreground);
+  --color-error-accent: var(--rt-status-error-accent);
+  --color-error-background: var(--rt-status-error-background);
+  --color-error-border: var(--rt-status-error-border);
+  --color-success: var(--rt-status-success-foreground);
+  --color-success-accent: var(--rt-status-success-accent);
+  --color-success-background: var(--rt-status-success-background);
+  --color-success-border: var(--rt-status-success-border);
+  --color-warning: var(--rt-status-warning-foreground);
+  --color-warning-accent: var(--rt-status-warning-accent);
+  --color-warning-background: var(--rt-status-warning-background);
+  --color-warning-border: var(--rt-status-warning-border);
+  --color-attention: var(--rt-status-attention-foreground);
+  --color-attention-accent: var(--rt-status-attention-accent);
+  --color-attention-background: var(--rt-status-attention-background);
+  --color-attention-border: var(--rt-status-attention-border);
+  --color-neutral: var(--rt-status-neutral-foreground);
+  --color-neutral-accent: var(--rt-status-neutral-accent);
+  --color-neutral-background: var(--rt-status-neutral-background);
+  --color-neutral-border: var(--rt-status-neutral-border);
+
+  --color-admin: var(--rt-admin-background);
+  --color-admin-active: var(--rt-admin-active);
+  --color-admin-subtle: var(--rt-admin-subtle);
+  --color-admin-text: var(--rt-admin-text);
+
+  --shadow-medium: var(--rt-elevation-medium);
+
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+
+  /* Figma type scale: size / line height / weight / letter spacing. */
+  --text-display: 28px;
+  --text-display--line-height: 34px;
+  --text-display--font-weight: 700;
+  --text-display--letter-spacing: -0.4px;
+  --text-heading: 22px;
+  --text-heading--line-height: 28px;
+  --text-heading--font-weight: 600;
+  --text-heading--letter-spacing: -0.2px;
+  --text-section: 17px;
+  --text-section--line-height: 24px;
+  --text-section--font-weight: 600;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+  --text-caption--letter-spacing: 0.2px;
+
   --animate-panel-in: panel-in 200ms ease-out;
 
   @keyframes panel-in {
@@ -24,15 +147,8 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--rt-background-default);
+  color: var(--rt-text-primary);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }

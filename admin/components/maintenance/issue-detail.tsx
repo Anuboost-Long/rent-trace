@@ -36,7 +36,7 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -84,12 +84,12 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
       {issue.open_closure && (
         <section
           aria-labelledby="closure-heading"
-          className="mb-8 rounded-xl border border-foreground/15 p-5"
+          className="mb-8 rounded-xl border border-default p-5"
         >
           <h2 id="closure-heading" className="text-lg font-semibold">
             Closing was proposed
           </h2>
-          <p className="mt-1 text-sm text-foreground/70">
+          <p className="mt-1 text-sm text-fg-secondary">
             {issue.open_closure.proposed_by} proposed:{" "}
             {ClosureOutcomeLabel[issue.open_closure.outcome]}
           </p>
@@ -99,10 +99,10 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
         </section>
       )}
       {issue.assignment && <IssueProvider assignment={issue.assignment} />}
-      <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+      <dl className="divide-y divide-default rounded-xl border border-default">
         {details.map(([label, value]) => (
           <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">
-            <dt className="text-sm text-foreground/70">{label}</dt>
+            <dt className="text-sm text-fg-secondary">{label}</dt>
             <dd className="whitespace-pre-line">{value}</dd>
           </div>
         ))}

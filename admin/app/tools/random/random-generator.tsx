@@ -78,24 +78,24 @@ export default function RandomGenerator() {
     <div className="flex flex-col gap-8">
       <section
         aria-label="Generated value"
-        className="rounded-2xl border border-foreground/15"
+        className="rounded-2xl border border-default"
       >
         <button
           type="button"
           onClick={copy}
           disabled={!value}
           aria-label="Copy value"
-          className="block w-full rounded-t-2xl p-6 text-left hover:bg-foreground/3 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+          className="block w-full rounded-t-2xl p-6 text-left hover:bg-subtle focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border"
         >
           <span
             key={fresh}
             className="animate-panel-in block font-mono text-xl leading-relaxed break-all motion-reduce:animate-none sm:text-2xl"
           >
-            {value || <span className="text-foreground/40">Generating…</span>}
+            {value || <span className="text-fg-tertiary">Generating…</span>}
           </span>
         </button>
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-foreground/15 px-6 py-3">
-          <p className="text-sm text-foreground/70">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-default px-6 py-3">
+          <p className="text-sm text-fg-secondary">
             {shownLength} characters, about {entropyBits(kind, shownLength)}{" "}
             bits of randomness
           </p>
@@ -131,7 +131,7 @@ export default function RandomGenerator() {
 
       <fieldset className="min-w-0">
         <legend className="mb-2 text-sm font-medium">Type</legend>
-        <div className="grid grid-cols-2 gap-1 rounded-xl border border-foreground/15 p-1 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-1 rounded-xl border border-default p-1 sm:grid-cols-4">
           {KINDS.map((option) => (
             <label
               key={option.value}
@@ -139,8 +139,8 @@ export default function RandomGenerator() {
                 "flex h-10 cursor-pointer items-center justify-center rounded-lg px-2",
                 "text-sm font-medium whitespace-nowrap",
                 "transition-colors motion-reduce:transition-none",
-                "hover:bg-foreground/5 has-checked:bg-foreground has-checked:text-background",
-                "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-foreground",
+                "hover:bg-subtle has-checked:bg-brand has-checked:text-on-brand",
+                "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-border",
               )}
             >
               <input
@@ -158,7 +158,7 @@ export default function RandomGenerator() {
             </label>
           ))}
         </div>
-        <p className="mt-2 text-sm text-foreground/70">
+        <p className="mt-2 text-sm text-fg-secondary">
           {KINDS.find((option) => option.value === kind)?.hint}
         </p>
       </fieldset>
@@ -176,7 +176,7 @@ export default function RandomGenerator() {
             value={shownLength}
             disabled={isFernet}
             onChange={(event) => changeLength(Number(event.target.value))}
-            className="h-9 w-20 rounded-lg border border-foreground/15 bg-background px-2 text-right font-mono text-sm focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-foreground disabled:opacity-40"
+            className="h-9 w-20 rounded-lg border border-default bg-background px-2 text-right font-mono text-sm focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-border disabled:opacity-40"
           />
         </div>
         <input
@@ -187,10 +187,10 @@ export default function RandomGenerator() {
           value={shownLength}
           disabled={isFernet}
           onChange={(event) => changeLength(Number(event.target.value))}
-          className="mt-3 w-full accent-foreground disabled:opacity-40"
+          className="mt-3 w-full accent-brand disabled:opacity-40"
         />
         {isFernet && (
-          <p className="mt-2 text-sm text-foreground/70">
+          <p className="mt-2 text-sm text-fg-secondary">
             A Fernet key is always {FERNET_LENGTH} characters.
           </p>
         )}

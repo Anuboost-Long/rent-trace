@@ -30,7 +30,7 @@ const columns: Column<TenantContactRequest>[] = [
         >
           {request.listing.title}
         </Link>
-        <p className="text-xs text-foreground/60">
+        <p className="text-xs text-fg-tertiary">
           {request.unit ? `${request.unit.name}, ` : ""}
           {request.listing.suburb} {request.listing.state}
         </p>
@@ -51,7 +51,7 @@ const columns: Column<TenantContactRequest>[] = [
       <>
         {ContactRequestStatusLabel[request.status]}
         {request.decided_at && (
-          <p className="text-xs text-foreground/60">
+          <p className="text-xs text-fg-tertiary">
             <LocalTime iso={request.decided_at} />
           </p>
         )}
@@ -105,7 +105,7 @@ async function Requests({
     <>
       <RequestsFilter action={Route.tenant.requests} status={status} />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (
@@ -118,7 +118,7 @@ async function Requests({
             empty={
               <>
                 <p className="font-medium">No requests yet</p>
-                <p className="mt-1 text-foreground/70">
+                <p className="mt-1 text-fg-secondary">
                   Open a rental and choose Request contact to ask the landlord.
                 </p>
                 <Link

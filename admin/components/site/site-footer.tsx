@@ -5,15 +5,15 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 const linkClassName =
-  "text-sm text-foreground/70 hover:text-foreground hover:underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+  "text-sm text-fg-secondary hover:text-foreground hover:underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border";
 
 export default function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-foreground/10">
+    <footer className="mt-24 border-t border-default">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 md:flex-row md:justify-between">
         <div className="max-w-xs">
           <p className="text-lg font-bold tracking-tight">RentTrace</p>
-          <p className="mt-2 text-sm text-foreground/70">
+          <p className="mt-2 text-sm text-fg-secondary">
             Rentals and rent records for tenants and landlords.
           </p>
         </div>

@@ -23,7 +23,7 @@ export default function LoadingModal({
       ref={dialogRef}
       onCancel={(event) => event.preventDefault()}
       aria-label={message}
-      className="m-auto rounded-xl border border-foreground/15 bg-background p-6 text-foreground backdrop:bg-black/40"
+      className="m-auto rounded-xl border border-default bg-background p-6 text-foreground backdrop:bg-black/40"
     >
       <div role="status" className="flex items-center gap-3">
         <Spinner />

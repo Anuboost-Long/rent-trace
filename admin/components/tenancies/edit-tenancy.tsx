@@ -27,7 +27,7 @@ async function EditTenancy({ audience, params }: EditTenancyProp) {
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -49,7 +49,7 @@ async function EditTenancy({ audience, params }: EditTenancyProp) {
         ]}
       />
       <h1 className="mt-4 text-2xl font-semibold">Edit tenancy</h1>
-      <p className="mt-1 mb-6 text-foreground/70">
+      <p className="mt-1 mb-6 text-fg-secondary">
         Dates and notes apply at once. A higher rent or bond waits until every
         tenant approves it.
       </p>
