@@ -22,11 +22,11 @@ export default function ShellSkeleton() {
       <div className="flex min-w-0 flex-1 flex-col">
         <div
           aria-hidden
-          className="flex h-14 shrink-0 items-center justify-end border-b border-default px-4"
+          className="flex h-16 shrink-0 items-center justify-end border-b border-default bg-background px-4 md:px-8"
         >
           <Skeleton className="h-9 w-28" />
         </div>
-        <main className="flex-1 p-4 md:p-8">
+        <main className="flex-1 bg-subtle p-4 md:p-8">
           <ContentSkeleton />
         </main>
       </div>
