@@ -31,10 +31,14 @@ navigation and permissions, built from shared components.
   shell. No page renders the sidebar itself.
 - **Look (25 Nov 2026):** the admin sidebar is navy (`bg-admin`) with a white "R" logo, the
   RentTrace name and an `ADMIN` tag; the landlord sidebar uses the same layout in white. The
-  sidebar footer shows the person's name, "Role · email", the collapse toggle and **Log out**. The
-  top bar shows the active nav item's name as the page title, an "MFA verified" badge once the
-  admin has entered their code, and an initials avatar linking to `/account`. Content sits on the
-  light grey `bg-subtle` background.
+  sidebar footer shows the person's name and "Role · email", with an icon-only collapse toggle at
+  the top right of that block, then **Log out**. **Log out** asks first ("Log out?") and only
+  signs out if they confirm. The top bar shows the active nav item's name as
+  the page title, an "MFA verified" badge once the admin has entered their code, and an initials
+  avatar linking to `/account`. On a small screen the top bar has a **Menu** control that
+  opens the same sidebar as a full-height drawer: the links scroll, the profile and **Log
+  out** stay at the bottom, and an icon closes the drawer. Content sits on the light grey
+  `bg-subtle` background.
 - **Admin menu:** Overview, Accounts (`/admin/users`), Team and permissions (`/admin/access`), then
   an **Operations** group with the admin screens that are not in Figma: Properties, Tenancies,
   Contact requests, Tradespeople, Maintenance, Bans, Access tokens and Notifications. The admin

@@ -26,9 +26,11 @@ export default function Navbar({ title, onOpenMenu }: NavbarProp) {
         className="gap-2 md:hidden"
       >
         <Menu aria-hidden className="size-4" />
-        Menu
+        <span className="max-sm:sr-only">Menu</span>
       </Button>
-      {title && <p className="truncate text-heading">{title}</p>}
+      {title && (
+        <p className="min-w-0 truncate text-heading">{title}</p>
+      )}
       <div className="ml-auto flex items-center gap-3">
         {audience && audience !== "admin" && (
           <NotificationBell href={NotificationsRoute[audience]} />

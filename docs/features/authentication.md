@@ -96,6 +96,8 @@ safely across devices, and admins get an extra two-step check.
 - **API key:** every `/api/` request needs `X-API-Key`; the docs pages are exempt.
 - **Sign out, change password** (optionally signing out other devices), and
   `GET me/` returning roles, join date, last sign-in and effective permissions.
+  In the sidebar shell, **Log out** opens a confirm dialog before the session is
+  cleared.
 - **Changing email is not allowed** yet.
 
 Admin app screens: sign-in, sign-up with a check-your-email step, email
