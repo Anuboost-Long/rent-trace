@@ -38,8 +38,8 @@ export default function UserPermissionsSection({
   );
 
   return (
-    <section className="mt-10">
-      <h2 className="text-lg font-semibold">Permissions</h2>
+    <section className="rounded-xl border border-default bg-background p-5">
+      <h2 className="text-section">Permissions</h2>
       <p className="mt-1 mb-4 text-sm text-fg-secondary">
         {data.roles.join(", ") || "No role"} gives the access below. Individual
         grants add to it.
