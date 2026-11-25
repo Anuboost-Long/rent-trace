@@ -39,6 +39,8 @@ export const Route = {
     bans: "/admin/bans",
     tokens: "/admin/tokens",
     access: "/admin/access",
+    admin_permissions: (id: number) => `/admin/access/admins/${id}`,
+    roles: "/admin/access/roles",
     permissions: "/admin/access/permissions",
     permission_new: "/admin/access/permissions/new",
     permission: (code: string) => `/admin/access/permissions/${code}`,

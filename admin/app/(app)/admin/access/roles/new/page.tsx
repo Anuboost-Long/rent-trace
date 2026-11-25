@@ -17,7 +17,7 @@ export default function NewRolePage() {
     <>
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Roles", href: Route.admin.roles },
           { label: "New role" },
         ]}
       />

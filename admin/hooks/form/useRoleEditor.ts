@@ -48,7 +48,7 @@ const useRoleEditor = (role: RoleItem | null, allRoles: RoleItem[]) => {
     setPending(false);
     setError(error);
     if (error) return;
-    router.push(Route.admin.access);
+    router.push(Route.admin.roles);
     router.refresh();
   };
 

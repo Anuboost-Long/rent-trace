@@ -98,12 +98,13 @@ export const handleGrantPermission = async (
 export const handleRevokePermission = async (
   id: number | string,
   permission: string,
+  reason?: string,
 ) => {
   try {
     await ApiServiceServer<null>({
       url: EndPoints.access.grant(id, permission),
       method: "DELETE",
-      data: {},
+      data: reason ? { reason } : {},
     });
     return { data: true, error: null };
   } catch (error) {

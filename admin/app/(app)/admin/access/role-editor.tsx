@@ -183,7 +183,7 @@ export default function RoleEditor({
         <Button type="submit" pending={pending}>
           {pending ? "Saving…" : role ? "Save changes" : "Create role"}
         </Button>
-        <ButtonLink href={Route.admin.access} variant="quiet">
+        <ButtonLink href={Route.admin.roles} variant="secondary">
           Cancel
         </ButtonLink>
       </div>

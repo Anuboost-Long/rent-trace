@@ -5,33 +5,37 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const TABS = [
-  { label: "Roles", href: Route.admin.access, exact: true },
+  { label: "Admins", href: Route.admin.access, exact: true },
+  { label: "Roles", href: Route.admin.roles },
   { label: "Permissions", href: Route.admin.permissions },
   { label: "Grants", href: Route.admin.grants },
 ];
 
+const isActive = (tab: (typeof TABS)[number], pathname: string) =>
+  tab.exact
+    ? pathname === tab.href || pathname.startsWith(`${tab.href}/admins`)
+    : pathname.startsWith(tab.href);
+
 export default function AccessTabs() {
   const pathname = usePathname();
-  const onRoles =
-    pathname === Route.admin.access ||
-    pathname.startsWith(`${Route.admin.access}/roles`);
 
   return (
     <nav
-      aria-label="Access sections"
-      className="mb-6 flex gap-1 border-b border-default"
+      aria-label="Team and permissions sections"
+      className="mb-6 flex gap-1 overflow-x-auto border-b border-default"
     >
       {TABS.map((tab) => {
-        const active = tab.exact ? onRoles : pathname.startsWith(tab.href);
+        const active = isActive(tab, pathname);
         return (
           <Link
             key={tab.href}
             href={tab.href}
             aria-current={active ? "page" : undefined}
             className={clsx(
-              "-mb-px border-b-2 px-4 py-2.5 text-sm",
+              "-mb-px border-b-2 px-4 py-2.5 text-body-sm whitespace-nowrap",
+              "focus-visible:outline-2 focus-visible:outline-brand-border",
               active
-                ? "border-brand-border font-semibold"
+                ? "border-brand-border font-semibold text-fg-brand"
                 : "border-transparent text-fg-secondary hover:text-foreground",
             )}
           >
