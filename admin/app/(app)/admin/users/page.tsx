@@ -2,6 +2,7 @@ import { handleGetUsers } from "@/api/services/users/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import FilterChips from "@/components/common/filter-chips";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
@@ -118,9 +119,7 @@ async function UsersList({
         </div>
       </div>
       {error ? (
-        <p role="alert" className="text-error">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable

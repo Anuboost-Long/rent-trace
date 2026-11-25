@@ -1,4 +1,5 @@
 import { handleGetPermissions } from "@/api/services/access/serve-action";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
 import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
@@ -37,11 +38,7 @@ async function Team() {
     getMe(),
   ]);
   if (error) {
-    return (
-      <p role="alert" className="text-error">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
   const nameOf = (code: string) =>
     catalogue.data?.find((permission) => permission.code === code)?.name ??

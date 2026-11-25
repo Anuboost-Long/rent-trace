@@ -1,6 +1,7 @@
 import { handleGetRoles } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LoadError from "@/components/common/load-error";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
@@ -33,11 +34,7 @@ export default function RolesPage() {
 async function Roles() {
   const { data: roles, error } = await handleGetRoles();
   if (error) {
-    return (
-      <p role="alert" className="text-error">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
   const nameOf = (code: string | null) =>
     roles.find((role) => role.code === code)?.name ?? "—";

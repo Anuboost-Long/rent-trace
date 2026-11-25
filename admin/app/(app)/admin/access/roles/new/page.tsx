@@ -2,6 +2,7 @@ import {
   handleGetPermissions,
   handleGetRoles,
 } from "@/api/services/access/serve-action";
+import LoadError from "@/components/common/load-error";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
@@ -36,11 +37,7 @@ async function NewRole() {
   ]);
   const error = roles.error ?? permissions.error;
   if (error) {
-    return (
-      <p role="alert" className="text-error">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
   return (
     <RoleEditor

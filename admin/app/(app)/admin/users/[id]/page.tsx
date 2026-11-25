@@ -5,6 +5,7 @@ import {
 import { handleGetTenancies } from "@/api/services/tenancies/serve-action";
 import { handleGetUser } from "@/api/services/users/serve-action";
 import Card from "@/components/common/card";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
@@ -50,11 +51,7 @@ async function UserDetailContent({
     ]);
   if (error?.status === 404) notFound();
   if (error) {
-    return (
-      <p role="alert" className="text-error">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
 
   // Tenancy search matches a tenant's email, so this lists the tenancies this person is on.

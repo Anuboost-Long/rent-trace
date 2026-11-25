@@ -1,6 +1,7 @@
 import { handleGetPermissions } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LoadError from "@/components/common/load-error";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
@@ -63,11 +64,7 @@ const columns: Column<PermissionItem>[] = [
 async function Permissions() {
   const { data, error } = await handleGetPermissions();
   if (error) {
-    return (
-      <p role="alert" className="text-error">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
   return (
     <DataTable
