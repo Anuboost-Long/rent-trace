@@ -2,6 +2,10 @@ from notifications.models import NotificationKind as Kind
 from notifications.services.shared import notify
 
 
+def _tenancy_id(request):
+    return request.target.condition_record.tenancy_id
+
+
 def _name(person):
     return f"{person.first_name} {person.last_name}"
 
@@ -12,7 +16,7 @@ def submitted(request, author, owners, title):
         kind=Kind.CONDITION_EVIDENCE_SUBMITTED,
         title="A tenant added a condition account",
         body=f"{_name(author)} added: {title}. Open the unit to approve or reject it.",
-        subject_id=request.pk,
+        subject_id=_tenancy_id(request),
     )
 
 
@@ -22,7 +26,7 @@ def approved(request, title):
         kind=Kind.CONDITION_EVIDENCE_APPROVED,
         title="Your condition account was approved",
         body=f"Your landlord approved: {title}",
-        subject_id=request.pk,
+        subject_id=_tenancy_id(request),
     )
 
 
@@ -32,5 +36,5 @@ def rejected(request, title, reason):
         kind=Kind.CONDITION_EVIDENCE_REJECTED,
         title="Your condition account was rejected",
         body=f"Your landlord rejected: {title}. Reason: {reason}",
-        subject_id=request.pk,
+        subject_id=_tenancy_id(request),
     )

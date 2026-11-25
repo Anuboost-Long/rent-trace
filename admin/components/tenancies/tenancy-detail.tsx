@@ -1,6 +1,8 @@
+import { handleGetUnitEvidence } from "@/api/services/evidence/serve-action";
 import { handleGetTenancy } from "@/api/services/tenancies/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LandlordEvidence from "@/components/conditions/landlord-evidence";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { PropertyRoutes } from "@/constants/properties";
@@ -48,6 +50,10 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
     );
   }
 
+  const reports =
+    audience === "landlord"
+      ? (await handleGetUnitEvidence(tenancy.unit.id)).data
+      : null;
   const closed = tenancy.status === "ENDED" || tenancy.status === "CANCELLED";
   const details: [string, React.ReactNode][] = [
     ["Status", TenancyStatusLabel[tenancy.status]],
@@ -172,6 +178,8 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
         invitations={tenancy.invitations}
         closed={closed}
       />
+
+      {reports && <LandlordEvidence reports={reports} />}
 
       <TermHistory changes={tenancy.term_history} />
     </>

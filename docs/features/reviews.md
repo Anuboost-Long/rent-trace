@@ -2,10 +2,21 @@
 
 ## Status — 25 November 2026
 
-Slice 1 (tenant condition evidence) is built in the **back end only**, on branch `feat/reviews`:
-13 new tests pass, and so does the full suite (750), with ruff, the migration check and the
-OpenAPI validation. There are **no admin screens yet**, so nothing has been seen in a browser.
-Everything else in this document is still planned.
+Slice 1 (tenant condition evidence) is built, back end and admin screens, on branch `feat/reviews`.
+Back end: 13 new tests pass, and so does the full suite (750), with ruff, the migration check and
+the OpenAPI validation. Admin: typecheck and lint pass. Walked through in Chrome on 25 November
+2026 with the `+housemate` tenant and `+landlord` accounts on tenancy 6: the tenant sent a
+report and saw it waiting; the landlord saw it, rejected it with a reason (the report showed
+"Rejected" with the reason, the request went to `DISPUTED`, and a linked dispute case and both
+notifications were written); a second report was approved from the screen. Also seen: the tenant's
+view of approved, rejected (with the reason) and withdrawn reports together; Withdraw; both
+inbox notifications, and the rejection one opening the tenant tenancy page; the list and the
+report form at 390px wide with no sideways scroll. The Next.js dev overlay shows one
+"Blocking Route" warning (`Date.now()` while prerendering). It appears on every signed-in page,
+not just notifications (the stack points at the shared `SiteHeader`, and nothing in the project
+calls `Date.now()` there). `next build` passes with no such warning, so it is a dev-mode
+check and not from this feature. The landlord's notification link
+(to the landlord tenancy page) was not clicked. Everything beyond slice 1 is still planned.
 
 ## Goal
 
@@ -111,10 +122,11 @@ Existing:
   `removals.py`), `back-end/history/models.py` (`BusinessChangeHistory`),
   `back-end/accounts/seeds/permissions.py` (the `reviews.*` codes)
 
-To add:
-
-- Admin: a tenant "add a condition account" form and list on the tenancy page, a landlord
-  review list on the unit page, and how the inbox links the three new notification kinds
+- Admin: tenant "Conditions you reported" section (`admin/components/conditions/tenant-evidence.tsx`,
+  `evidence-dialog.tsx`) on the tenant tenancy page; landlord "Conditions reported by tenants"
+  (`landlord-evidence.tsx`) on the landlord tenancy page; `hooks/form/useEvidenceActions.ts`,
+  `api/services/evidence/`; the three notification kinds link to the tenancy page. Notification
+  `subject_id` is the tenancy id.
 
 ## Open questions
 

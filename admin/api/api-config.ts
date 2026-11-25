@@ -92,6 +92,17 @@ export const EndPoints = {
     list: byEndpoint("landlord/conditions/"),
     detail: (id: number) => byEndpoint(`landlord/conditions/${id}/`),
   },
+  evidence: {
+    mine: (tenancyId: number | string) =>
+      byEndpoint(`tenant/tenancies/${tenancyId}/condition-evidence/`),
+    withdraw: (tenancyId: number | string, id: number) =>
+      byEndpoint(
+        `tenant/tenancies/${tenancyId}/condition-evidence/${id}/cancel/`,
+      ),
+    unit: byEndpoint("landlord/condition-evidence/"),
+    answer: (id: number, action: "approve" | "reject") =>
+      byEndpoint(`landlord/condition-evidence/${id}/${action}/`),
+  },
   maintenance: {
     list: byEndpoint("maintenance/"),
     categories: byEndpoint("maintenance/categories/"),

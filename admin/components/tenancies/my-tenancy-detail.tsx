@@ -1,5 +1,7 @@
+import { handleGetMyEvidence } from "@/api/services/evidence/serve-action";
 import { handleGetMyTenancy } from "@/api/services/tenancies/serve-action";
 import TenantConditions from "@/components/conditions/tenant-conditions";
+import TenantEvidence from "@/components/conditions/tenant-evidence";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import TenantProviders from "@/components/providers/tenant-providers";
@@ -37,6 +39,8 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
       </p>
     );
   }
+
+  const { data: reports } = await handleGetMyEvidence(tenancy.id);
 
   const details: [string, string][] = [
     ["Status", TenantTenancyStatusLabel[tenancy.status]],
@@ -106,6 +110,12 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
       {tenancy.is_current && <TenantProviders tenancyId={tenancy.id} />}
 
       <TenantConditions notes={tenancy.unit_conditions} />
+
+      <TenantEvidence
+        tenancyId={tenancy.id}
+        reports={reports ?? []}
+        canReport={tenancy.is_current}
+      />
 
       <TermHistory changes={tenancy.term_history} />
     </>

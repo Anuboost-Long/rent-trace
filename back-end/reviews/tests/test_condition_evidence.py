@@ -73,11 +73,8 @@ class ConditionEvidenceTests(TenancyApiTestCase):
     def test_the_landlord_is_told_and_sees_it_on_the_unit(self):
         self.submitted()
 
-        self.assertTrue(
-            Notification.objects.filter(
-                recipient=self.lou, kind="CONDITION_EVIDENCE_SUBMITTED"
-            ).exists()
-        )
+        sent = Notification.objects.get(recipient=self.lou, kind="CONDITION_EVIDENCE_SUBMITTED")
+        self.assertEqual(sent.subject_id, self.tenancy["id"])
         self.as_user(self.lou)
         listed = self.client.get(f"{LANDLORD_URL}?unit_id={self.unit.pk}")
         self.assertEqual([row["author"] for row in listed.data], ["Tina Ray"])
