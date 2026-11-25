@@ -1,5 +1,30 @@
 # Admin users
 
+## Status — 25 November 2026 (Accounts, Figma look)
+
+The Users screens became **Accounts**, laid out as in Figma (see
+[Admin design alignment](admin-design-alignment.md)). Type-checked and linted; **not seen in a
+browser yet.** The URLs are unchanged (`/admin/users`).
+
+- **List:** chips across the top: All, Tenants, Landlords, Admins and Suspended, each showing its
+  count. Admins means the `ADMIN` role only, not custom admin roles. Next to them are a search box
+  ("Search name or email"; searching keeps the chip that is selected) and "Add account". The
+  columns are Name with the email under it, Role, a Status badge (Active green, Suspended amber)
+  and Last active (the last log in, or "Never"). Clicking a row opens the account. The old Role
+  and Status drop-downs and the row action icons are gone.
+- **Detail:** a status badge, the name, and a line with email · role · sign-in method · joined
+  date. Below that:
+  - a **Details** card: phone, two-step sign-in, email verified and last log in
+  - a **Tenancies** card for tenants, if you can view tenancies: tenancy search by their email,
+    linking to each tenancy
+  - the Permissions section
+- **Account actions** card on the right:
+  - **Suspend account** or **Reactivate account**, which now ask for a reason (sent as `reason`)
+  - **Ban account** (red), new here: creates an `ACCOUNT` ban through `POST /api/bans/` with the
+    reason. Shown with `bans.manage`, never on yourself or a super admin.
+  - **Delete account**, **Edit details** and **Reset authenticator**, with the same permission
+    rules as before
+
 ## Status — 18 November 2026 (reset authenticator)
 
 Built; **not yet seen in a browser** (needs a super admin session, and a real reset ends the

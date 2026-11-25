@@ -35,7 +35,11 @@ export default function ResetAuthenticatorButton({
 
   return (
     <>
-      <Button variant="quiet" className="gap-2" onClick={() => setOpen(true)}>
+      <Button
+        variant="secondary"
+        className="w-full gap-2"
+        onClick={() => setOpen(true)}
+      >
         <ShieldOff aria-hidden className="size-4" />
         Reset authenticator
       </Button>

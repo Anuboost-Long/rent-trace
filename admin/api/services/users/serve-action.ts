@@ -82,12 +82,15 @@ export const handleUpdateUser = async (
   }
 };
 
-export const handleDeactivateUser = async (id: number | string) => {
+export const handleDeactivateUser = async (
+  id: number | string,
+  reason?: string,
+) => {
   try {
     const data = await ApiServiceServer<UserDetail>({
       url: EndPoints.users.deactivate(id),
       method: "POST",
-      data: {},
+      data: reason ? { reason } : {},
     });
     return { data, error: null };
   } catch (error) {
@@ -95,12 +98,15 @@ export const handleDeactivateUser = async (id: number | string) => {
   }
 };
 
-export const handleActivateUser = async (id: number | string) => {
+export const handleActivateUser = async (
+  id: number | string,
+  reason?: string,
+) => {
   try {
     const data = await ApiServiceServer<UserDetail>({
       url: EndPoints.users.activate(id),
       method: "POST",
-      data: {},
+      data: reason ? { reason } : {},
     });
     return { data, error: null };
   } catch (error) {
