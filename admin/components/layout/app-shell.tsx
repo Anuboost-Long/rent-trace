@@ -1,6 +1,7 @@
 "use client";
 import { UserAtom } from "@/api/services/auth/jotai";
-import Button from "@/components/common/button";
+import { handleSignOut } from "@/api/services/auth/serve-action";
+import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import {
   Navigation,
   SIDEBAR_COOKIE,
@@ -11,7 +12,7 @@ import clsx from "clsx";
 import { createStore, Provider } from "jotai";
 import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 
 import { isNavItemActive } from "./nav-link";
 import Navbar from "./navbar";
@@ -42,6 +43,8 @@ export default function AppShell({
     store.set(UserAtom, user);
   }, [store, user]);
   const [collapsed, setCollapsed] = useState(sidebarCollapsed);
+  const [signOutOpen, setSignOutOpen] = useState(false);
+  const [signingOut, startSignOut] = useTransition();
   const menuRef = useRef<HTMLDialogElement>(null);
   const pathname = usePathname();
   const section = pathname.split("/")[1];
@@ -56,6 +59,13 @@ export default function AppShell({
     .filter((item) => isNavItemActive(item, pathname))
     .sort((a, b) => b.href.length - a.href.length)[0]?.label;
   const closeMenu = useCallback(() => menuRef.current?.close(), []);
+  const openSignOut = useCallback(() => {
+    menuRef.current?.close();
+    setSignOutOpen(true);
+  }, []);
+  const closeSignOut = useCallback(() => {
+    if (!signingOut) setSignOutOpen(false);
+  }, [signingOut]);
 
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 768px)");
@@ -88,21 +98,20 @@ export default function AppShell({
               : "border-r border-default bg-background",
           )}
         >
-          <div className="min-h-0 flex-1 overflow-y-auto">
-            <Sidebar
-              label={label}
-              tone={tone}
-              user={user}
-              items={items}
-              footerSlot={
-                <SidebarToggle
-                  collapsed={collapsed}
-                  tone={tone}
-                  onToggle={toggleSidebar}
-                />
-              }
-            />
-          </div>
+          <Sidebar
+            label={label}
+            tone={tone}
+            user={user}
+            items={items}
+            onSignOut={openSignOut}
+            profileAction={
+              <SidebarToggle
+                collapsed={collapsed}
+                tone={tone}
+                onToggle={toggleSidebar}
+              />
+            }
+          />
         </aside>
         <dialog
           ref={menuRef}
@@ -110,7 +119,7 @@ export default function AppShell({
             if (event.target === event.currentTarget) closeMenu();
           }}
           className={clsx(
-            "m-0 h-full max-h-none w-64 p-0",
+            "m-0 flex h-dvh max-h-dvh w-64 flex-col overflow-hidden p-0",
             tone === "admin"
               ? "bg-admin text-on-brand"
               : "border-r border-default bg-background text-foreground",
@@ -126,16 +135,23 @@ export default function AppShell({
             user={user}
             items={items}
             onNavigate={closeMenu}
-            footerSlot={
-              <Button
-                variant="secondary"
+            onSignOut={openSignOut}
+            headerAction={
+              <button
+                type="button"
+                title="Close menu"
+                aria-label="Close menu"
                 onClick={closeMenu}
-                size="sm"
-                className="gap-2"
+                className={clsx(
+                  "flex size-8 shrink-0 items-center justify-center rounded-lg",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2",
+                  tone === "admin"
+                    ? "text-on-brand/85 hover:bg-admin-active/60 focus-visible:outline-on-brand"
+                    : "text-fg-secondary hover:bg-subtle focus-visible:outline-brand-border",
+                )}
               >
                 <X aria-hidden className="size-4" />
-                Close menu
-              </Button>
+              </button>
             }
           />
         </dialog>
@@ -147,6 +163,16 @@ export default function AppShell({
           <main className="flex-1 bg-subtle p-4 md:p-8">{children}</main>
         </div>
       </div>
+      <ConfirmDialog
+        open={signOutOpen}
+        title="Log out?"
+        message="You'll be signed out on this device and have to sign in again."
+        confirmLabel="Log out"
+        confirmVariant="danger"
+        pending={signingOut}
+        onConfirm={() => startSignOut(() => handleSignOut())}
+        onCancel={closeSignOut}
+      />
     </Provider>
   );
 }
