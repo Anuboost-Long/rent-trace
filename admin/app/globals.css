@@ -36,3 +36,27 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+
+@keyframes slide-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+}
+
+@keyframes slide-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .slide-from-right {
+    animation: slide-from-right 280ms ease-out;
+  }
+
+  .slide-from-left {
+    animation: slide-from-left 280ms ease-out;
+  }
+}
