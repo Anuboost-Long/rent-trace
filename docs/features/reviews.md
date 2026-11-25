@@ -108,9 +108,7 @@ same day with a throwaway test admin (`test.admin@renttrace.test`, regular admin
 an admin to decide on a rejected report (reason box needs text; the report then read "With an
 admin"), the admin saw it in Review cases, approved it with a reason, the Waiting list emptied and
 the Approved tab showed it with both reasons; the inbox link opened Review cases; the database held
-the accepted version, an `ADMIN_APPROVED` resolution and the notifications. **Not seen:** the
-admin reject path, the landlord's "Ask an admin to decide" button, an expired report being escalated
-from the screen, the tenant's and landlord's view after the decision, and narrow screens. Escalation is manual: a person presses **Ask an admin to
+the accepted version, an `ADMIN_APPROVED` resolution and the notifications. Also seen later the same day: the landlord escalated a rejected report from the screen (it then read "With an admin"), the landlord's tenancy page showed "Approved by an admin" with the admin's reason, and an expired report showed "Expired" with the button. **Not seen:** the admin reject path, the tenant escalating an expired report from the screen, the tenant's view after a decision, and narrow screens. Escalation is manual: a person presses **Ask an admin to
 decide**, which calls an API. Nothing escalates on a timer.
 
 Rules:
