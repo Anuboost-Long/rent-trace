@@ -74,6 +74,11 @@ const DESTINATIONS: Partial<
   CONDITION_EVIDENCE_REJECTED: {
     tenant: (id) => (id ? Route.tenant.tenancy(id) : null),
   },
+  REVIEW_CASE_ESCALATED: { admin: () => Route.admin.review_cases },
+  REVIEW_CASE_DECIDED: {
+    landlord: (id) => (id ? Route.landlord.tenancy(id) : null),
+    tenant: (id) => (id ? Route.tenant.tenancy(id) : null),
+  },
   TENANCY_INVITATION_ACCEPTED: {
     landlord: (id) => (id ? Route.landlord.tenancy(id) : null),
     admin: (id) => (id ? Route.admin.tenancy(id) : null),

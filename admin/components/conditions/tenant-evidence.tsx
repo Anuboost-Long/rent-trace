@@ -1,12 +1,13 @@
 "use client";
 import Button from "@/components/common/button";
 import LocalTime from "@/components/common/local-time";
-import { EvidenceStatusLabel } from "@/constants/evidence";
+import { canEscalate, evidenceLabel } from "@/constants/evidence";
 import useEvidenceActions from "@/hooks/form/useEvidenceActions";
 import type { ConditionEvidence } from "@/types/evidence/models";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
+import EscalateDialog from "./escalate-dialog";
 import EvidenceDialog from "./evidence-dialog";
 
 type TenantEvidenceProp = Readonly<{
@@ -20,13 +21,16 @@ export default function TenantEvidence({
   reports,
   canReport,
 }: TenantEvidenceProp) {
-  const { pending, error, clearError, submit, withdraw } = useEvidenceActions();
+  const { pending, error, clearError, submit, withdraw, escalate } =
+    useEvidenceActions();
   const [reporting, setReporting] = useState(false);
+  const [escalating, setEscalating] = useState<ConditionEvidence | null>(null);
 
   if (reports.length === 0 && !canReport) return null;
 
   const closeDialog = () => {
     setReporting(false);
+    setEscalating(null);
     clearError();
   };
 
@@ -67,11 +71,16 @@ export default function TenantEvidence({
                   )}
                   <p className="mt-1.5 text-sm text-foreground/60">
                     Seen <LocalTime iso={report.observed_at} /> ·{" "}
-                    {EvidenceStatusLabel[report.status]}
+                    {evidenceLabel(report, "tenant")}
                   </p>
                   {report.rejection_reason && (
                     <p className="mt-1 text-sm text-foreground/80">
                       Reason: {report.rejection_reason}
+                    </p>
+                  )}
+                  {report.admin_reason && (
+                    <p className="mt-1 text-sm text-foreground/80">
+                      Admin&apos;s reason: {report.admin_reason}
                     </p>
                   )}
                 </div>
@@ -85,10 +94,32 @@ export default function TenantEvidence({
                     Withdraw
                   </Button>
                 )}
+                {canEscalate(report) && (
+                  <Button
+                    variant="quiet"
+                    size="sm"
+                    disabled={pending}
+                    onClick={() => setEscalating(report)}
+                  >
+                    Ask an admin to decide
+                  </Button>
+                )}
               </div>
             </li>
           ))}
         </ul>
+      )}
+
+      {escalating && (
+        <EscalateDialog
+          title={escalating.title}
+          pending={pending}
+          error={error}
+          onCancel={closeDialog}
+          onConfirm={async (reason) => {
+            if (await escalate(escalating.id, reason, tenancyId)) closeDialog();
+          }}
+        />
       )}
 
       {reporting && (

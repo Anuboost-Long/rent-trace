@@ -1,6 +1,7 @@
 "use client";
 import {
   handleAnswerEvidence,
+  handleEscalateEvidence,
   handleSubmitEvidence,
   handleWithdrawEvidence,
 } from "@/api/services/evidence/serve-action";
@@ -32,6 +33,8 @@ const useEvidenceActions = () => {
       run(handleSubmitEvidence(tenancyId, body)),
     withdraw: (tenancyId: number, id: number) =>
       run(handleWithdrawEvidence(tenancyId, id)),
+    escalate: (id: number, reason: string, tenancyId?: number) =>
+      run(handleEscalateEvidence(id, reason, tenancyId)),
     approve: (id: number) =>
       run(handleAnswerEvidence(id, "approve", crypto.randomUUID())),
     reject: (id: number, reason: string) =>

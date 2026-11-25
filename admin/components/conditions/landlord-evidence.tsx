@@ -3,25 +3,19 @@ import Button from "@/components/common/button";
 import TextArea from "@/components/common/inputs/text-area-input";
 import LocalTime from "@/components/common/local-time";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
+import { canEscalate, evidenceLabel } from "@/constants/evidence";
 import useEvidenceActions from "@/hooks/form/useEvidenceActions";
-import type {
-  ConditionEvidence,
-  EvidenceStatus,
-} from "@/types/evidence/models";
+import type { ConditionEvidence } from "@/types/evidence/models";
 import { useState } from "react";
 
-const StatusLabel: Record<EvidenceStatus, string> = {
-  PENDING_REVIEW: "Waiting for you",
-  APPROVED: "Approved",
-  DISPUTED: "Rejected",
-  CANCELLED: "Withdrawn by the tenant",
-  EXPIRED: "Expired",
-};
+import EscalateDialog from "./escalate-dialog";
 
 export default function LandlordEvidence({
   reports,
 }: Readonly<{ reports: ConditionEvidence[] }>) {
-  const { pending, error, clearError, approve, reject } = useEvidenceActions();
+  const { pending, error, clearError, approve, reject, escalate } =
+    useEvidenceActions();
+  const [escalating, setEscalating] = useState<ConditionEvidence | null>(null);
   const [rejecting, setRejecting] = useState<ConditionEvidence | null>(null);
   const [reason, setReason] = useState("");
 
@@ -51,14 +45,29 @@ export default function LandlordEvidence({
                 )}
                 <p className="mt-1.5 text-sm text-foreground/60">
                   {report.author} saw it <LocalTime iso={report.observed_at} />{" "}
-                  · {StatusLabel[report.status]}
+                  · {evidenceLabel(report, "landlord")}
                 </p>
                 {report.rejection_reason && (
                   <p className="mt-1 text-sm text-foreground/80">
                     Reason: {report.rejection_reason}
                   </p>
                 )}
+                {report.admin_reason && (
+                  <p className="mt-1 text-sm text-foreground/80">
+                    Admin&apos;s reason: {report.admin_reason}
+                  </p>
+                )}
               </div>
+              {canEscalate(report) && (
+                <Button
+                  variant="quiet"
+                  size="sm"
+                  disabled={pending}
+                  onClick={() => setEscalating(report)}
+                >
+                  Ask an admin to decide
+                </Button>
+              )}
               {report.status === "PENDING_REVIEW" && (
                 <div className="flex gap-1">
                   <Button
@@ -82,10 +91,27 @@ export default function LandlordEvidence({
           </li>
         ))}
       </ul>
-      {error && !rejecting && (
+      {error && !rejecting && !escalating && (
         <p role="alert" className="mt-2 text-sm text-red-600">
           {error.message}
         </p>
+      )}
+
+      {escalating && (
+        <EscalateDialog
+          title={escalating.title}
+          pending={pending}
+          error={error}
+          onCancel={() => {
+            setEscalating(null);
+            clearError();
+          }}
+          onConfirm={async (reason) => {
+            if (await escalate(escalating.id, reason)) {
+              setEscalating(null);
+            }
+          }}
+        />
       )}
 
       {rejecting && (

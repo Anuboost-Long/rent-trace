@@ -101,21 +101,67 @@ rejected or withdrawn (400, "This report expired after 14 days. The tenant can s
 and the tenant sends a new report. Nobody is notified when it expires. Built and tested (15 tests
 in `reviews`); the admin screens show "Expired" and hide the buttons, not yet seen in a browser.
 
-## Escalation
+## Escalation and the admin queue — phase 2a
 
-Decided 26 November 2026, not built. Escalation is manual: the landlord or the tenant presses a
-button, which calls an API that hands the request to an admin (permission `reviews.escalate`).
-Nothing escalates on a timer. Either party can escalate a **rejected** report (`DISPUTED`) or an **expired** one, so a tenant
-whose landlord never answers is not stuck. A reason is required every time. Not yet settled: who
-counts as a party (the report's author and the property's current owners, as for answering), what
-the admin sees, and who is told.
+Decided 26 November 2026; built 26 November 2026 (back end tested, admin screens typecheck and lint
+clean, **not yet seen in a browser**). Escalation is manual: a person presses **Ask an admin to
+decide**, which calls an API. Nothing escalates on a timer.
+
+Rules:
+
+- **What can be escalated:** a rejected report (`DISPUTED`) or an expired one. Pending, approved,
+  withdrawn and already-escalated reports are refused (400).
+- **Reason:** required every time (a blank or whitespace-only reason is a 400).
+- **Who:** the report's author, or a current owner of the property. Anyone else gets a 404.
+  Permission `reviews.escalate`.
+- **What happens:** the report's dispute case moves to the Admin route. A rejected report already
+  has its dispute case, so it is re-routed. An expired report has none, so escalating creates it
+  and moves the report to `DISPUTED`. Each step writes a status history row with the reason.
+- **Admin queue:** admins holding `reviews.admin_review` see Admin-routed dispute cases waiting for a
+  decision, oldest first, with the report, the landlord's rejection reason (if any) and the
+  escalation reason.
+- **Admin decision:** approve or reject, with a reason in both cases. The decision sits on the
+  dispute case. Approve makes the tenant's account the accepted version and writes
+  `business_change_history`; reject leaves the record as it was. Either way a
+  `dispute_resolutions` row records the outcome (`ADMIN_APPROVED` / `ADMIN_REJECTED`). A case can be
+  decided once; a retry with the same idempotency key returns the same result.
+- **Who is told (assumption):** admins who can decide when a case is escalated; the tenant and the
+  landlord when an admin decides.
+
+Assumptions to change if wrong: `DisputeResolution.resolution_request` points at the dispute case
+itself; the escalation reason lives in the status history row, not in a new column.
+
+Endpoints (built):
+
+- Parties: `POST /api/tenant/tenancies/<id>/condition-evidence/<request_id>/escalate/` and
+  `POST /api/landlord/condition-evidence/<request_id>/escalate/` (body `reason`).
+- Admin: `GET /api/admin/review-cases/` (paged) and
+  `POST /api/admin/review-cases/<id>/approve/` and `.../reject/` (body `reason`, `idempotency_key`).
+  Permission `reviews.admin_review`. Regular admins can decide, not only super admins.
+
+Acceptance: either party escalates a rejected report; the tenant escalates an expired one; blank
+reasons, pending, approved, withdrawn and repeat escalations are refused; strangers get 404; an admin
+without the permission is refused; admin approve and reject work once; the right people are
+notified. Admin screens: a Review cases list in the admin area (Waiting / Approved / Rejected filters, approve
+and reject with a reason), plus an "Ask an admin to decide" button on the tenant and landlord
+screens. The report shows "With an admin" until decided, then "Approved by an admin" or "Rejected by
+an admin" with the admin's reason.
+
+Source: `back-end/reviews/services/escalate_evidence.py`, `approve_dispute.py`, `reject_dispute.py`,
+`list_review_cases.py`, `services/shared/{cases,disputes,acceptance,admins}.py`, `admin_views.py`;
+admin `components/reviews/`, `components/conditions/escalate-dialog.tsx`,
+`app/(app)/admin/review-cases/`. Tests: `test_escalate_evidence.py`, `test_approve_dispute.py`,
+`test_reject_dispute.py`, `test_list_review_cases.py`.
+
+Not in 2a: `NEEDS_INFORMATION`, locked corrections, a super admin acting with `on_behalf_of`,
+settlements.
 
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.
 
 1. **Tenant condition evidence** (the slice above): back end, then tenant and landlord screens.
-2. **Disputes and the admin queue.** Settle or escalate (the button above) the disputes slice 1 creates, locked
+2. **Disputes and the admin queue.** 2a (above) ships first; the rest follows: settle the disputes slice 1 creates, locked
    corrections, `NEEDS_INFORMATION`, admin screens, a super admin acting with `on_behalf_of`.
 3. **Data removal.**
 4. **Move existing flows onto the engine** only if wanted (maintenance closure, rent change).
