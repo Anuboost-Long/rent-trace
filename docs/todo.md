@@ -1,24 +1,33 @@
 # To do
 
-Rewritten 15 November 2026 after a long session that finished items A, B, C, F, G, H, I (see
-"Done this session" below) plus an admin walkthrough and real-email testing. Kept so a fresh
-session can pick up directly on what's left — **D** and **E** below — without re-deriving
-context. Older done-item detail lives in `git log` and the feature docs linked below, not here.
+Updated 26 November 2026. Kept so a fresh session can pick up on what's left without re-deriving
+context. Older done-item detail lives in `git log` and the feature docs, not here.
 
 ## What's left
 
-### D. Local time for displayed dates — done 16 Nov 2026
+Next big piece: [Reviews](features/reviews.md), phase 2 (disputes and the admin queue). Slice 1,
+tenant condition evidence, is built and walked through (25 Nov 2026). The build order and open
+questions are in that document; the open questions need answers before phase 2.
 
-Timestamps use `LocalTime`; calendar dates keep `formatDate`. See
-[Date display](features/date-display.md). The mobile app shows no dates yet. `npm test` in `admin/` covers the formatter.
+Smaller gaps:
 
-### E. Landlord overview — done 16 Nov 2026
+- Not yet walked through: the landlord overview (16 Nov), super admin maintenance status moves
+  (17 Nov), and the landlord's notification link for condition evidence.
+- The authenticator reset email has never been seen arriving (the Gmail token has expired).
+- The new tab animation (sliding underline and content, `components/common/tab-bar.tsx`,
+  `tab-content.tsx`) has not been seen move; the dev server served stale CSS. Restart `npm run
+dev` and look.
+- The dev overlay's "Date.now()" blocking-route warning shows on every signed-in page. `next
+build` is clean, so it is dev-only; cause not found.
+- `npm audit` reports 7 moderate vulnerabilities in admin.
+- Documents have no API; `business_change_history` is not written for property and unit edits.
 
-Built and walked through; see [Admin overview](features/admin-overview.md).
+(Done items D and E, local-time dates and the landlord overview, are in their feature documents:
+[Date display](features/date-display.md), [Admin overview](features/admin-overview.md).)
 
 ## Context a new session needs
 
-- Branch `feat/database-models`. Back end on :8000, admin on :3000, Postgres and Redis in Docker.
+- Branch `feat/reviews` (merged work from `feat/database-models`). Back end on :8000, admin on :3000, Postgres and Redis in Docker.
 - The back end sends **real email through the Gmail API** (`config/.env`). Never trigger a send to
   a made-up address from the screens. For automated tests, `mock.patch` the email function (e.g.
   `tenancies.integrations.emails.send_invitation`, `communications.integrations.emails._send`).
@@ -34,7 +43,8 @@ Built and walked through; see [Admin overview](features/admin-overview.md).
   housemate) — correctly dropped out of public listings. It also has a DECLINED rent change in
   its history ($650/week → $700/week) from verifying item A — rent is still $650. Tenancies 1–5
   and 7 are ended/cancelled/revoked test data. Maintenance issues 1 (closed) and 2 (open), contact
-  requests 2 (revoked) and 3 (accepted), tradesperson "Spark Electrical". Delete or reuse as
+  requests 2 (revoked) and 3 (accepted), tradesperson "Spark Electrical". Tenancy 6 also holds test condition
+  reports from the reviews walkthrough (approved, rejected, withdrawn) and one dispute case. Delete or reuse as
   needed.
 - Browser checks use Claude in Chrome. Signing in as another user means signing out first — all
   roles share one cookie on localhost.

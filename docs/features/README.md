@@ -36,8 +36,9 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
 
-Not yet built: reviews and documents. Their tables exist in the back end but they have
-no API or screens.
+Not yet built: documents, and everything in reviews past tenant condition evidence (disputes,
+the admin queue, data removal). Those tables exist in the back end but have no API or screens.
+
 Known issues from the 14 November 2026 walkthrough (test landlord and tenants, local
 database):
 
