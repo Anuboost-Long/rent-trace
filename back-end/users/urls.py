@@ -12,5 +12,10 @@ urlpatterns = [
         views.ResetAuthenticatorView.as_view(),
         name="user-reset-authenticator",
     ),
+    path(
+        "<int:user_id>/resend-authenticator-notice/",
+        views.ResendAuthenticatorNoticeView.as_view(),
+        name="user-resend-authenticator-notice",
+    ),
     path("<int:user_id>/activate/", views.ActivateUserView.as_view(), name="user-activate"),
 ]

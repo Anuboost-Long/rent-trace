@@ -178,6 +178,8 @@ export const EndPoints = {
     deactivate: (id: number | string) => byEndpoint(`users/${id}/deactivate/`),
     reset_authenticator: (id: number | string) =>
       byEndpoint(`users/${id}/reset-authenticator/`),
+    resend_authenticator_notice: (id: number | string) =>
+      byEndpoint(`users/${id}/resend-authenticator-notice/`),
   },
   auth: {
     sign_up: byEndpoint("auth/sign-up/"),

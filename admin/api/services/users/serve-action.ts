@@ -3,6 +3,7 @@ import { EndPoints } from "@/api/api-config";
 import { ApiServiceServer } from "@/api/api-helper";
 import type {
   CreateUserBody,
+  NoticeSent,
   UpdateUserBody,
   UserDetail,
   UserFilters,
@@ -126,10 +127,22 @@ export const handleResetAuthenticator = async (
   reason: string,
 ) => {
   try {
-    const data = await ApiServiceServer<UserDetail>({
+    const data = await ApiServiceServer<UserDetail & NoticeSent>({
       url: EndPoints.users.reset_authenticator(id),
       method: "POST",
       data: { reason },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleResendAuthenticatorNotice = async (id: number | string) => {
+  try {
+    const data = await ApiServiceServer<NoticeSent>({
+      url: EndPoints.users.resend_authenticator_notice(id),
+      method: "POST",
     });
     return { data, error: null };
   } catch (error) {

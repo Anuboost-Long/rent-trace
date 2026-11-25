@@ -1,3 +1,4 @@
+from users.resources.notice_sent import NoticeSentResource, ResetAuthenticatorResource
 from users.resources.user_detail import UserDetailResource
 from users.resources.user_option import UserOptionResource
 from users.resources.user_page import UserPageResource

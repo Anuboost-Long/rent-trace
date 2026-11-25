@@ -17,7 +17,10 @@ export type UserDetail = UserSummary & {
   phone_number: string | null;
   auth_method: string;
   has_authenticator: boolean;
+  authenticator_was_reset: boolean;
 };
+
+export type NoticeSent = { notice_sent: boolean };
 
 export type UserOption = Pick<
   UserSummary,
