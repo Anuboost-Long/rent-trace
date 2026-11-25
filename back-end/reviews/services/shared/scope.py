@@ -37,5 +37,13 @@ def find_evidence_I_wrote(user, request_id, *, lock=False):
     return found
 
 
+def find_evidence_I_am_party_to(user, request_id, *, lock=False):
+    """The author or a current owner; 404 for anyone else."""
+    try:
+        return find_evidence_I_wrote(user, request_id, lock=lock)
+    except NotFound:
+        return find_evidence_I_answer(user, request_id, lock=lock)
+
+
 def reloaded(request):
     return ReviewRequest.objects.with_details().get(pk=request.pk)

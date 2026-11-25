@@ -53,6 +53,12 @@ class ReviewRequestQuerySet(models.QuerySet):
     def on_unit(self, unit_id):
         return self.filter(target__condition_record__property_unit_id=unit_id)
 
+    def cases_for(self, report):
+        return self.filter(kind=ReviewKind.DISPUTE, parent_request=report)
+
+    def admin_cases(self):
+        return self.filter(kind=ReviewKind.DISPUTE, review_route=ReviewRoute.ADMIN)
+
     def in_tenancy(self, tenancy_id):
         return self.filter(scopes__tenancy_id=tenancy_id)
 
@@ -61,7 +67,33 @@ class ReviewRequestQuerySet(models.QuerySet):
             "requested_by",
             "target__condition_record",
             "current_submission__proposed_condition_version",
-        ).prefetch_related("decisions", "scopes")
+        ).prefetch_related(
+            "decisions",
+            "scopes",
+            models.Prefetch(
+                "child_requests",
+                queryset=ReviewRequest.objects.cases_with_trail(),
+                to_attr="dispute_cases",
+            ),
+        )
+
+    def cases_with_trail(self):
+        return self.filter(kind=ReviewKind.DISPUTE).prefetch_related(
+            models.Prefetch("status_history", ReviewStatusHistory.objects.select_related("actor")),
+            "decisions",
+        )
+
+    def with_case_details(self):
+        return self.select_related(
+            "requested_by",
+            "parent_request__requested_by",
+            "parent_request__current_submission__proposed_condition_version",
+            "parent_request__target__condition_record__property_unit__property",
+        ).prefetch_related(
+            models.Prefetch("status_history", ReviewStatusHistory.objects.select_related("actor")),
+            "decisions",
+            "parent_request__decisions",
+        )
 
 
 class ReviewRequest(MutableRecord):

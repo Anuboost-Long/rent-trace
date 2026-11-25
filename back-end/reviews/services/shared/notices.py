@@ -38,3 +38,23 @@ def rejected(request, title, reason):
         body=f"Your landlord rejected: {title}. Reason: {reason}",
         subject_id=_tenancy_id(request),
     )
+
+
+def escalated(case, admins, escalator, title, reason):
+    notify(
+        admins,
+        kind=Kind.REVIEW_CASE_ESCALATED,
+        title="A condition report needs an admin decision",
+        body=f"{_name(escalator)} asked for a decision on: {title}. Reason: {reason}",
+        subject_id=case.pk,
+    )
+
+
+def decided(report, owners, title, outcome, reason):
+    notify(
+        [report.requested_by, *owners],
+        kind=Kind.REVIEW_CASE_DECIDED,
+        title=f"An admin {outcome} a condition report",
+        body=f"An admin {outcome}: {title}. Reason: {reason}",
+        subject_id=_tenancy_id(report),
+    )

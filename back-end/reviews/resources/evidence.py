@@ -1,8 +1,10 @@
+from datetime import datetime
 from typing import Literal
 
 from rest_framework import serializers
 
-from reviews.models import ReviewDecisionType, ReviewRequest, ReviewStatus
+from reviews.models import ReviewRequest, ReviewStatus
+from reviews.resources.shared import admin_decision, escalation, landlord_rejection, name_of
 from reviews.services.shared.decisions import is_expired
 
 
@@ -24,6 +26,12 @@ class EvidenceResource(serializers.ModelSerializer):
     rejection_reason = serializers.SerializerMethodField(
         help_text="Why the landlord rejected it, or null."
     )
+    escalated_at = serializers.SerializerMethodField(
+        help_text="When someone asked an admin to decide, or null."
+    )
+    admin_reason = serializers.SerializerMethodField(
+        help_text="Why the admin approved or rejected it, or null until they decide."
+    )
 
     class Meta:
         model = ReviewRequest
@@ -37,6 +45,8 @@ class EvidenceResource(serializers.ModelSerializer):
             "tenancy_id",
             "author",
             "rejection_reason",
+            "escalated_at",
+            "admin_reason",
             "submitted_at",
             "completed_at",
         ]
@@ -44,11 +54,21 @@ class EvidenceResource(serializers.ModelSerializer):
     def get_status(self, request) -> Literal[*ReviewStatus.values, "EXPIRED"]:
         return "EXPIRED" if is_expired(request) else request.status
 
+    def _case(self, request):
+        return next(iter(request.dispute_cases), None)
+
     def get_author(self, request) -> str:
-        return f"{request.requested_by.first_name} {request.requested_by.last_name}"
+        return name_of(request.requested_by)
 
     def get_rejection_reason(self, request) -> str | None:
-        rejection = next(
-            (d for d in request.decisions.all() if d.decision == ReviewDecisionType.REJECT), None
-        )
+        rejection = landlord_rejection(request)
         return rejection.reason if rejection else None
+
+    def get_escalated_at(self, request) -> datetime | None:
+        row = escalation(self._case(request))
+        return row.created_at if row else None
+
+    def get_admin_reason(self, request) -> str | None:
+        case = self._case(request)
+        decision = admin_decision(case) if case else None
+        return decision.reason if decision else None

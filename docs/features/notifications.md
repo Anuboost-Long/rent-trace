@@ -47,6 +47,11 @@ An invite to an address with no account, or an unverified one, makes no notifica
 the inviter's screen doesn't change either way. A person who signs up later sees the
 invitation in their Tenancies page too, because that list is built from their email.
 
+Two more kinds, `REVIEW_CASE_ESCALATED` (admins who can decide; leads to Review cases) and
+`REVIEW_CASE_DECIDED` (the tenant and every current owner; leads to the tenancy), are written when
+someone asks an admin to decide and when an admin decides (migration `notifications/0010`). Not seen
+in a browser.
+
 The three condition-evidence rows are the kinds `CONDITION_EVIDENCE_SUBMITTED`,
 `CONDITION_EVIDENCE_APPROVED` and `CONDITION_EVIDENCE_REJECTED` (migration `notifications/0009`).
 Their `subject_id` is the tenancy id. See [Reviews](reviews.md). Seen in Chrome 25 Nov 2026 for

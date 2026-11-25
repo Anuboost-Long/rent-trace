@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
-from reviews.models import ReviewDecision, ReviewerSide, ReviewStatus
+from reviews.models import ReviewDecision, ReviewerSide, ReviewKind, ReviewStatus
 
 EVIDENCE_WINDOW = timedelta(days=14)
 NOT_PENDING = "This has already been answered or withdrawn."
@@ -25,7 +25,8 @@ def was_already_decided(request, idempotency_key):
 def is_expired(request):
     """Waiting too long is worked out when it is read; nothing is stored or scheduled."""
     return (
-        request.status == ReviewStatus.PENDING_REVIEW
+        request.kind == ReviewKind.EVIDENCE_REVIEW
+        and request.status == ReviewStatus.PENDING_REVIEW
         and request.submitted_at + EVIDENCE_WINDOW <= timezone.now()
     )
 
@@ -37,12 +38,21 @@ def require_pending(request):
         raise ValidationError({"request": EXPIRED})
 
 
-def record_decision(request, reviewer, decision, reason, idempotency_key):
+def record_decision(
+    request,
+    reviewer,
+    decision,
+    reason,
+    idempotency_key,
+    *,
+    side=ReviewerSide.LANDLORD,
+    submission=None,
+):
     return ReviewDecision.objects.create(
         request=request,
-        submission=request.current_submission,
+        submission=submission or request.current_submission,
         reviewer=reviewer,
-        reviewer_side=ReviewerSide.LANDLORD,
+        reviewer_side=side,
         decision=decision,
         reason=reason,
         idempotency_key=idempotency_key,

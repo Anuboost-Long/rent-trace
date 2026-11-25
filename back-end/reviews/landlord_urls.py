@@ -10,6 +10,11 @@ urlpatterns = [
         name="landlord-condition-evidence-approve",
     ),
     path(
+        "<int:request_id>/escalate/",
+        views.EscalateEvidenceView.as_view(),
+        name="landlord-condition-evidence-escalate",
+    ),
+    path(
         "<int:request_id>/reject/",
         views.RejectEvidenceView.as_view(),
         name="landlord-condition-evidence-reject",

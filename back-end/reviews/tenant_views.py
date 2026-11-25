@@ -41,3 +41,19 @@ class CancelEvidenceView(TenantView):
     def post(self, request, tenancy_id, request_id):
         cancelled = services.cancel_evidence(user=request.user, request_id=request_id)
         return Response(resources.EvidenceResource(cancelled).data)
+
+
+class EscalateMyEvidenceView(TenantView):
+    required_permissions = {"POST": "reviews.escalate"}
+
+    @extend_schema(
+        operation_id="tenant_condition_evidence_escalate",
+        request=dtos.EscalateEvidenceDto,
+        responses=resources.EvidenceResource,
+    )
+    def post(self, request, tenancy_id, request_id):
+        fields = validated(dtos.EscalateEvidenceDto, request.data)
+        escalated = services.escalate_evidence(
+            user=request.user, request_id=request_id, reason=fields["reason"]
+        )
+        return Response(resources.EvidenceResource(escalated).data)

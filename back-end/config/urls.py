@@ -43,6 +43,7 @@ urlpatterns = [
     path("api/landlord/contact-requests/", include("communications.landlord_urls")),
     path("api/landlord/conditions/", include("conditions.urls")),
     path("api/landlord/condition-evidence/", include("reviews.landlord_urls")),
+    path("api/admin/review-cases/", include("reviews.admin_urls")),
     path(
         "api/tenant/tenancies/<int:tenancy_id>/condition-evidence/",
         include("reviews.tenant_urls"),
