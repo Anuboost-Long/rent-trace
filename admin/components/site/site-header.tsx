@@ -1,3 +1,4 @@
+import BrandLogo from "@/components/common/brand-logo";
 import ButtonLink from "@/components/common/button-link";
 import NotificationBell from "@/components/notifications/notification-bell";
 import { AUDIENCE_LABEL, audienceFor, homePathFor } from "@/constants/audience";
@@ -17,9 +18,14 @@ export default function SiteHeader() {
         <div className="flex items-center gap-2">
           <Link
             href={Route.home}
-            className="mr-2 text-xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
+            className="mr-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
           >
-            RentTrace
+            <BrandLogo
+              variant="wordmark"
+              tone="light"
+              alt="RentTrace"
+              className="h-8 w-auto"
+            />
           </Link>
           <Suspense fallback={<SiteNav roleLink={null} />}>
             <RoleNav />

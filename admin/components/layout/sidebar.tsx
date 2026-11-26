@@ -1,4 +1,5 @@
 "use client";
+import BrandLogo from "@/components/common/brand-logo";
 import { groupNavItems, type NavItem } from "@/constants/navigation";
 import type { Me } from "@/types/auth/models";
 import clsx from "clsx";
@@ -33,15 +34,12 @@ function SidebarContent({
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col gap-6 p-4 group-data-collapsed:p-3">
       <div className="flex shrink-0 items-center gap-2 overflow-hidden whitespace-nowrap group-data-collapsed:justify-center">
-        <span
-          aria-hidden
-          className={clsx(
-            "flex size-8 shrink-0 items-center justify-center rounded-lg text-section",
-            isAdmin ? "bg-background text-fg-brand" : "bg-brand text-on-brand",
-          )}
-        >
-          R
-        </span>
+        <BrandLogo
+          variant="emblem"
+          tone={isAdmin ? "white" : "blue"}
+          alt=""
+          className="size-8 shrink-0"
+        />
         <p className="min-w-0 truncate text-section group-data-collapsed:sr-only">
           RentTrace
         </p>

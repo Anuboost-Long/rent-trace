@@ -73,6 +73,13 @@ navigation and permissions, built from shared components.
 ## Source locations
 
 - `admin/components/layout/`, `admin/components/common/`.
+- Brand: `admin/components/common/brand-logo.tsx` draws the RentTrace logo from `admin/public/brand/`
+  (wordmark in the site header and footer; emblem in the sidebar and sign-in card). The browser icon
+  (`app/favicon.ico`, `app/icon.svg`), `app/apple-icon.png` and `app/manifest.ts` (PWA icons in
+  `public/pwa-*.png`) come from the brand pack. The pack's `favicon.ico` used non-RGBA frames that
+  Next.js rejects, so the `.ico` here is regenerated from `icons/256x256.png`. Seen in Chrome on a
+  production build: the site header logo and the sign-in emblem; icon, apple icon and manifest
+  endpoints answer 200. **Not seen:** the sidebar emblem (admin white, landlord blue) and the tab icon.
 - `admin/components/common/tab-bar.tsx`: shared tab strip whose underline slides to the active tab
   (used by the tenant nav and the access sections; no animation under reduced motion). Seen working
   in Chrome on the tenant nav 26 Nov 2026.
