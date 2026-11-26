@@ -1,3 +1,4 @@
+import BrandLogo from "@/components/common/brand-logo";
 import { audienceFor, homePathFor } from "@/constants/audience";
 import { Route } from "@/constants/web-routes";
 import { getViewer } from "@/utils/viewer";
@@ -12,7 +13,12 @@ export default function SiteFooter() {
     <footer className="mt-24 border-t border-default">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 md:flex-row md:justify-between">
         <div className="max-w-xs">
-          <p className="text-lg font-bold tracking-tight">RentTrace</p>
+          <BrandLogo
+            variant="wordmark"
+            tone="light"
+            alt="RentTrace"
+            className="h-7 w-auto"
+          />
           <p className="mt-2 text-sm text-fg-secondary">
             Rentals and rent records for tenants and landlords.
           </p>
