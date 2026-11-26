@@ -5,22 +5,28 @@ context. Older done-item detail lives in `git log` and the feature docs, not her
 
 ## What's left
 
-Next big piece: [Reviews](features/reviews.md), phase 2 (disputes and the admin queue). Slice 1,
-tenant condition evidence, is built and walked through (25 Nov 2026). The build order and open
-questions are in that document; the open questions need answers before phase 2.
+Reviews phase 2a (escalation and the admin queue) is built and walked through (26 Nov 2026). Next,
+in the order I'd do them (details in [Reviews](features/reviews.md)):
+
+1. **Evidence files**: let a tenant attach photos to a condition report (open question 4).
+2. Ask for more information (`NEEDS_INFORMATION`), then locked corrections, then a super admin acting
+   with `on_behalf_of`.
+3. Data removal, then documents (documents have no API yet).
 
 Smaller gaps:
 
-- Not yet walked through: the landlord overview (16 Nov), super admin maintenance status moves
-  (17 Nov), and the landlord's notification link for condition evidence.
+- Restart `npm run dev` and look at the tab animation (sliding underline and content,
+  `components/common/tab-bar.tsx`, `tab-content.tsx`); it has not been seen move, because the dev
+  server served stale CSS.
+- Not seen at phone width: the reviews screens (the browser window would not resize), and the admin
+  screens after an admin _rejection_.
+- Not yet walked through: the landlord overview (16 Nov) and super admin maintenance status moves
+  (17 Nov).
 - The authenticator reset email has never been seen arriving (the Gmail token has expired).
-- The new tab animation (sliding underline and content, `components/common/tab-bar.tsx`,
-  `tab-content.tsx`) has not been seen move; the dev server served stale CSS. Restart `npm run
-dev` and look.
-- The dev overlay's "Date.now()" blocking-route warning shows on every signed-in page. `next
-build` is clean, so it is dev-only; cause not found.
+- The dev overlay's "Date.now()" blocking-route warning shows on every signed-in page. `next build`
+  is clean, so it is dev-only; cause not found.
 - `npm audit` reports 7 moderate vulnerabilities in admin.
-- Documents have no API; `business_change_history` is not written for property and unit edits.
+- `business_change_history` is not written for property and unit edits.
 
 (Done items D and E, local-time dates and the landlord overview, are in their feature documents:
 [Date display](features/date-display.md), [Admin overview](features/admin-overview.md).)
@@ -38,6 +44,10 @@ build` is clean, so it is dev-only; cause not found.
   `test.tenant2@renttrace.test`. **Never** sign into `kimlongly57@gmail.com` (bare, no alias) or
   the regular admin account (`kimlongly53@gmail.com`) — those are the user's own real accounts;
   the user logs into those themselves.
+- Dev-database test data from the reviews walkthroughs: tenancy 6 holds several condition reports
+  (approved, rejected, withdrawn, escalated, one still waiting in Review cases), and
+  `test.admin@renttrace.test` is a throwaway regular admin (password in the session scratchpad, gone
+  between sessions; authenticator already set up).
 - Test data in the dev database: property 3 "Walkthrough house" (unit 4) is **OCCUPIED** (tenancy
   6, Active, `kimlongly57@gmail.com` primary tenant + `kimlongly57+housemate@gmail.com` approved
   housemate) — correctly dropped out of public listings. It also has a DECLINED rent change in
