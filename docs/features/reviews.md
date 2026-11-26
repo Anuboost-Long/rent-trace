@@ -162,7 +162,7 @@ settlements.
 
 ## Evidence photos
 
-Decided 26 November 2026; in progress. A tenant can attach up to 5 photos (JPEG or PNG, up to 10 MB
+Decided 26 November 2026; built 26 November 2026. A tenant can attach up to 5 photos (JPEG or PNG, up to 10 MB
 each) to a condition report while it is waiting for an answer. The landlord who answers it and an
 admin who decides an escalated case can open them; nobody else can (404).
 
@@ -178,6 +178,11 @@ admin who decides an escalated case can open them; nobody else can (404).
   `name`.
 - **Screens:** the tenant's report form takes photos; thumbnails show on the tenant's list, the
   landlord's list and the admin's Review cases. A photo opens full size in a new tab.
+- **Seen in Chrome (production build):** the tenant's report listing two thumbnails that load through
+  the app's proxy, the report form with its Photos picker and limit hint, and the same photos on the
+  admin's Review cases. **Not seen:** choosing files in the browser's file chooser and uploading them
+  from the form (the photos were added through the service layer), the landlord's list with photos,
+  and phone width. Back end: 42 `reviews` tests pass (7 new in `test_evidence_photos.py`).
 - **Not in this slice:** removing a photo (withdraw and send a new report instead), PDFs, and photos
   on anything but condition reports.
 

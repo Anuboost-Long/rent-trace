@@ -3,6 +3,7 @@ import Button from "@/components/common/button";
 import TextArea from "@/components/common/inputs/text-area-input";
 import LocalTime from "@/components/common/local-time";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
+import EvidencePhotos from "@/components/conditions/evidence-photos";
 import useCaseActions from "@/hooks/form/useCaseActions";
 import type { ReviewCase } from "@/types/evidence/models";
 import { useState } from "react";
@@ -55,6 +56,11 @@ export default function ReviewCaseItem({
             {item.place} · {item.author} saw it{" "}
             <LocalTime iso={item.observed_at} />
           </p>
+          <EvidencePhotos
+            photos={item.photos}
+            audience="admin"
+            tenancyId={item.tenancy_id}
+          />
           {item.description && (
             <p className="mt-2 whitespace-pre-line text-foreground/80">
               {item.description}

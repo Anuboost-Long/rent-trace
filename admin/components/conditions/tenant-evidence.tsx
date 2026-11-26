@@ -9,6 +9,7 @@ import { useState } from "react";
 
 import EscalateDialog from "./escalate-dialog";
 import EvidenceDialog from "./evidence-dialog";
+import EvidencePhotos from "./evidence-photos";
 
 type TenantEvidenceProp = Readonly<{
   tenancyId: number;
@@ -73,6 +74,11 @@ export default function TenantEvidence({
                     Seen <LocalTime iso={report.observed_at} /> ·{" "}
                     {evidenceLabel(report, "tenant")}
                   </p>
+                  <EvidencePhotos
+                    photos={report.photos}
+                    audience="tenant"
+                    tenancyId={tenancyId}
+                  />
                   {report.rejection_reason && (
                     <p className="mt-1 text-sm text-foreground/80">
                       Reason: {report.rejection_reason}
@@ -122,13 +128,19 @@ export default function TenantEvidence({
         />
       )}
 
+      {error && !reporting && !escalating && (
+        <p role="alert" className="mt-3 text-sm text-red-600">
+          Your report was sent, but a photo could not be added: {error.message}
+        </p>
+      )}
+
       {reporting && (
         <EvidenceDialog
           pending={pending}
           error={error}
           onCancel={closeDialog}
-          onSend={async (body) => {
-            if (await submit(tenancyId, body)) closeDialog();
+          onSend={async (body, photos) => {
+            if (await submit(tenancyId, body, photos)) setReporting(false);
           }}
         />
       )}
