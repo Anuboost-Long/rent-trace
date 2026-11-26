@@ -160,6 +160,27 @@ admin `components/reviews/`, `components/conditions/escalate-dialog.tsx`,
 Not in 2a: `NEEDS_INFORMATION`, locked corrections, a super admin acting with `on_behalf_of`,
 settlements.
 
+## Evidence photos
+
+Decided 26 November 2026; in progress. A tenant can attach up to 5 photos (JPEG or PNG, up to 10 MB
+each) to a condition report while it is waiting for an answer. The landlord who answers it and an
+admin who decides an escalated case can open them; nobody else can (404).
+
+- **Adding:** `POST /api/tenant/tenancies/<id>/condition-evidence/<request_id>/photos/` (multipart,
+  one `file`), permission `reviews.submit`. Only the report's author, only while it is waiting and
+  not expired. A sixth photo, a non-image or an oversized file is a 400. After the report is answered,
+  withdrawn or expired, photos cannot be added.
+- **Viewing:** `GET .../condition-evidence/photos/<file_id>/` for the author (tenant), the landlord
+  owner (`/api/landlord/condition-evidence/photos/<file_id>/`) and an admin
+  (`/api/admin/review-cases/photos/<file_id>/`, `reviews.admin_review`).
+- **Stored as:** a `files` row plus a `review_submission_files` link to the report's current
+  submission (the table already existed). The report and case responses list each photo's `id` and
+  `name`.
+- **Screens:** the tenant's report form takes photos; thumbnails show on the tenant's list, the
+  landlord's list and the admin's Review cases. A photo opens full size in a new tab.
+- **Not in this slice:** removing a photo (withdraw and send a new report instead), PDFs, and photos
+  on anything but condition reports.
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.
@@ -205,7 +226,7 @@ Existing:
    opposite side?
 3. ~~**Expiry.**~~ Decided 26 Nov 2026: a request waiting on the other side expires after 14 days, as
    rent change proposals do. See "Expiry" above.
-4. **Evidence files.** Reuse `files` uploads as maintenance does?
+4. ~~**Evidence files.**~~ Decided 26 Nov 2026: photos on condition reports; see "Evidence photos".
 
 ## Not done
 
