@@ -4,8 +4,10 @@ from reviews.dtos.cases import (
     CorrectionListQueryDto,
     DecideCaseDto,
     EscalateEvidenceDto,
+    RemovalListQueryDto,
     RequestCorrectionDto,
     RequestInformationDto,
+    RequestRemovalDto,
     RespondToInformationDto,
     UnitCorrectionsQueryDto,
 )

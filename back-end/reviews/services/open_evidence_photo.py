@@ -11,7 +11,10 @@ def open_evidence_photo(*, user, file_id, as_admin=False):
     """The author, a current owner of the property, or an admin; anyone else gets a 404."""
     link = (
         ReviewSubmissionFile.objects.filter(
-            file_id=file_id, submission__request__kind=ReviewKind.EVIDENCE_REVIEW
+            file_id=file_id,
+            file__deleted_at__isnull=True,
+            submission__request__kind=ReviewKind.EVIDENCE_REVIEW,
+            submission__request__target__condition_record__deleted_at__isnull=True,
         )
         .select_related("file", "submission__request__target__condition_record__property_unit")
         .first()

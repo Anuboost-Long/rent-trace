@@ -37,11 +37,12 @@ def record_transition(
 
 
 def record_change(
-    request, actor, action, before_values, after_values, reason, *, on_behalf_of=None
+    request, actor, action, before_values, after_values, reason, *, on_behalf_of=None, target=None
 ):
-    last = request.target.change_history.aggregate(last=Max("sequence_no"))["last"] or 0
+    target = target or request.target
+    last = target.change_history.aggregate(last=Max("sequence_no"))["last"] or 0
     return BusinessChangeHistory.objects.create(
-        target=request.target,
+        target=target,
         sequence_no=last + 1,
         request=request,
         action=action,

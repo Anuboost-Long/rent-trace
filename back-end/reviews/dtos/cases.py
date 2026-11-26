@@ -62,3 +62,27 @@ class CorrectionListQueryDto(serializers.Serializer):
 
 class UnitCorrectionsQueryDto(serializers.Serializer):
     unit_id = serializers.IntegerField()
+
+
+class RequestRemovalDto(serializers.Serializer):
+    record_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        min_length=1,
+        max_length=20,
+        help_text="Condition records.",
+    )
+    reason = serializers.CharField()
+    include_descendants = serializers.BooleanField(
+        default=True, help_text="Also hide related records and attached photos."
+    )
+
+
+REMOVAL_STATUSES = CORRECTION_STATUSES
+
+
+class RemovalListQueryDto(serializers.Serializer):
+    status = serializers.ChoiceField(
+        choices=REMOVAL_STATUSES,
+        required=False,
+        help_text="Defaults to the removal requests waiting for a decision.",
+    )
