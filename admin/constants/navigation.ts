@@ -109,7 +109,7 @@ export const Navigation: Record<Audience, Navigation> = {
         href: Route.admin.review_cases,
         icon: Scale,
         permission: "reviews.admin_review",
-        group: "Rentals",
+        group: OPERATIONS,
         description: "Reports an admin has been asked to decide",
       },
       {
