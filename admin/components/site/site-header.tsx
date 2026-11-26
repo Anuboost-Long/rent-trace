@@ -8,9 +8,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import AccountMenu from "./account-menu";
-
-const navLinkClassName =
-  "flex h-9 items-center rounded-lg px-3 text-sm font-medium text-fg-secondary hover:bg-subtle hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border";
+import SiteNav, { type RoleLink } from "./site-nav";
 
 export default function SiteHeader() {
   return (
@@ -23,14 +21,9 @@ export default function SiteHeader() {
           >
             RentTrace
           </Link>
-          <nav aria-label="Main" className="flex items-center gap-1">
-            <Link href={Route.listings} className={navLinkClassName}>
-              Browse rentals
-            </Link>
-            <Suspense fallback={null}>
-              <RoleLink />
-            </Suspense>
-          </nav>
+          <Suspense fallback={<SiteNav roleLink={null} />}>
+            <RoleNav />
+          </Suspense>
         </div>
         <div className="flex items-center gap-2">
           <Suspense fallback={<div className="h-10 w-24" />}>
@@ -42,24 +35,36 @@ export default function SiteHeader() {
   );
 }
 
-async function RoleLink() {
+async function RoleNav() {
   const viewer = await getViewer();
   const audience = viewer && audienceFor(viewer);
-  const link = !viewer
-    ? { href: Route.auth.sign_up, label: "For landlords" }
+  const roleLink: RoleLink = !viewer
+    ? {
+        href: Route.auth.sign_up,
+        label: "For landlords",
+        activePrefix: Route.auth.sign_up,
+      }
     : audience === "landlord"
-      ? { href: "/landlord/properties", label: "My properties" }
+      ? {
+          href: "/landlord/properties",
+          label: "My properties",
+          activePrefix: "/landlord",
+        }
       : audience === "tenant"
-        ? { href: "/tenant/tenancies", label: "My tenancies" }
+        ? {
+            href: "/tenant/tenancies",
+            label: "My tenancies",
+            activePrefix: "/tenant",
+          }
         : audience === "admin"
-          ? { href: "/admin", label: "Admin" }
-          : { href: Route.auth.onboarding, label: "Finish setting up" };
+          ? { href: "/admin", label: "Admin", activePrefix: "/admin" }
+          : {
+              href: Route.auth.onboarding,
+              label: "Finish setting up",
+              activePrefix: Route.auth.onboarding,
+            };
 
-  return (
-    <Link href={link.href} className={`${navLinkClassName} hidden md:flex`}>
-      {link.label}
-    </Link>
-  );
+  return <SiteNav roleLink={roleLink} />;
 }
 
 async function HeaderActions() {
@@ -85,7 +90,12 @@ async function HeaderActions() {
   const audience = audienceFor(viewer);
   return (
     <>
-      {audience && <NotificationBell href={NotificationsRoute[audience]} />}
+      {audience && (
+        <NotificationBell
+          href={NotificationsRoute[audience]}
+          audience={audience}
+        />
+      )}
       <AccountMenu
         name={`${viewer.first_name} ${viewer.last_name}`.trim()}
         email={viewer.email}

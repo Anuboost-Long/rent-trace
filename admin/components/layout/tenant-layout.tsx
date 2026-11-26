@@ -18,6 +18,7 @@ export default function TenantLayout({
   return (
     <>
       <SiteHeader />
+      <TenantNav />
       <Suspense
         fallback={
           <div className={contentClassName}>
@@ -43,7 +44,6 @@ async function TenantArea({
 
   return (
     <UserProvider user={user}>
-      <TenantNav />
       <main className={contentClassName}>{children}</main>
     </UserProvider>
   );

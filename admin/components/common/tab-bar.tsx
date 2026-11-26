@@ -3,13 +3,19 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState } from "react";
 
-export type Tab = Readonly<{ href: string; label: string; active: boolean }>;
+export type Tab = Readonly<{
+  href: string;
+  label: string;
+  active: boolean;
+  className?: string;
+}>;
 
 type TabBarProp = Readonly<{
   label: string;
   tabs: readonly Tab[];
   className?: string;
   listClassName?: string;
+  tabClassName?: string;
 }>;
 
 type Underline = { left: number; width: number };
@@ -19,6 +25,7 @@ export default function TabBar({
   tabs,
   className,
   listClassName,
+  tabClassName = "h-12",
 }: TabBarProp) {
   const listRef = useRef<HTMLUListElement>(null);
   const [underline, setUnderline] = useState<Underline | null>(null);
@@ -48,12 +55,13 @@ export default function TabBar({
         className={clsx("relative flex gap-1 overflow-x-auto", listClassName)}
       >
         {tabs.map((tab) => (
-          <li key={tab.href} className="flex">
+          <li key={tab.href} className={clsx("flex", tab.className)}>
             <Link
               href={tab.href}
               aria-current={tab.active ? "page" : undefined}
               className={clsx(
-                "flex h-12 items-center px-3 text-sm whitespace-nowrap",
+                "flex items-center px-3 text-sm whitespace-nowrap",
+                tabClassName,
                 "transition-colors duration-200 motion-reduce:transition-none",
                 "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border",
                 tab.active
