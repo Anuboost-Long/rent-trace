@@ -28,12 +28,13 @@ export default function Navbar({ title, onOpenMenu }: NavbarProp) {
         <Menu aria-hidden className="size-4" />
         <span className="max-sm:sr-only">Menu</span>
       </Button>
-      {title && (
-        <p className="min-w-0 truncate text-heading">{title}</p>
-      )}
+      {title && <p className="min-w-0 truncate text-heading">{title}</p>}
       <div className="ml-auto flex items-center gap-3">
         {audience && audience !== "admin" && (
-          <NotificationBell href={NotificationsRoute[audience]} />
+          <NotificationBell
+            href={NotificationsRoute[audience]}
+            audience={audience}
+          />
         )}
         {user?.mfa_status === "VERIFIED" && (
           <StatusBadge tone="success" className="hidden sm:inline-flex">

@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 type NotificationItemProp = Readonly<{
   notification: AppNotification;
   href: string | null;
+  compact?: boolean;
+  onOpen?: () => void;
 }>;
 
 const rowClassName = clsx(
@@ -19,11 +21,14 @@ const rowClassName = clsx(
 export default function NotificationItem({
   notification,
   href,
+  compact,
+  onOpen,
 }: NotificationItemProp) {
   const router = useRouter();
   const isUnread = notification.read_at === null;
 
   const markRead = async () => {
+    onOpen?.();
     if (!isUnread) return;
     await handleMarkNotificationRead(notification.id);
     if (!href) router.refresh();
@@ -45,7 +50,12 @@ export default function NotificationItem({
           {notification.title}
           {isUnread && <span className="sr-only"> (unread)</span>}
         </span>
-        <span className="mt-0.5 block text-sm text-fg-secondary">
+        <span
+          className={clsx(
+            "mt-0.5 block text-sm text-fg-secondary",
+            compact && "line-clamp-2",
+          )}
+        >
           {notification.body}
         </span>
         <span className="mt-1 block text-xs text-fg-tertiary">
