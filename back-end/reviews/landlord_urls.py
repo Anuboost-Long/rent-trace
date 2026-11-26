@@ -16,6 +16,11 @@ urlpatterns = [
         name="landlord-condition-evidence-photo",
     ),
     path(
+        "<int:request_id>/request-information/",
+        views.RequestInformationView.as_view(),
+        name="landlord-condition-evidence-request-information",
+    ),
+    path(
         "<int:request_id>/escalate/",
         views.EscalateEvidenceView.as_view(),
         name="landlord-condition-evidence-escalate",

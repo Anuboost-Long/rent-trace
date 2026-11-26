@@ -8,4 +8,6 @@ from reviews.services.list_review_cases import list_review_cases
 from reviews.services.open_evidence_photo import open_evidence_photo
 from reviews.services.reject_dispute import reject_dispute
 from reviews.services.reject_evidence import reject_evidence
+from reviews.services.request_information import request_information
+from reviews.services.respond_to_information import respond_to_information
 from reviews.services.submit_condition_evidence import submit_condition_evidence

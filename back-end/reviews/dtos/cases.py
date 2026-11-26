@@ -22,3 +22,14 @@ class CaseListQueryDto(serializers.Serializer):
 
 class AddEvidencePhotoDto(serializers.Serializer):
     file = serializers.FileField(help_text="A JPEG or PNG photo, up to 10 MB.")
+
+
+class RequestInformationDto(DecideCaseDto):
+    pass
+
+
+class RespondToInformationDto(serializers.Serializer):
+    message = serializers.CharField(help_text="Your answer to the landlord's question.")
+    title = serializers.CharField(max_length=200, required=False)
+    description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    observed_at = serializers.DateTimeField(required=False)

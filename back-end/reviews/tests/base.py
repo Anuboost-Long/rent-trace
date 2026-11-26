@@ -73,3 +73,15 @@ class EvidenceApiTestCase(TenancyApiTestCase):
             f"{ADMIN_URL}{case_id}/{action}/",
             {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
         )
+
+    def ask(self, evidence, user=None, key=None, reason="Which wall, and when?"):
+        self.as_user(user or self.lou)
+        return self.post(
+            f"{LANDLORD_URL}{evidence['id']}/request-information/",
+            {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
+        )
+
+    def respond(self, evidence, user=None, **fields):
+        self.as_user(user or self.tina)
+        payload = {"message": "The north wall, last Tuesday.", **fields}
+        return self.post(f"{self.tenant_url}{evidence['id']}/respond/", payload)

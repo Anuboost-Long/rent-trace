@@ -58,3 +58,23 @@ def decided(report, owners, title, outcome, reason):
         body=f"An admin {outcome}: {title}. Reason: {reason}",
         subject_id=_tenancy_id(report),
     )
+
+
+def information_requested(request, title, reason):
+    notify(
+        [request.requested_by],
+        kind=Kind.CONDITION_EVIDENCE_INFO_REQUESTED,
+        title="Your landlord asked for more information",
+        body=f"About: {title}. They asked: {reason}",
+        subject_id=_tenancy_id(request),
+    )
+
+
+def information_provided(request, author, owners, title, message):
+    notify(
+        owners,
+        kind=Kind.CONDITION_EVIDENCE_INFO_PROVIDED,
+        title="A tenant answered your question",
+        body=f"{_name(author)} replied about: {title}. {message}",
+        subject_id=_tenancy_id(request),
+    )
