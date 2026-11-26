@@ -21,17 +21,20 @@ def _locked(requests, lock):
     return requests.select_for_update(of=("self",)) if lock else requests
 
 
-def find_evidence_I_answer(user, request_id, *, lock=False):
-    """404 unless it is evidence about a unit on a property the person owns today."""
-    requests = ReviewRequest.objects.evidence().on_properties(live_properties(user))
+def find_evidence_I_answer(user, request_id, *, lock=False, as_admin=False):
+    """404 unless it is evidence about a unit on a property the person owns today.
+    A super admin acting for the owner may open any report."""
+    evidence = ReviewRequest.objects.evidence()
+    requests = evidence if as_admin else evidence.on_properties(live_properties(user))
     found = _locked(requests.with_details(), lock).filter(pk=request_id).first()
     if found is None:
         raise NotFound(NOT_FOUND)
     return found
 
 
-def find_evidence_I_wrote(user, request_id, *, lock=False):
-    requests = ReviewRequest.objects.evidence().filter(requested_by=user)
+def find_evidence_I_wrote(user, request_id, *, lock=False, as_admin=False):
+    evidence = ReviewRequest.objects.evidence()
+    requests = evidence if as_admin else evidence.filter(requested_by=user)
     found = _locked(requests.with_details(), lock).filter(pk=request_id).first()
     if found is None:
         raise NotFound(NOT_FOUND)

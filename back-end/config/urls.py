@@ -44,6 +44,7 @@ urlpatterns = [
     path("api/landlord/conditions/", include("conditions.urls")),
     path("api/landlord/condition-evidence/", include("reviews.landlord_urls")),
     path("api/admin/review-cases/", include("reviews.admin_urls")),
+    path("api/admin/condition-evidence/", include("reviews.admin_evidence_urls")),
     path("api/admin/condition-corrections/", include("reviews.admin_correction_urls")),
     path("api/landlord/condition-corrections/", include("reviews.landlord_correction_urls")),
     path(

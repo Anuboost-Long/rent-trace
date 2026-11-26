@@ -242,6 +242,26 @@ admin to correct it, and the admin decides.
   decided. Notification kinds `CONDITION_CORRECTION_REQUESTED` and `CONDITION_CORRECTION_DECIDED`
   (migration `notifications/0012`).
 
+## A super admin acting for someone — API built 27 November 2026
+
+Back end only for now: 80 `reviews` tests pass (7 new, in `test_super_admin_acts.py`). No screens. A super admin (`is_top_level_admin`) can do a party's action on a condition
+report. The records show the super admin as the actor, and the person they acted for goes in
+`on_behalf_of` (the rule in the project notes: only on `review_status_history` and
+`business_change_history`, and never the same person as the actor).
+
+- **Endpoints** (super admin only, plus the permission the action needs):
+  `GET /api/admin/condition-evidence/?unit_id=` (any admin with `reviews.admin_review`), and
+  `POST /api/admin/condition-evidence/<id>/` followed by `approve`, `reject` or `request-information`
+  (acting as the property's **primary owner**; body as for the landlord), and `cancel` or `respond`
+  (acting as the report's **author**; body as for the tenant).
+- **Recorded as:** the admin is `reviewer` on the decision (side `LANDLORD`) and `actor` on the status
+  history; `on_behalf_of` is the primary owner or the author. Approving also sets `on_behalf_of` on
+  the change history. A regular admin gets 403.
+- **Same rules apply:** an expired, answered or withdrawn report is refused the same way; retrying an
+  answer with the same `idempotency_key` changes nothing.
+- **Not covered:** escalating for a party (a super admin can already decide the case in Review cases),
+  adding photos for a tenant, and submitting a report for a tenant.
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.

@@ -16,3 +16,7 @@ def list_my_evidence(*, tenant, tenancy_id):
         raise NotFound("No tenancy with this id.")
     mine = ReviewRequest.objects.evidence().in_tenancy(tenancy_id).filter(requested_by=tenant)
     return mine.with_details().order_by("-id")
+
+
+def list_evidence_for_admin(*, unit_id):
+    return ReviewRequest.objects.evidence().on_unit(unit_id).with_details().order_by("-id")

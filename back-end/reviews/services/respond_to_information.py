@@ -8,14 +8,16 @@ from conditions.models import ConditionVersion, SourceType
 from properties.services.shared.queries import current_owner_users
 from reviews.models import ReviewStatus, ReviewSubmission, ReviewSubmissionFile
 from reviews.services.shared import notices
+from reviews.services.shared.acting import author_acted_for
 from reviews.services.shared.decisions import move, require_awaiting_reply
 from reviews.services.shared.history import record_transition
 from reviews.services.shared.scope import find_evidence_I_wrote, reloaded
 
 
 @transaction.atomic
-def respond_to_information(*, user, request_id, message, changes):
-    request = find_evidence_I_wrote(user, request_id, lock=True)
+def respond_to_information(*, user, request_id, message, changes, as_admin=False):
+    request = find_evidence_I_wrote(user, request_id, lock=True, as_admin=as_admin)
+    on_behalf_of = author_acted_for(request, as_admin=as_admin)
     require_awaiting_reply(request)
     now = timezone.now()
     message = message.strip()
@@ -52,6 +54,7 @@ def respond_to_information(*, user, request_id, message, changes):
         message,
         from_status=ReviewStatus.NEEDS_INFORMATION,
         submission=submission,
+        on_behalf_of=on_behalf_of,
     )
     place = note.property_unit.property
     notices.information_provided(request, user, current_owner_users(place), version.title, message)
