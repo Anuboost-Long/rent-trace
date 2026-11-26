@@ -22,6 +22,8 @@ def _send(user, subject, heading, paragraphs, button=None, footnote=""):
         message.send()
     except Exception:
         logger.exception("Auth email '%s' to user %s failed", subject, user.pk)
+        return False
+    return True
 
 
 def _link(base_url, path, raw_token):
@@ -85,7 +87,7 @@ def send_password_changed(user):
 
 
 def send_authenticator_reset(user):
-    _send(
+    return _send(
         user,
         "Your RentTrace authenticator was reset",
         "Your authenticator was reset",

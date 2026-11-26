@@ -86,6 +86,7 @@ async function UserDetail({
             userId={user.id}
             name={user.first_name}
             hasAuthenticator={user.has_authenticator}
+            authenticatorWasReset={user.authenticator_was_reset}
           />
           <UserActions user={user} variant="full" />
         </div>

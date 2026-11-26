@@ -1,19 +1,26 @@
+from typing import NamedTuple
+
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
 
 from accounts.integrations import emails
 from accounts.models import MfaBackupCode, UserMfa
 from accounts.services.shared import account_management as manage
-from accounts.services.shared.mail import send_after_commit
 from accounts.services.shared.sessions import revoke_sessions
 from users.services.get_user import get_user
 
 NOT_SET_UP = "This person has not set up an authenticator."
+RESET_ACTION = "ADMIN_RESET_AUTHENTICATOR"
+
+
+class ResetResult(NamedTuple):
+    user: object
+    notice_sent: bool
 
 
 def reset_authenticator(*, actor, user_id, reason):
-    _attempt(actor, user_id, reason)
-    return get_user(user_id=user_id)
+    target = _attempt(actor, user_id, reason)
+    return ResetResult(get_user(user_id=user_id), emails.send_authenticator_reset(target))
 
 
 @transaction.atomic
@@ -32,9 +39,9 @@ def _attempt(actor, user_id, reason):
     manage.record_change(
         actor=actor,
         target=target,
-        action="ADMIN_RESET_AUTHENTICATOR",
+        action=RESET_ACTION,
         before={"authenticator": "SET_UP", "unused_backup_codes": unused_backup_codes},
         after={"authenticator": "NOT_SET_UP", "unused_backup_codes": 0},
         reason=reason,
     )
-    send_after_commit(emails.send_authenticator_reset, target)
+    return target

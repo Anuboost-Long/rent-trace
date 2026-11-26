@@ -65,6 +65,20 @@ const DESTINATIONS: Partial<
   },
   TENANCY_HOUSEMATE_APPROVED: { tenant: () => Route.tenant.tenancies },
   TENANCY_HOUSEMATE_DECLINED: { tenant: () => Route.tenant.tenancies },
+  CONDITION_EVIDENCE_SUBMITTED: {
+    landlord: (id) => (id ? Route.landlord.tenancy(id) : null),
+  },
+  CONDITION_EVIDENCE_APPROVED: {
+    tenant: (id) => (id ? Route.tenant.tenancy(id) : null),
+  },
+  CONDITION_EVIDENCE_REJECTED: {
+    tenant: (id) => (id ? Route.tenant.tenancy(id) : null),
+  },
+  REVIEW_CASE_ESCALATED: { admin: () => Route.admin.review_cases },
+  REVIEW_CASE_DECIDED: {
+    landlord: (id) => (id ? Route.landlord.tenancy(id) : null),
+    tenant: (id) => (id ? Route.tenant.tenancy(id) : null),
+  },
   TENANCY_INVITATION_ACCEPTED: {
     landlord: (id) => (id ? Route.landlord.tenancy(id) : null),
     admin: (id) => (id ? Route.admin.tenancy(id) : null),

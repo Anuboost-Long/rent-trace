@@ -7,7 +7,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Authentication and sessions](authentication.md)     | Shipped; forgot/reset and change password with an authenticator code for admins added 18 Nov 2026 (code step not seen in a browser)                                                                                            |
 | [Account and onboarding](account-and-onboarding.md)  | Shipped                                                                                                                                                                                                                        |
 | [Admin app shell](admin-app-shell.md)                | Shipped; tenant and landlord pages are placeholders                                                                                                                                                                            |
-| [Admin users](admin-users.md)                        | Shipped; super admin can reset a person's authenticator (built 18 Nov 2026, not yet seen in a browser)                                                                                                                        |
+| [Admin users](admin-users.md)                        | Shipped; super admin can reset a person's authenticator and resend the reset email (walked through 19 Nov 2026; the email itself not yet seen arriving)                                                                        |
 | [Access control](access-control.md)                  | Shipped                                                                                                                                                                                                                        |
 | [Bans and sessions](bans-and-sessions.md)            | Shipped                                                                                                                                                                                                                        |
 | [Locations lookup](locations.md)                     | Shipped                                                                                                                                                                                                                        |
@@ -31,12 +31,14 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Unit conditions](unit-conditions.md)                | Walked through 14 Nov 2026 (both sides)                                                                                                                                                                                        |
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant); admin read-only list and linking from a property walked through 16 Nov 2026                                                                                                  |
 | [Date display](date-display.md)                      | In progress; nothing verified yet                                                                                                                                                                                              |
+| [Reviews](reviews.md)                                | In progress 25 Nov 2026; tenant condition evidence built (back end tests pass, screens typecheck); walked through 25 Nov 2026 (report, approve, reject, withdraw, tenant inbox link)                                           |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
 
-Not yet built: reviews and documents. Their tables exist in the back end but they have
-no API or screens.
+Not yet built: documents, and everything in reviews past tenant condition evidence (disputes,
+the admin queue, data removal). Those tables exist in the back end but have no API or screens.
+
 Known issues from the 14 November 2026 walkthrough (test landlord and tenants, local
 database):
 

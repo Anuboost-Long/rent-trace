@@ -7,6 +7,7 @@ import {
   FileText,
   LayoutDashboard,
   MessageSquare,
+  Scale,
   Users,
   Wrench,
   HardHat,
@@ -99,6 +100,14 @@ export const Navigation: Record<Audience, Navigation> = {
         permission: "maintenance.admin_view",
         group: "Rentals",
         description: "Issues reported on any property",
+      },
+      {
+        label: "Review cases",
+        href: Route.admin.review_cases,
+        icon: Scale,
+        permission: "reviews.admin_review",
+        group: "Rentals",
+        description: "Reports an admin has been asked to decide",
       },
       {
         label: "Bans",

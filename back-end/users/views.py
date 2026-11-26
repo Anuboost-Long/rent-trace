@@ -142,15 +142,31 @@ class ResetAuthenticatorView(AdminView):
     @extend_schema(
         operation_id="users_reset_authenticator",
         request=dtos.ResetAuthenticatorDto,
-        responses=resources.UserDetailResource,
+        responses=resources.ResetAuthenticatorResource,
     )
     def post(self, request, user_id):
         serializer = dtos.ResetAuthenticatorDto(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = services.reset_authenticator(
+        result = services.reset_authenticator(
             actor=request.user, user_id=user_id, reason=serializer.validated_data["reason"]
         )
-        return Response(resources.UserDetailResource(user).data)
+        return Response(
+            {**resources.UserDetailResource(result.user).data, "notice_sent": result.notice_sent}
+        )
+
+
+class ResendAuthenticatorNoticeView(AdminView):
+    permission_classes = [*AdminView.permission_classes, IsSuperAdmin]
+    required_permissions = {"POST": "accounts.manage"}
+
+    @extend_schema(
+        operation_id="users_resend_authenticator_notice",
+        request=None,
+        responses=resources.NoticeSentResource,
+    )
+    def post(self, request, user_id):
+        sent = services.resend_authenticator_notice(actor=request.user, user_id=user_id)
+        return Response({"notice_sent": sent})
 
 
 class ActivateUserView(AdminView):

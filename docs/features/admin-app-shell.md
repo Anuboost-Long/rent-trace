@@ -55,6 +55,13 @@ navigation and permissions, built from shared components.
 ## Source locations
 
 - `admin/components/layout/`, `admin/components/common/`.
+- `admin/components/common/tab-bar.tsx`: shared tab strip whose underline slides to the active tab
+  (used by the tenant nav and the access sections; no animation under reduced motion). Seen working
+  in Chrome on the tenant nav 26 Nov 2026.
+- `admin/components/common/tab-content.tsx` with `app/tenant/template.tsx` and
+  `app/(app)/admin/access/template.tsx`: page content slides in from the right when the new tab is
+  further along, from the left when it is earlier (CSS in `app/globals.css`). Direction logic checked
+  in Chrome; the slide itself not yet seen, because the running dev server served stale CSS.
 - `admin/constants/`: `web-routes.ts`, `navigation.ts`, `audience.ts`, `roles.ts`.
 - `admin/api/`: `api-config.ts`, `api-helper.ts`, `services/`.
 - `admin/app/`: `layout.tsx`, `loading.tsx`, `tenant/`, `(site)/`, `tools/`, and `(app)/` with

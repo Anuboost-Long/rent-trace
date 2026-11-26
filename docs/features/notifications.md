@@ -33,17 +33,30 @@ the only place to find out.
 
 ### What creates a notification
 
-| Event                                           | Who is told                                                                             | Where it leads                           |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------- |
-| Tenant sends a contact request                  | Every current owner of the property                                                     | Landlord: Contact requests               |
-| Tenant cancels a waiting request                | Every current owner                                                                     | Landlord: Contact requests               |
-| Landlord accepts, declines or revokes a request | The tenant                                                                              | Tenant: Contact requests                 |
-| Tenancy invitation sent or sent again           | The invited person, only if they already have a verified tenant account with that email | Tenant: Tenancies, where they can accept |
-| Invitation accepted                             | Whoever sent it (a landlord or an admin)                                                | The tenancy                              |
+| Event                                             | Who is told                                                                             | Where it leads                           |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Tenant sends a contact request                    | Every current owner of the property                                                     | Landlord: Contact requests               |
+| Tenant cancels a waiting request                  | Every current owner                                                                     | Landlord: Contact requests               |
+| Landlord accepts, declines or revokes a request   | The tenant                                                                              | Tenant: Contact requests                 |
+| Tenancy invitation sent or sent again             | The invited person, only if they already have a verified tenant account with that email | Tenant: Tenancies, where they can accept |
+| Invitation accepted                               | Whoever sent it (a landlord or an admin)                                                | The tenancy                              |
+| Tenant reports a condition                        | Every current owner of the property                                                     | Landlord: the tenancy                    |
+| Landlord approves or rejects a reported condition | The tenant who reported it (a rejection includes the reason)                            | Tenant: the tenancy                      |
 
 An invite to an address with no account, or an unverified one, makes no notification, and
 the inviter's screen doesn't change either way. A person who signs up later sees the
 invitation in their Tenancies page too, because that list is built from their email.
+
+Two more kinds, `REVIEW_CASE_ESCALATED` (admins who can decide; leads to Review cases) and
+`REVIEW_CASE_DECIDED` (the tenant and every current owner; leads to the tenancy), are written when
+someone asks an admin to decide and when an admin decides (migration `notifications/0010`). Not seen
+in a browser except the admin's link, seen 26 Nov 2026.
+
+The three condition-evidence rows are the kinds `CONDITION_EVIDENCE_SUBMITTED`,
+`CONDITION_EVIDENCE_APPROVED` and `CONDITION_EVIDENCE_REJECTED` (migration `notifications/0009`).
+Their `subject_id` is the tenancy id. See [Reviews](reviews.md). Seen in Chrome 25 Nov 2026 for
+the two tenant-side kinds (rejected one opened the tenant tenancy page); the landlord-side link
+was not clicked.
 
 ### Where the link goes
 
@@ -62,7 +75,8 @@ the same tenancy).
 
 ## Not done
 
-- Admin events: nothing needs an admin's action yet (reviews and removals are not built).
+- Admin events: nothing needs an admin's action yet (disputes and removals are not built; the
+  dispute case a rejection opens has no admin notice).
   Admins currently get "invitation accepted" for tenancies they set up. Say which events
   admins should be told about.
 - Delivery by email through this inbox: emails are still sent directly by each action.

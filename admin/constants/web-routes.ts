@@ -55,6 +55,7 @@ export const Route = {
     contact_requests: "/admin/contact-requests",
     providers: "/admin/providers",
     maintenance: "/admin/maintenance",
+    review_cases: "/admin/review-cases",
     issue: (id: number) => `/admin/maintenance/${id}`,
     tenancies: "/admin/tenancies",
     tenancy_new: "/admin/tenancies/new",

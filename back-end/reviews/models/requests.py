@@ -43,6 +43,59 @@ class ReviewRoute(models.TextChoices):
     OWNER_DIRECT = "OWNER_DIRECT"
 
 
+class ReviewRequestQuerySet(models.QuerySet):
+    def evidence(self):
+        return self.filter(kind=ReviewKind.EVIDENCE_REVIEW)
+
+    def on_properties(self, properties):
+        return self.filter(target__condition_record__property_unit__property__in=properties)
+
+    def on_unit(self, unit_id):
+        return self.filter(target__condition_record__property_unit_id=unit_id)
+
+    def cases_for(self, report):
+        return self.filter(kind=ReviewKind.DISPUTE, parent_request=report)
+
+    def admin_cases(self):
+        return self.filter(kind=ReviewKind.DISPUTE, review_route=ReviewRoute.ADMIN)
+
+    def in_tenancy(self, tenancy_id):
+        return self.filter(scopes__tenancy_id=tenancy_id)
+
+    def with_details(self):
+        return self.select_related(
+            "requested_by",
+            "target__condition_record",
+            "current_submission__proposed_condition_version",
+        ).prefetch_related(
+            "decisions",
+            "scopes",
+            models.Prefetch(
+                "child_requests",
+                queryset=ReviewRequest.objects.cases_with_trail(),
+                to_attr="dispute_cases",
+            ),
+        )
+
+    def cases_with_trail(self):
+        return self.filter(kind=ReviewKind.DISPUTE).prefetch_related(
+            models.Prefetch("status_history", ReviewStatusHistory.objects.select_related("actor")),
+            "decisions",
+        )
+
+    def with_case_details(self):
+        return self.select_related(
+            "requested_by",
+            "parent_request__requested_by",
+            "parent_request__current_submission__proposed_condition_version",
+            "parent_request__target__condition_record__property_unit__property",
+        ).prefetch_related(
+            models.Prefetch("status_history", ReviewStatusHistory.objects.select_related("actor")),
+            "decisions",
+            "parent_request__decisions",
+        )
+
+
 class ReviewRequest(MutableRecord):
     target = models.ForeignKey(ReviewTarget, models.PROTECT, related_name="requests")
     kind = models.TextField(choices=ReviewKind)
@@ -61,6 +114,8 @@ class ReviewRequest(MutableRecord):
     submitted_at = models.DateTimeField(null=True, blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
     applied_at = models.DateTimeField(null=True, blank=True)
+
+    objects = ReviewRequestQuerySet.as_manager()
 
     class Meta(MutableRecord.Meta):
         db_table = "review_requests"
