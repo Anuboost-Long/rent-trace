@@ -2,55 +2,75 @@
 import { UserAtom } from "@/api/services/auth/jotai";
 import Button from "@/components/common/button";
 import ButtonLink from "@/components/common/button-link";
+import type { ButtonVariant } from "@/components/common/button-class-name";
 import ConfirmDialog from "@/components/common/modal/confirm-dialog";
 import { Route } from "@/constants/web-routes";
 import useUserActions, { type UserAction } from "@/hooks/form/useUserActions";
 import type { UserSummary } from "@/types/users/models";
 import {
+  canBanUser,
   canDeleteUser,
   canEditUser,
   canToggleUser,
 } from "@/utils/user-permissions";
-import clsx from "clsx";
 import { useAtomValue } from "jotai";
-import {
-  Pencil,
-  Trash2,
-  UserCheck,
-  UserX,
-  type LucideIcon,
-} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type UserActionsProp = Readonly<{
   user: UserSummary;
-  variant: "icon" | "full";
+  footer?: React.ReactNode;
 }>;
 
-const COPY: Record<
-  UserAction,
-  { title: string; message: string; confirm: string }
-> = {
-  activate: {
-    title: "Activate",
-    message: "They will be able to sign in again.",
-    confirm: "Activate",
-  },
+type ActionCopy = {
+  button: string;
+  title: (name: string) => string;
+  message: string;
+  confirm: string;
+  variant: ButtonVariant;
+  // Asks for a reason before the action runs.
+  needsReason: boolean;
+};
+
+const COPY: Record<UserAction, ActionCopy> = {
   deactivate: {
-    title: "Deactivate",
+    button: "Suspend account",
+    title: (name) => `Suspend ${name}?`,
     message:
-      "They will be signed out everywhere and can't sign in until you activate them again.",
-    confirm: "Deactivate",
+      "They're logged out of every device straight away and can't log in until you reactivate the account. Their records stay as they are.",
+    confirm: "Suspend account",
+    variant: "secondary",
+    needsReason: true,
+  },
+  activate: {
+    button: "Reactivate account",
+    title: (name) => `Reactivate ${name}?`,
+    message: "They'll be able to log in again.",
+    confirm: "Reactivate account",
+    variant: "secondary",
+    needsReason: true,
+  },
+  ban: {
+    button: "Ban account",
+    title: (name) => `Ban ${name}?`,
+    message:
+      "This logs them out everywhere and stops the account from logging in until the ban is lifted. Their records stay, so tenancy history isn't lost.",
+    confirm: "Ban account",
+    variant: "danger",
+    needsReason: true,
   },
   delete: {
-    title: "Delete",
+    button: "Delete account",
+    title: (name) => `Delete ${name}?`,
     message:
-      "The account is removed from RentTrace and they are signed out everywhere. This can't be undone here.",
-    confirm: "Delete",
+      "The account is removed from RentTrace and they're logged out everywhere. This can't be undone here.",
+    confirm: "Delete account",
+    variant: "danger",
+    needsReason: false,
   },
 };
 
-export default function UserActions({ user, variant }: UserActionsProp) {
+// The "Account actions" buttons on an account's page, each opening a confirm dialog.
+export default function UserActions({ user, footer }: UserActionsProp) {
   const router = useRouter();
   const me = useAtomValue(UserAtom);
   const { action, setAction, pending, error, confirm, cancel } = useUserActions(
@@ -59,91 +79,54 @@ export default function UserActions({ user, variant }: UserActionsProp) {
   );
 
   if (!me) return null;
-  const canEdit = canEditUser(me);
-  const canToggle = canToggleUser(me, user);
-  const canDelete = canDeleteUser(me, user);
-  if (!canEdit && !canToggle && !canDelete) return null;
   const name = `${user.first_name} ${user.last_name}`;
   const isActive = user.account_status === "ACTIVE";
-
-  const buttons: {
-    action: UserAction;
-    label: string;
-    Icon: LucideIcon;
-    show: boolean;
-  }[] = [
-    {
-      action: isActive ? "deactivate" : "activate",
-      label: isActive ? "Deactivate" : "Activate",
-      Icon: isActive ? UserX : UserCheck,
-      show: canToggle,
-    },
-    { action: "delete", label: "Delete", Icon: Trash2, show: canDelete },
-  ];
+  const actions: UserAction[] = [
+    ...(canToggleUser(me, user) ? [isActive ? "deactivate" : "activate"] : []),
+    ...(canBanUser(me, user) ? ["ban"] : []),
+    ...(canDeleteUser(me, user) ? ["delete"] : []),
+  ] as UserAction[];
 
   return (
     <>
-      <div className={clsx("flex gap-2", variant === "icon" && "justify-end")}>
-        {canEdit && <EditButton user={user} name={name} variant={variant} />}
-        {buttons
-          .filter((button) => button.show)
-          .map(({ action: kind, label, Icon }) => (
-            <Button
-              key={kind}
-              variant="quiet"
-              onClick={() => setAction(kind)}
-              aria-label={variant === "icon" ? `${label} ${name}` : undefined}
-              title={variant === "icon" ? label : undefined}
-              size={variant === "icon" ? "icon" : "md"}
-              className={clsx(variant === "full" && "gap-2")}
-            >
-              <Icon aria-hidden className="size-4" />
-              {variant === "full" && label}
-            </Button>
-          ))}
+      <div className="flex flex-col gap-3">
+        {actions.map((kind) => (
+          <Button
+            key={kind}
+            variant={COPY[kind].variant}
+            onClick={() => setAction(kind)}
+            className="w-full"
+          >
+            {COPY[kind].button}
+          </Button>
+        ))}
+        {canEditUser(me) && (
+          <ButtonLink
+            href={Route.admin.user_edit(user.id)}
+            variant="secondary"
+            className="w-full"
+          >
+            Edit details
+          </ButtonLink>
+        )}
+        {footer}
       </div>
       {action && (
         <ConfirmDialog
           open
-          title={`${COPY[action].title} ${name}?`}
+          title={COPY[action].title(name)}
           message={COPY[action].message}
           confirmLabel={COPY[action].confirm}
+          confirmVariant={COPY[action].variant}
+          reasonLabel={
+            COPY[action].needsReason ? "Reason (required)" : undefined
+          }
           pending={pending}
-          error={error?.message}
+          error={error?.fields.reason ?? error?.message}
           onConfirm={confirm}
           onCancel={cancel}
         />
       )}
     </>
-  );
-}
-
-function EditButton({
-  user,
-  name,
-  variant,
-}: Readonly<UserActionsProp & { name: string }>) {
-  if (variant === "icon") {
-    return (
-      <ButtonLink
-        href={Route.admin.user_edit(user.id)}
-        variant="quiet"
-        aria-label={`Edit ${name}`}
-        title="Edit"
-        size="icon"
-      >
-        <Pencil aria-hidden className="size-4" />
-      </ButtonLink>
-    );
-  }
-  return (
-    <ButtonLink
-      href={Route.admin.user_edit(user.id)}
-      variant="quiet"
-      className="gap-2"
-    >
-      <Pencil aria-hidden className="size-4" />
-      Edit
-    </ButtonLink>
   );
 }

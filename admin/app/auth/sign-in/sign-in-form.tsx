@@ -8,9 +8,13 @@ import { useRef } from "react";
 
 const EMAIL_UNVERIFIED = 403;
 
+const LINK_CLASS =
+  "font-semibold text-fg-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border";
+
 export default function SignInForm({
   redirectTo,
-}: Readonly<{ redirectTo?: string }>) {
+  sessionEnded,
+}: Readonly<{ redirectTo?: string; sessionEnded?: boolean }>) {
   const formRef = useRef<HTMLFormElement>(null);
   const { pending, error, notice, signIn, resendVerification } = useAuth();
 
@@ -31,6 +35,18 @@ export default function SignInForm({
       }}
       className="flex flex-col gap-4"
     >
+      {sessionEnded && !error && (
+        <div
+          role="status"
+          className="rounded-lg border border-warning-border bg-warning-background p-3 text-body-sm text-warning"
+        >
+          <p className="font-semibold">Your session ended</p>
+          <p className="mt-1">
+            For security, sessions end after a period of inactivity or when your
+            permissions change. Log in again to continue.
+          </p>
+        </div>
+      )}
       <TextInput
         label="Email"
         name="email"
@@ -48,35 +64,32 @@ export default function SignInForm({
         error={error?.fields.password}
       />
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}
       {notice && <p role="status">{notice}</p>}
       <Button type="submit" pending={pending}>
-        {pending ? "Signing in…" : "Sign in"}
+        {pending ? "Logging in…" : "Log in"}
       </Button>
       {error?.status === EMAIL_UNVERIFIED && (
         <Button
           type="button"
-          variant="quiet"
+          variant="secondary"
           pending={pending}
           onClick={() => resendVerification(readForm().email)}
         >
           Send a new verification link
         </Button>
       )}
-      <p className="text-sm">
-        <Link
-          href={Route.auth.forgot_password}
-          className="font-medium underline"
-        >
+      <p className="text-body-sm">
+        <Link href={Route.auth.forgot_password} className={LINK_CLASS}>
           Forgot password?
         </Link>
       </p>
-      <p className="text-sm text-foreground/70">
+      <p className="text-body-sm text-fg-secondary">
         New to RentTrace?{" "}
-        <Link href={Route.auth.sign_up} className="font-medium underline">
+        <Link href={Route.auth.sign_up} className={LINK_CLASS}>
           Create an account
         </Link>
       </p>

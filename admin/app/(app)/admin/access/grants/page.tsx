@@ -4,6 +4,7 @@ import {
 } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
@@ -57,7 +58,7 @@ const columns: Column<GrantListItem>[] = [
         >
           {personName(grant)}
         </Link>
-        <p className="text-xs text-foreground/60">{grant.user.email}</p>
+        <p className="text-xs text-fg-tertiary">{grant.user.email}</p>
       </>
     ),
   },
@@ -121,9 +122,7 @@ async function Grants({
     <>
       <GrantsFilter {...filters} permissions={permissions.data ?? []} />
       {error ? (
-        <p role="alert" className="text-red-600">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable
@@ -134,7 +133,7 @@ async function Grants({
             empty={
               <>
                 <p className="font-medium">No grants match</p>
-                <p className="mt-1 text-sm text-foreground/70">
+                <p className="mt-1 text-sm text-fg-secondary">
                   Grants give one person a permission on top of their roles.
                 </p>
               </>

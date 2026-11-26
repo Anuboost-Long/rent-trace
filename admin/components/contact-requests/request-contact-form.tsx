@@ -60,7 +60,7 @@ export default function RequestContactForm({
         error={error?.fields.message}
       />
       {error && !error.fields.message && !error.fields.unit_id && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.fields.listing_id ?? error.message}
         </p>
       )}
@@ -72,7 +72,7 @@ export default function RequestContactForm({
       >
         Request contact
       </Button>
-      <p className="text-xs text-foreground/60">
+      <p className="text-xs text-fg-tertiary">
         The landlord sees your name and message. If they accept, they also see
         your email and phone, and you see theirs.
       </p>

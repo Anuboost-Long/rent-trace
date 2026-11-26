@@ -6,7 +6,7 @@ export default function SkeletonRows({ count = 4 }: SkeletonRowsProp) {
   return (
     <div
       aria-hidden
-      className="divide-y divide-foreground/15 rounded-xl border border-foreground/15"
+      className="divide-y divide-default rounded-xl border border-default"
     >
       {Array.from({ length: count }, (_, index) => (
         <div key={index} className="flex items-center gap-4 p-4">

@@ -1,5 +1,6 @@
 import { handleGetRoles } from "@/api/services/access/serve-action";
 import { handleGetUser } from "@/api/services/users/serve-action";
+import LoadError from "@/components/common/load-error";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { BUILT_IN_PARTY_ROLES } from "@/constants/roles";
@@ -29,11 +30,7 @@ async function EditUser({
   ]);
   if (error?.status === 404) notFound();
   if (error) {
-    return (
-      <p role="alert" className="text-red-600">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
 
   return (
@@ -48,7 +45,7 @@ async function EditUser({
           { label: "Edit" },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">Edit user</h1>
+      <h1 className="mt-4 mb-6 text-heading">Edit user</h1>
       <EditUserForm
         user={user}
         roles={rolesResult.data ?? BUILT_IN_PARTY_ROLES}

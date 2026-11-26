@@ -1,6 +1,10 @@
 # Admin app shell
 
-## Status — 13 November 2026
+## Status — 25 November 2026
+
+Restyled to the Figma design on 25 November 2026 (see
+[Admin design alignment](admin-design-alignment.md)): type-checked and linted, not yet seen in a
+browser.
 
 Shipped 11 November 2026; the `(site)` route group was added after it and is in
 progress (see [Public listings](public-listings.md)). On 13 November the four sidebar
@@ -25,6 +29,20 @@ navigation and permissions, built from shared components.
   audience). `/admin` and `/landlord` each have a small layout that only checks the person belongs
   there and sends them home if not (`components/layout/require-audience.tsx`); it renders no
   shell. No page renders the sidebar itself.
+- **Look (25 Nov 2026):** the admin sidebar is navy (`bg-admin`) with a white "R" logo, the
+  RentTrace name and an `ADMIN` tag; the landlord sidebar uses the same layout in white. The
+  sidebar footer shows the person's name and "Role · email", with an icon-only collapse toggle at
+  the top right of that block, then **Log out**. **Log out** asks first ("Log out?") and only
+  signs out if they confirm. The top bar shows the active nav item's name as
+  the page title, an "MFA verified" badge once the admin has entered their code, and an initials
+  avatar linking to `/account`. On a small screen the top bar has a **Menu** control that
+  opens the same sidebar as a full-height drawer: the links scroll, the profile and **Log
+  out** stay at the bottom, and an icon closes the drawer. Content sits on the light grey
+  `bg-subtle` background.
+- **Admin menu:** Overview, Accounts (`/admin/users`), Team and permissions (`/admin/access`), then
+  an **Operations** group with the admin screens that are not in Figma: Properties, Tenancies,
+  Contact requests, Tradespeople, Maintenance, Bans, Access tokens and Notifications. The admin
+  top bar has no notification bell; Notifications is in the menu instead.
 - **Detail pages** put a bordered **Back** button on its own line with the breadcrumb trail beneath
   it, so the control and the trail can be told apart at a glance.
 - **Permissions in the UI:** the `Can` component shows or hides controls from the

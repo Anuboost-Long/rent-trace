@@ -38,11 +38,11 @@ export default function UnitConditions({ unitId, notes }: UnitConditionsProp) {
     <section aria-labelledby="conditions-heading" className="mt-12">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <div className="flex items-baseline gap-3">
-          <h2 id="conditions-heading" className="text-lg font-semibold">
+          <h2 id="conditions-heading" className="text-section">
             Condition
           </h2>
           {notes.length > 0 && (
-            <p className="text-sm text-foreground/60 tabular-nums">
+            <p className="text-sm text-fg-tertiary tabular-nums">
               {shownCount} of {notes.length} shown to tenants
             </p>
           )}
@@ -54,23 +54,23 @@ export default function UnitConditions({ unitId, notes }: UnitConditionsProp) {
       </div>
 
       {notes.length === 0 ? (
-        <p className="mt-3 max-w-[65ch] text-sm text-foreground/70">
+        <p className="mt-3 max-w-[65ch] text-sm text-fg-secondary">
           Write down what shape this unit is in, room by room. Tenants only see
           the notes you choose to show them.
         </p>
       ) : (
-        <ul className="mt-2 divide-y divide-foreground/10">
+        <ul className="mt-2 divide-y divide-default">
           {notes.map((note) => (
             <li key={note.id} className="py-4">
               <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
                 <div className="min-w-0 max-w-[65ch] flex-1">
                   <p className="font-medium">{note.title}</p>
                   {note.description && (
-                    <p className="mt-1 whitespace-pre-line text-foreground/80">
+                    <p className="mt-1 whitespace-pre-line text-fg-secondary">
                       {note.description}
                     </p>
                   )}
-                  <p className="mt-1.5 text-sm text-foreground/60">
+                  <p className="mt-1.5 text-sm text-fg-tertiary">
                     Checked <LocalTime iso={note.observed_at} />
                   </p>
                 </div>

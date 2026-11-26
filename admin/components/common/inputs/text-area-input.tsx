@@ -35,10 +35,10 @@ export default function TextAreaInput({
         aria-describedby={error ? `${name}-error` : undefined}
         className={clsx(
           "w-full rounded-lg bg-background px-3 py-2 text-base",
-          "border border-foreground/15",
+          "border border-strong",
           error && InputInvalidClassName,
-          "placeholder:text-foreground/40",
-          "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-foreground",
+          "placeholder:text-fg-tertiary",
+          "hover:border-fg-tertiary focus-visible:border-brand-border focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-brand-border/25",
           className,
         )}
       />

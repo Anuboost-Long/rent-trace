@@ -2,6 +2,7 @@ import {
   handleGetAdminProviders,
   handleGetAdminServiceCategories,
 } from "@/api/services/providers/serve-action";
+import LoadError from "@/components/common/load-error";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import PageHeader from "@/components/layout/page-header";
@@ -24,7 +25,7 @@ const columns: Column<AdminServiceProvider>[] = [
       <>
         <p className="font-medium">{provider.business_name}</p>
         {provider.contact_name && (
-          <p className="text-xs text-foreground/60">{provider.contact_name}</p>
+          <p className="text-xs text-fg-tertiary">{provider.contact_name}</p>
         )}
       </>
     ),
@@ -40,7 +41,7 @@ const columns: Column<AdminServiceProvider>[] = [
       <>
         {provider.phone_number && <p>{provider.phone_number}</p>}
         {provider.email && (
-          <p className="text-xs text-foreground/60">{provider.email}</p>
+          <p className="text-xs text-fg-tertiary">{provider.email}</p>
         )}
         {!provider.phone_number && !provider.email && "—"}
       </>
@@ -110,9 +111,7 @@ async function Providers({
         {...filters}
       />
       {error ? (
-        <p role="alert" className="text-red-600">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable

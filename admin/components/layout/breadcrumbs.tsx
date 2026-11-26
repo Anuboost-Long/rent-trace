@@ -35,13 +35,13 @@ export default function Breadcrumbs({ trail }: BreadcrumbsProp) {
                 {index > 0 && (
                   <ChevronRight
                     aria-hidden
-                    className="size-3.5 shrink-0 text-foreground/40"
+                    className="size-3.5 shrink-0 text-fg-tertiary"
                   />
                 )}
                 {crumb.href && !isCurrent ? (
                   <Link
                     href={crumb.href}
-                    className="max-w-48 truncate text-foreground/70 underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+                    className="max-w-48 truncate text-fg-secondary underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
                   >
                     {crumb.label}
                   </Link>

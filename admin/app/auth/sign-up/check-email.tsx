@@ -30,15 +30,15 @@ export default function CheckEmail({ email, onChangeEmail }: CheckEmailProp) {
 
   return (
     <div className="animate-panel-in motion-reduce:animate-none">
-      <span className="flex size-12 items-center justify-center rounded-lg border border-foreground/15">
+      <span className="flex size-12 items-center justify-center rounded-lg border border-default">
         <Mail aria-hidden className="size-6" strokeWidth={1.5} />
       </span>
-      <p className="mt-4 text-foreground/70">
+      <p className="mt-4 text-fg-secondary">
         We sent a confirmation link to{" "}
         <span className="font-medium text-foreground">{email}</span>. Open it to
         finish creating your account.
       </p>
-      <p className="mt-2 text-sm text-foreground/70">
+      <p className="mt-2 text-sm text-fg-secondary">
         Nothing there? Check your spam folder, or send it again.
       </p>
       <div className="mt-6 flex flex-col gap-3">
@@ -56,7 +56,7 @@ export default function CheckEmail({ email, onChangeEmail }: CheckEmailProp) {
           </p>
         )}
         {error && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-error">
             {error.message}
           </p>
         )}

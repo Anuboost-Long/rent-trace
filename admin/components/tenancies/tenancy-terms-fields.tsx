@@ -54,7 +54,7 @@ export default function TenancyTermsFields({
         />
       </div>
       {lockStart && (
-        <p className="-mt-2 text-sm text-foreground/60">
+        <p className="-mt-2 text-sm text-fg-tertiary">
           The start date can&apos;t change once the tenancy has started.
         </p>
       )}

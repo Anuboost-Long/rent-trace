@@ -1,4 +1,5 @@
 "use client";
+import { handleCreateBan } from "@/api/services/bans/serve-action";
 import {
   handleActivateUser,
   handleDeactivateUser,
@@ -8,15 +9,17 @@ import type { ActionResult, ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export type UserAction = "activate" | "deactivate" | "delete";
+export type UserAction = "activate" | "deactivate" | "ban" | "delete";
 
 const requests: Record<
   UserAction,
-  (id: number) => Promise<ActionResult<unknown>>
+  (id: number, reason: string) => Promise<ActionResult<unknown>>
 > = {
-  activate: handleActivateUser,
-  deactivate: handleDeactivateUser,
-  delete: handleDeleteUser,
+  activate: (id, reason) => handleActivateUser(id, reason || undefined),
+  deactivate: (id, reason) => handleDeactivateUser(id, reason),
+  ban: (id, reason) =>
+    handleCreateBan({ ban_type: "ACCOUNT", user_id: id, reason }),
+  delete: (id) => handleDeleteUser(id),
 };
 
 const useUserActions = (userId: number, afterDelete?: () => void) => {
@@ -30,10 +33,10 @@ const useUserActions = (userId: number, afterDelete?: () => void) => {
     setError(null);
   };
 
-  const confirm = async () => {
+  const confirm = async (reason = "") => {
     if (!action) return;
     setPending(true);
-    const { error } = await requests[action](userId);
+    const { error } = await requests[action](userId, reason);
     setPending(false);
     setError(error);
     if (error) return;

@@ -1,6 +1,8 @@
 import { handleGetPermissions } from "@/api/services/access/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
+import LoadError from "@/components/common/load-error";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
@@ -41,9 +43,7 @@ const columns: Column<PermissionItem>[] = [
         >
           {permission.name}
         </Link>
-        <p className="font-mono text-xs text-foreground/60">
-          {permission.code}
-        </p>
+        <p className="font-mono text-xs text-fg-tertiary">{permission.code}</p>
       </>
     ),
   },
@@ -58,18 +58,19 @@ const columns: Column<PermissionItem>[] = [
   },
   {
     header: "Status",
-    cell: (permission) => (permission.is_active ? "Active" : "Inactive"),
+    cell: (permission) =>
+      permission.is_active ? (
+        <StatusBadge tone="success">Active</StatusBadge>
+      ) : (
+        <StatusBadge tone="neutral">Inactive</StatusBadge>
+      ),
   },
 ];
 
 async function Permissions() {
   const { data, error } = await handleGetPermissions();
   if (error) {
-    return (
-      <p role="alert" className="text-red-600">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
   return (
     <DataTable

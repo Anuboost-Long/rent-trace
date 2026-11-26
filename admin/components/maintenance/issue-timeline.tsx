@@ -7,10 +7,10 @@ export default function IssueTimeline({
 }: Readonly<{ history: IssueHistoryEntry[] }>) {
   return (
     <section aria-labelledby="timeline-heading" className="mt-12">
-      <h2 id="timeline-heading" className="text-lg font-semibold">
+      <h2 id="timeline-heading" className="text-section">
         History
       </h2>
-      <ol className="mt-2 divide-y divide-foreground/10">
+      <ol className="mt-2 divide-y divide-default">
         {history.map((entry) => (
           <li key={`${entry.kind}-${entry.created_at}`} className="py-3">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -19,11 +19,11 @@ export default function IssueTimeline({
                   ? IssueStatusLabel[entry.to_status]
                   : IssueVisitLabel[entry.kind]}
               </p>
-              <p className="text-sm text-foreground/60">
+              <p className="text-sm text-fg-tertiary">
                 <LocalTime iso={entry.created_at} withTime />
               </p>
             </div>
-            <p className="text-sm text-foreground/70">
+            <p className="text-sm text-fg-secondary">
               {entry.actor}
               {entry.on_behalf_of && `, for ${entry.on_behalf_of}`} ·{" "}
               {entry.reason}

@@ -28,7 +28,7 @@ export default function GoogleSignIn({ label }: GoogleSignInProp) {
   };
 
   return (
-    <div className="mt-6 border-t border-foreground/15 pt-6">
+    <div className="mt-6 border-t border-default pt-6">
       {supabase ? (
         <>
           <Button
@@ -40,13 +40,13 @@ export default function GoogleSignIn({ label }: GoogleSignInProp) {
             {pending ? "Opening Google…" : label}
           </Button>
           {failure && (
-            <p role="alert" className="mt-2 text-sm text-red-600">
+            <p role="alert" className="mt-2 text-sm text-error">
               {failure}
             </p>
           )}
         </>
       ) : (
-        <p className="text-sm text-foreground/70">
+        <p className="text-sm text-fg-secondary">
           Google sign-in isn&apos;t set up on this server yet.
         </p>
       )}

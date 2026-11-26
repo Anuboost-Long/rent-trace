@@ -47,13 +47,13 @@ export default function ListingSection({
 
   return (
     <section aria-labelledby="listing-heading" className="mt-10">
-      <h2 id="listing-heading" className="text-lg font-semibold">
+      <h2 id="listing-heading" className="text-section">
         Public listing
       </h2>
-      <div className="mt-3 space-y-4 rounded-xl border border-foreground/15 p-4">
+      <div className="mt-3 space-y-4 rounded-xl border border-default p-4">
         <div>
           <p className="font-medium">{ListingStatusLabel[status]}</p>
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm text-fg-secondary">
             {ListingStatusHint[status]}
           </p>
           {isPublic && (
@@ -68,7 +68,7 @@ export default function ListingSection({
           )}
         </div>
         {locked && (
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm text-fg-secondary">
             An admin has locked this listing. Contact support to change it.
           </p>
         )}
@@ -97,12 +97,12 @@ export default function ListingSection({
           </form>
         )}
         {error && !error.fields.listing_status && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" className="text-sm text-error">
             {error.message}
           </p>
         )}
         {canPublish && !locked && (
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm text-fg-secondary">
             To go live the property must be active and have at least one unit
             set to be shown publicly.
           </p>

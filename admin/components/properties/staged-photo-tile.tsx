@@ -15,7 +15,7 @@ export default function StagedPhotoTile({
   onRemove,
 }: StagedPhotoTileProp) {
   return (
-    <li className="group relative aspect-4/3 overflow-hidden rounded-xl border border-dashed border-foreground/40 bg-foreground/5">
+    <li className="group relative aspect-4/3 overflow-hidden rounded-xl border border-dashed border-strong bg-subtle">
       {item.previewUrl && (
         <Image
           src={item.previewUrl}
@@ -26,7 +26,7 @@ export default function StagedPhotoTile({
           className="object-cover"
         />
       )}
-      <span className="absolute top-2 left-2 rounded-md border border-foreground/15 bg-background px-2 py-0.5 text-xs font-medium">
+      <span className="absolute top-2 left-2 rounded-md border border-default bg-background px-2 py-0.5 text-xs font-medium">
         {badge}
       </span>
       <HoverDeleteButton

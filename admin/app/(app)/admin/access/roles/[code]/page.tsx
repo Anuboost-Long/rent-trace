@@ -36,7 +36,7 @@ async function EditRole({
   const error = roles.error ?? permissions.error;
   if (error) {
     return (
-      <p role="alert" className="mt-4 text-red-600">
+      <p role="alert" className="mt-4 text-error">
         {error.message}
       </p>
     );
@@ -58,11 +58,11 @@ async function EditRole({
     <>
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Roles", href: Route.admin.roles },
           { label: role.name },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">{role.name}</h1>
+      <h1 className="mt-4 mb-6 text-heading">{role.name}</h1>
       <RoleEditor
         role={role}
         roles={roles.data!}

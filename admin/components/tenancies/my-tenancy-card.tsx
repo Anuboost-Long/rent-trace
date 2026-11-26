@@ -28,29 +28,29 @@ export default function MyTenancyCard({
   return (
     <Link
       href={Route.tenant.tenancy(tenancy.id)}
-      className="block rounded-xl border border-foreground/15 p-5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+      className="block rounded-xl border border-default p-5 hover:bg-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
     >
-      <p className="text-xs text-foreground/60">
+      <p className="text-xs text-fg-tertiary">
         {TenantTenancyStatusLabel[tenancy.status]}
       </p>
-      <p className="mt-1 text-lg font-semibold">{placeName(tenancy)}</p>
-      <p className="text-sm text-foreground/70">
+      <p className="mt-1 text-section">{placeName(tenancy)}</p>
+      <p className="text-sm text-fg-secondary">
         {tenancy.unit.name} · {tenancy.property.suburb} {tenancy.property.state}
       </p>
       <dl className="mt-4 space-y-1 text-sm">
         <div className="flex justify-between gap-4">
-          <dt className="text-foreground/60">Dates</dt>
+          <dt className="text-fg-tertiary">Dates</dt>
           <dd>{periodText(tenancy)}</dd>
         </div>
         {tenancy.rent_amount && tenancy.rent_frequency && (
           <div className="flex justify-between gap-4">
-            <dt className="text-foreground/60">Rent</dt>
+            <dt className="text-fg-tertiary">Rent</dt>
             <dd>{formatRent(tenancy.rent_amount, tenancy.rent_frequency)}</dd>
           </div>
         )}
         {tenancy.landlord && (
           <div className="flex justify-between gap-4">
-            <dt className="text-foreground/60">Landlord</dt>
+            <dt className="text-fg-tertiary">Landlord</dt>
             <dd>{tenancy.landlord}</dd>
           </div>
         )}

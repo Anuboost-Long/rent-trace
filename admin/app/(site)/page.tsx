@@ -42,11 +42,11 @@ async function Home() {
     <>
       <section className="mx-auto w-full max-w-7xl px-4 pt-10 pb-10 sm:px-6 lg:pt-16">
         {tenant && (
-          <p className="mb-4 text-sm text-foreground/70">
+          <p className="mb-4 text-sm text-fg-secondary">
             Welcome back, {tenant.first_name}.{" "}
             <Link
               href={Route.tenant.index}
-              className="font-medium text-foreground underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              className="font-medium text-foreground underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
             >
               Go to your tenancy
             </Link>
@@ -55,7 +55,7 @@ async function Home() {
         <h1 className="max-w-4xl text-4xl leading-none font-semibold tracking-tighter text-balance sm:text-6xl lg:text-7xl">
           Rent with a record you can trust.
         </h1>
-        <p className="mt-5 max-w-[52ch] text-lg text-foreground/70">
+        <p className="mt-5 max-w-[52ch] text-lg text-fg-secondary">
           Every rental shows its rent, photos and units up front.
           {!viewer && " No account needed to look around."}
         </p>
@@ -131,9 +131,9 @@ async function NothingListed() {
   const isLandlord = viewer && audienceFor(viewer) === "landlord";
 
   return (
-    <div className="rounded-2xl border border-dashed border-foreground/25 p-10">
+    <div className="rounded-2xl border border-dashed border-strong p-10">
       <p className="text-lg font-medium">No rentals are listed yet.</p>
-      <p className="mt-1 text-foreground/70">
+      <p className="mt-1 text-fg-secondary">
         New listings appear here as soon as landlords publish them.
       </p>
       {(!viewer || isLandlord) && (
@@ -151,7 +151,7 @@ async function NothingListed() {
 const panelButton =
   "mt-8 inline-flex h-11 items-center rounded-lg px-5 text-sm font-semibold hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-background";
 const solidPanelButton = `${panelButton} bg-background text-foreground`;
-const outlinePanelButton = `${panelButton} border border-background/30 text-background`;
+const outlinePanelButton = `${panelButton} border border-on-brand/30 text-on-brand`;
 
 async function TwoSides() {
   const viewer = await getViewer();
@@ -164,12 +164,12 @@ async function TwoSides() {
 
   return (
     <section className="mx-auto mt-24 mb-24 w-full max-w-7xl px-4 sm:px-6">
-      <div className="grid divide-y divide-background/20 overflow-hidden rounded-3xl bg-foreground text-background lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+      <div className="grid divide-y divide-on-brand/20 overflow-hidden rounded-3xl bg-brand text-on-brand lg:grid-cols-2 lg:divide-x lg:divide-y-0">
         <div className="p-8 lg:p-14">
           <h2 className="text-3xl font-semibold tracking-tight">
             Looking for a place?
           </h2>
-          <p className="mt-3 max-w-[44ch] text-background/70">
+          <p className="mt-3 max-w-[44ch] text-on-brand/70">
             Every listing shows its rent, photos and units up front. Browse
             without an account, then sign in when you want to get in touch.
           </p>
@@ -182,7 +182,7 @@ async function TwoSides() {
             <h2 className="text-3xl font-semibold tracking-tight">
               Already renting?
             </h2>
-            <p className="mt-3 max-w-[44ch] text-background/70">
+            <p className="mt-3 max-w-[44ch] text-on-brand/70">
               See your rent, bond and landlord, and report anything that needs
               fixing.
             </p>
@@ -195,7 +195,7 @@ async function TwoSides() {
             <h2 className="text-3xl font-semibold tracking-tight">
               Renting out a property?
             </h2>
-            <p className="mt-3 max-w-[44ch] text-background/70">
+            <p className="mt-3 max-w-[44ch] text-on-brand/70">
               Add your units, photos and rent, then publish when you are ready.
               You decide what the public sees.
             </p>

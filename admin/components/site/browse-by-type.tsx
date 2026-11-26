@@ -14,7 +14,7 @@ export default function BrowseByType() {
           <li key={type.value}>
             <Link
               href={`${Route.listings}?${new URLSearchParams({ type: type.value })}`}
-              className="inline-flex h-9 items-center rounded-full border border-foreground/15 px-4 text-sm font-medium hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+              className="inline-flex h-9 items-center rounded-full border border-default px-4 text-sm font-medium hover:bg-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
             >
               {type.label}
             </Link>

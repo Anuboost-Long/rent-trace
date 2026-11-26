@@ -26,12 +26,12 @@ export default function AcceptInvitation({
 
   return (
     <div className="mt-4">
-      <p className="text-foreground/70">
+      <p className="text-fg-secondary">
         Sign in with the email this invitation was sent to, then accept it to
         join the tenancy.
       </p>
       {error && (
-        <p role="alert" className="mt-4 text-sm text-red-600">
+        <p role="alert" className="mt-4 text-sm text-error">
           {error.message}
         </p>
       )}

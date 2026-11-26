@@ -23,7 +23,7 @@ export default function LoadingVisual({
       )}
     >
       <Spinner />
-      <p className="text-sm text-foreground/70">{message}</p>
+      <p className="text-sm text-fg-secondary">{message}</p>
     </div>
   );
 }

@@ -1,8 +1,10 @@
 import { handleGetIssues } from "@/api/services/maintenance/serve-action";
 import LocalTime from "@/components/common/local-time";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
+import { IssueStatusTone, toneFor } from "@/constants/status-tones";
 import {
   IssuePriorityLabel,
   IssueRoutes,
@@ -38,7 +40,7 @@ const columnsFor = (audience: MaintenanceAudience): Column<IssueSummary>[] => [
         >
           {issue.title}
         </Link>
-        <p className="text-xs text-foreground/60">
+        <p className="text-xs text-fg-tertiary">
           {issue.property.name ?? issue.property.suburb} · {issue.unit.name}
         </p>
       </>
@@ -49,9 +51,11 @@ const columnsFor = (audience: MaintenanceAudience): Column<IssueSummary>[] => [
     header: "Status",
     cell: (issue) => (
       <>
-        {IssueStatusLabel[issue.status]}
+        <StatusBadge tone={toneFor(IssueStatusTone, issue.status)}>
+          {IssueStatusLabel[issue.status]}
+        </StatusBadge>
         {issue.has_open_closure && (
-          <p className="text-xs text-foreground/60">Closure waiting</p>
+          <p className="text-xs text-fg-tertiary">Closure waiting</p>
         )}
       </>
     ),
@@ -101,7 +105,7 @@ async function IssueList({ audience, searchParams }: IssueListProp) {
     <>
       <IssuesFilter audience={audience} status={status} q={q} />
       {error ? (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="text-error">
           {error.message}
         </p>
       ) : (
@@ -116,7 +120,7 @@ async function IssueList({ audience, searchParams }: IssueListProp) {
                 <p className="font-medium">
                   {status ? "No issues with this status" : "No issues yet"}
                 </p>
-                <p className="mt-1 text-sm text-foreground/70">
+                <p className="mt-1 text-sm text-fg-secondary">
                   {audience === "tenant"
                     ? "Report something that needs fixing and your landlord is told."
                     : "When a tenant reports something it shows up here."}

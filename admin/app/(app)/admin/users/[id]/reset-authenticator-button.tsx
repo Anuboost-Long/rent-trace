@@ -46,15 +46,19 @@ export default function ResetAuthenticatorButton({
   return (
     <>
       {hasAuthenticator && (
-        <Button variant="quiet" className="gap-2" onClick={() => setOpen(true)}>
+        <Button
+          variant="secondary"
+          className="w-full gap-2"
+          onClick={() => setOpen(true)}
+        >
           <ShieldOff aria-hidden className="size-4" />
           Reset authenticator
         </Button>
       )}
       {authenticatorWasReset && (
         <Button
-          variant="quiet"
-          className="gap-2"
+          variant="secondary"
+          className="w-full gap-2"
           pending={resending}
           onClick={resend}
         >
@@ -66,8 +70,8 @@ export default function ResetAuthenticatorButton({
         <p
           role="status"
           className={clsx(
-            "order-last basis-full text-sm sm:text-right",
-            emailSent ? "text-foreground/70" : "text-red-600",
+            "text-body-sm",
+            emailSent ? "text-fg-secondary" : "text-red-600",
           )}
         >
           {emailSent

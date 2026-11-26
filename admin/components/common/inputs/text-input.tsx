@@ -58,7 +58,7 @@ export default function TextInput({
             onClick={() => setRevealed((value) => !value)}
             aria-label={revealed ? "Hide password" : "Show password"}
             aria-pressed={revealed}
-            className="text-foreground/70 hover:text-foreground"
+            className="text-fg-secondary hover:text-foreground"
           >
             {revealed ? (
               <EyeOff aria-hidden className="size-4" />

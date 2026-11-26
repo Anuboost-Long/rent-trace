@@ -42,7 +42,7 @@ export default function UnitForm({
           max_occupants: Number(form.get("max_occupants")) || null,
         });
       }}
-      className="mt-4 flex flex-col gap-4 rounded-xl border border-foreground/15 p-4"
+      className="mt-4 flex flex-col gap-4 rounded-xl border border-default p-4"
     >
       <h3 className="text-sm font-semibold">
         {unit ? `Edit ${unit.name}` : "New unit"}
@@ -114,7 +114,7 @@ export default function UnitForm({
         defaultChecked={unit?.is_public}
       />
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

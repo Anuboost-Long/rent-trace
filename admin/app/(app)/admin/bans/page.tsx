@@ -1,9 +1,12 @@
 import { handleGetBans } from "@/api/services/bans/serve-action";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { BanStatusLabel, BanTypeLabel } from "@/constants/security";
+import { BanStatusTone, toneFor } from "@/constants/status-tones";
 import { Route } from "@/constants/web-routes";
 import type { Ban } from "@/types/security/models";
 import type { Metadata } from "next";
@@ -23,8 +26,8 @@ export default function BansPage({
     <>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Bans</h1>
-          <p className="mt-1 text-foreground/70">
+          <h1 className="text-heading">Bans</h1>
+          <p className="mt-1 text-fg-secondary">
             Emails, domains, phone numbers and accounts that are blocked.
           </p>
         </div>
@@ -55,7 +58,7 @@ const columns: Column<Ban>[] = [
           >
             {fullName(ban.user)}
           </Link>
-          <p className="text-xs text-foreground/60">{ban.user.email}</p>
+          <p className="text-xs text-fg-tertiary">{ban.user.email}</p>
         </>
       ) : (
         <span className="font-mono">{ban.value}</span>
@@ -69,7 +72,7 @@ const columns: Column<Ban>[] = [
       <>
         <LocalTime iso={ban.created_at} />
         {ban.created_by && (
-          <p className="text-xs text-foreground/60">
+          <p className="text-xs text-fg-tertiary">
             by {fullName(ban.created_by)}
           </p>
         )}
@@ -85,9 +88,11 @@ const columns: Column<Ban>[] = [
     header: "Status",
     cell: (ban) => (
       <>
-        {BanStatusLabel[ban.status]}
+        <StatusBadge tone={toneFor(BanStatusTone, ban.status)}>
+          {BanStatusLabel[ban.status]}
+        </StatusBadge>
         {ban.status === "LIFTED" && (
-          <p className="text-xs text-foreground/60">
+          <p className="text-xs text-fg-tertiary">
             <LocalTime iso={ban.lifted_at} />
             {ban.lift_reason && ` · ${ban.lift_reason}`}
           </p>
@@ -131,9 +136,7 @@ async function BanList({
     <>
       <BansFilter {...filters} />
       {error ? (
-        <p role="alert" className="text-red-600">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable

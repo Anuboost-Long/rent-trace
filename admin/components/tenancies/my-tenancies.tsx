@@ -13,7 +13,7 @@ export default async function MyTenancies({ showHistory }: MyTenanciesProp) {
   const { data, error } = await handleGetMyTenancies();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -25,13 +25,13 @@ export default async function MyTenancies({ showHistory }: MyTenanciesProp) {
   return (
     <>
       <section aria-labelledby="current-heading">
-        <h2 id="current-heading" className="text-lg font-semibold">
+        <h2 id="current-heading" className="text-section">
           Where you live
         </h2>
         {current.length === 0 ? (
-          <div className="mt-3 rounded-xl border border-foreground/15 p-6">
+          <div className="mt-3 rounded-xl border border-default p-6">
             <p className="font-medium">No current tenancy yet</p>
-            <p className="mt-1 text-sm text-foreground/70">
+            <p className="mt-1 text-sm text-fg-secondary">
               When a landlord adds you to a tenancy it shows up here. Looking
               for a place?
             </p>
@@ -52,27 +52,27 @@ export default async function MyTenancies({ showHistory }: MyTenanciesProp) {
 
       {showHistory && history.length > 0 && (
         <section aria-labelledby="history-heading" className="mt-10">
-          <h2 id="history-heading" className="text-lg font-semibold">
+          <h2 id="history-heading" className="text-section">
             Rental history
           </h2>
-          <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+          <ul className="mt-3 divide-y divide-default rounded-xl border border-default">
             {history.map((tenancy) => (
               <li key={tenancy.id}>
                 <Link
                   href={Route.tenant.tenancy(tenancy.id)}
-                  className="flex flex-wrap items-center justify-between gap-2 p-4 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground"
+                  className="flex flex-wrap items-center justify-between gap-2 p-4 hover:bg-subtle focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border"
                 >
                   <span>
                     <span className="block font-medium">
                       {placeName(tenancy)}, {tenancy.unit.name}
                     </span>
-                    <span className="block text-sm text-foreground/70">
+                    <span className="block text-sm text-fg-secondary">
                       {periodText(tenancy)}
                       {tenancy.left_at &&
                         ` · you left ${formatDate(tenancy.left_at)}`}
                     </span>
                   </span>
-                  <span className="text-sm text-foreground/60">
+                  <span className="text-sm text-fg-tertiary">
                     {TenantTenancyStatusLabel[tenancy.status]}
                   </span>
                 </Link>

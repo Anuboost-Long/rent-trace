@@ -11,12 +11,12 @@ export default function NewPermissionPage() {
     <>
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Team and permissions", href: Route.admin.access },
           { label: "Permissions", href: Route.admin.permissions },
           { label: "New permission" },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">New permission</h1>
+      <h1 className="mt-4 mb-6 text-heading">New permission</h1>
       <PermissionForm permission={null} />
     </>
   );

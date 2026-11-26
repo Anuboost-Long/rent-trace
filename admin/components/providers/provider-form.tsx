@@ -130,22 +130,22 @@ export default function ProviderForm({
           ))}
         </div>
         {fields.category_codes && (
-          <p className="mt-1 text-sm text-red-600">{fields.category_codes}</p>
+          <p className="mt-1 text-sm text-error">{fields.category_codes}</p>
         )}
       </fieldset>
 
       <fieldset>
         <legend className="text-sm font-medium">Properties they serve</legend>
-        <p className="mt-1 mb-2 text-sm text-foreground/70">
+        <p className="mt-1 mb-2 text-sm text-fg-secondary">
           Tenants see their contact details for these properties. Notes about
           their contract stay private to you.
         </p>
         {properties.length === 0 ? (
-          <p className="text-sm text-foreground/60">
+          <p className="text-sm text-fg-tertiary">
             Add a property first to link them to it.
           </p>
         ) : (
-          <ul className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+          <ul className="divide-y divide-default rounded-xl border border-default">
             {properties.map((property) => (
               <PropertyLinkFields
                 key={property.id}
@@ -156,12 +156,12 @@ export default function ProviderForm({
           </ul>
         )}
         {fields.properties && (
-          <p className="mt-1 text-sm text-red-600">{fields.properties}</p>
+          <p className="mt-1 text-sm text-error">{fields.properties}</p>
         )}
       </fieldset>
 
       {error && Object.keys(fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

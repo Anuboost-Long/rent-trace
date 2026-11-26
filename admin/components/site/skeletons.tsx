@@ -1,5 +1,4 @@
-const block =
-  "animate-pulse rounded-2xl bg-foreground/5 motion-reduce:animate-none";
+const block = "animate-pulse rounded-2xl bg-subtle motion-reduce:animate-none";
 
 export function CardGridSkeleton({ count = 6 }: Readonly<{ count?: number }>) {
   return (
@@ -48,7 +47,7 @@ export function ListingDetailSkeleton() {
           <div className={`${block} mt-6 h-4 w-full max-w-prose`} />
           <div className={`${block} mt-2 h-4 w-4/5 max-w-prose`} />
           <div className={`${block} mt-10 h-6 w-40`} />
-          <div className="mt-4 divide-y divide-foreground/15 rounded-2xl border border-foreground/15">
+          <div className="mt-4 divide-y divide-default rounded-2xl border border-default">
             {[0, 1].map((index) => (
               <div key={index} className="flex justify-between gap-6 p-5">
                 <div className="flex-1">

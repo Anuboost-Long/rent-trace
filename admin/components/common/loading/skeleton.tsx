@@ -7,7 +7,7 @@ export default function Skeleton({ className }: SkeletonProp) {
     <div
       aria-hidden
       className={clsx(
-        "rounded-md bg-foreground/10",
+        "rounded-md bg-muted",
         "motion-safe:animate-pulse",
         className,
       )}

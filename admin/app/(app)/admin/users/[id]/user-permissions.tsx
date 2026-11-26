@@ -38,25 +38,25 @@ export default function UserPermissionsSection({
   );
 
   return (
-    <section className="mt-10">
-      <h2 className="text-lg font-semibold">Permissions</h2>
-      <p className="mt-1 mb-4 text-sm text-foreground/70">
+    <section className="rounded-xl border border-default bg-background p-5">
+      <h2 className="text-section">Permissions</h2>
+      <p className="mt-1 mb-4 text-sm text-fg-secondary">
         {data.roles.join(", ") || "No role"} gives the access below. Individual
         grants add to it.
       </p>
 
-      <div className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+      <div className="divide-y divide-default rounded-xl border border-default">
         <div className="p-4">
           <h3 className="mb-2 text-sm font-medium">From their role</h3>
           {throughRoles.length === 0 ? (
-            <p className="text-sm text-foreground/70">
+            <p className="text-sm text-fg-secondary">
               Nothing from their role.
             </p>
           ) : (
             <dl className="grid gap-2 text-sm sm:grid-cols-[8rem_1fr]">
               {throughRoles.map(([module, items]) => (
                 <div key={module} className="contents">
-                  <dt className="text-foreground/70 capitalize">{module}</dt>
+                  <dt className="text-fg-secondary capitalize">{module}</dt>
                   <dd>{items?.map((item) => item.name).join(", ")}</dd>
                 </div>
               ))}
@@ -67,12 +67,12 @@ export default function UserPermissionsSection({
         <div className="p-4">
           <h3 className="mb-2 text-sm font-medium">Individual grants</h3>
           {activeGrants.length === 0 ? (
-            <p className="text-sm text-foreground/70">
+            <p className="text-sm text-fg-secondary">
               No individual grants. Add one below when {name} needs something
               their role doesn&apos;t give.
             </p>
           ) : (
-            <ul className="divide-y divide-foreground/15">
+            <ul className="divide-y divide-default">
               {activeGrants.map((item) => (
                 <li
                   key={item.code}
@@ -80,7 +80,7 @@ export default function UserPermissionsSection({
                 >
                   <div className="text-sm">
                     <p className="font-medium">{item.name}</p>
-                    <p className="text-foreground/70">
+                    <p className="text-fg-secondary">
                       {item.reason} · <LocalTime iso={item.created_at} />
                     </p>
                   </div>
@@ -133,7 +133,7 @@ export default function UserPermissionsSection({
             Add grant
           </Button>
           {error && Object.keys(error.fields).length === 0 && (
-            <p role="alert" className="text-sm text-red-600 sm:col-span-3">
+            <p role="alert" className="text-sm text-error sm:col-span-3">
               {error.message}
             </p>
           )}

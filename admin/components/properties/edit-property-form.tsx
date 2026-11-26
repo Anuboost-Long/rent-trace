@@ -56,7 +56,7 @@ export default function EditPropertyForm({
       />
       <PropertyFields defaults={property} error={error} />
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}

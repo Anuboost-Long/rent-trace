@@ -38,3 +38,6 @@ export const BanDurationLabel: Record<string, string> = {
   "30": "30 days",
   "90": "90 days",
 };
+
+// Added to the sign-in URL as `reason` when a signed-in session could not be refreshed.
+export const SESSION_ENDED = "session_ended";

@@ -1,5 +1,21 @@
 # Authentication and sessions
 
+## Status — 25 November 2026 (Figma look for log in and MFA)
+
+The sign-in, MFA and other auth cards were restyled to the Figma screens (see
+[Admin design alignment](admin-design-alignment.md)). Type-checked and linted; **not seen in a
+browser yet.** What changed for the person signing in:
+
+- The page says **Log in** (was "Sign in"). If the URL has `?reason=session_ended`, a "Your session
+  ended" notice shows above the form. The proxy (`admin/proxy.ts`) adds that reason when the API
+  refuses to refresh a session the person had, but not when the API can't be reached. A 401 from a
+  server action that redirects to log in adds it too.
+- **Setting up MFA** starts straight away and shows numbered steps: scan the QR code (or type the
+  key, shown in groups of four), then enter the 6-digit code in six boxes.
+- **Entering a code** uses the same six boxes, with "Use a backup code" to switch to a plain text
+  field and "Back to log in" to sign out.
+- **Backup codes** show in a two-column grid with Copy, Download (a `.txt` file) and Continue.
+
 ## Status — 18 November 2026 (forgot and reset password)
 
 Built. 8 new back-end tests pass (and all 81 in accounts); ruff, the migration check and the
@@ -80,6 +96,8 @@ safely across devices, and admins get an extra two-step check.
 - **API key:** every `/api/` request needs `X-API-Key`; the docs pages are exempt.
 - **Sign out, change password** (optionally signing out other devices), and
   `GET me/` returning roles, join date, last sign-in and effective permissions.
+  In the sidebar shell, **Log out** opens a confirm dialog before the session is
+  cleared.
 - **Changing email is not allowed** yet.
 
 Admin app screens: sign-in, sign-up with a check-your-email step, email

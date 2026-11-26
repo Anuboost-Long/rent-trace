@@ -1,6 +1,8 @@
 "use client";
 import Button from "@/components/common/button";
-import { useEffect, useRef } from "react";
+import type { ButtonVariant } from "@/components/common/button-class-name";
+import TextAreaInput from "@/components/common/inputs/text-area-input";
+import { useEffect, useRef, useState } from "react";
 
 type ConfirmDialogProp = Readonly<{
   open: boolean;
@@ -8,11 +10,14 @@ type ConfirmDialogProp = Readonly<{
   message: string;
   confirmLabel: string;
   cancelLabel?: string;
+  confirmVariant?: ButtonVariant;
   pending?: boolean;
   error?: string;
   confirmDisabled?: boolean;
+  // Asks for a reason, which must be filled in before confirming. It is passed to onConfirm.
+  reasonLabel?: string;
   children?: React.ReactNode;
-  onConfirm: () => void;
+  onConfirm: (reason: string) => void;
   onCancel: () => void;
 }>;
 
@@ -22,19 +27,26 @@ export default function ConfirmDialog({
   message,
   confirmLabel,
   cancelLabel = "Cancel",
+  confirmVariant = "primary",
   pending,
   error,
   confirmDisabled,
+  reasonLabel,
   children,
   onConfirm,
   onCancel,
 }: ConfirmDialogProp) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [reason, setReason] = useState("");
+  const missingReason = reasonLabel !== undefined && reason.trim() === "";
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      setReason("");
+      dialog.showModal();
+    }
     if (!open && dialog.open) dialog.close();
   }, [open]);
 
@@ -53,27 +65,40 @@ export default function ConfirmDialog({
       ref={dialogRef}
       onClose={onCancel}
       aria-labelledby="confirm-title"
-      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-foreground/15 bg-background p-0 text-left text-foreground backdrop:bg-black/40"
+      className="m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-default bg-background p-0 text-left text-foreground shadow-medium backdrop:bg-black/40"
     >
       <div className="p-6">
-        <h2 id="confirm-title" className="text-lg font-semibold">
+        <h2 id="confirm-title" className="text-section">
           {title}
         </h2>
-        <p className="mt-2 text-foreground/70">{message}</p>
+        <p className="mt-2 text-body-sm text-fg-secondary">{message}</p>
         {children && <div className="mt-4">{children}</div>}
+        {reasonLabel !== undefined && (
+          <div className="mt-4">
+            <TextAreaInput
+              name="confirm-reason"
+              label={reasonLabel}
+              required
+              maxLength={500}
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+            />
+          </div>
+        )}
         {error && (
-          <p role="alert" className="mt-3 text-sm text-red-600">
+          <p role="alert" className="mt-3 text-sm text-error">
             {error}
           </p>
         )}
         <div className="mt-6 flex justify-end gap-3">
-          <Button variant="quiet" onClick={onCancel} disabled={pending}>
+          <Button variant="secondary" onClick={onCancel} disabled={pending}>
             {cancelLabel}
           </Button>
           <Button
-            onClick={onConfirm}
+            variant={confirmVariant}
+            onClick={() => onConfirm(reason.trim())}
             pending={pending}
-            disabled={confirmDisabled}
+            disabled={confirmDisabled || missingReason}
           >
             {confirmLabel}
           </Button>

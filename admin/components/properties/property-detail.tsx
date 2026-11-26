@@ -46,7 +46,7 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
   if (error?.status === 404) notFound();
   if (error) {
     return (
-      <p role="alert" className="text-red-600">
+      <p role="alert" className="text-error">
         {error.message}
       </p>
     );
@@ -65,7 +65,7 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
         : property.owners.map((entry) => (
             <p key={entry.owner.id}>
               {ownerName(entry.owner)}{" "}
-              <span className="text-foreground/60">({entry.owner.email})</span>
+              <span className="text-fg-tertiary">({entry.owner.email})</span>
             </p>
           )),
     ],
@@ -87,7 +87,7 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
         ]}
       />
       <div className="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{title}</h1>
+        <h1 className="text-heading">{title}</h1>
         <Can permission={access.update}>
           <div className="flex gap-2">
             <Can permission={TenancyAccess[audience].create}>
@@ -114,10 +114,10 @@ async function PropertyDetail({ audience, params }: PropertyDetailProp) {
           </div>
         </Can>
       </div>
-      <dl className="divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+      <dl className="divide-y divide-default rounded-xl border border-default">
         {details.map(([label, value]) => (
           <div key={label} className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">
-            <dt className="text-sm text-foreground/70">{label}</dt>
+            <dt className="text-sm text-fg-secondary">{label}</dt>
             <dd className="whitespace-pre-line">{value}</dd>
           </div>
         ))}

@@ -1,88 +1,122 @@
-import { handleGetRoles } from "@/api/services/access/serve-action";
-import ButtonLink from "@/components/common/button-link";
-import Can from "@/components/common/can";
+import { handleGetPermissions } from "@/api/services/access/serve-action";
+import LoadError from "@/components/common/load-error";
+import LocalTime from "@/components/common/local-time";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
-import type { RoleItem } from "@/types/access/models";
-import { Plus } from "lucide-react";
+import { getMe } from "@/utils/viewer";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 
-export const metadata: Metadata = { title: "Access · RentTrace" };
+import { getAdminTeam, type TeamMember } from "./admin-team";
 
-export default function AccessPage() {
+export const metadata: Metadata = { title: "Team and permissions · RentTrace" };
+
+// How many permission chips a row shows before "+ N more".
+const SHOWN_PERMISSIONS = 6;
+
+export default function TeamPage() {
   return (
     <>
-      <div className="mb-4 flex justify-end">
-        <Can permission="access.manage">
-          <ButtonLink href={Route.admin.role_new} className="gap-2">
-            <Plus aria-hidden className="size-4" />
-            New role
-          </ButtonLink>
-        </Can>
-      </div>
+      <h1 className="sr-only">Team and permissions</h1>
+      <p className="mb-5 rounded-xl border border-default bg-background px-4 py-3 text-body-sm text-fg-secondary">
+        Admin accounts are created by RentTrace operations, not through sign-up.
+        Each admin only has the permissions shown here. You can&apos;t change
+        your own permissions.
+      </p>
       <Suspense fallback={<ListSkeleton />}>
-        <Roles />
+        <Team />
       </Suspense>
     </>
   );
 }
 
-async function Roles() {
-  const { data: roles, error } = await handleGetRoles();
+async function Team() {
+  const [{ data: team, error }, catalogue, { data: me }] = await Promise.all([
+    getAdminTeam(),
+    handleGetPermissions(),
+    getMe(),
+  ]);
   if (error) {
-    return (
-      <p role="alert" className="text-red-600">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
-  const nameOf = (code: string | null) =>
-    roles.find((role) => role.code === code)?.name ?? "—";
+  const nameOf = (code: string) =>
+    catalogue.data?.find((permission) => permission.code === code)?.name ??
+    code;
 
-  const columns: Column<RoleItem>[] = [
+  const columns: Column<TeamMember>[] = [
     {
-      header: "Role",
-      cell: (role) => (
+      header: "Admin",
+      cell: ({ user }) => (
         <>
-          <Link
-            href={Route.admin.role(role.code)}
-            className="font-medium underline-offset-2 hover:underline"
-          >
-            {role.name}
-          </Link>
-          {role.is_system && (
-            <span className="ml-2 text-xs text-foreground/60">Built in</span>
-          )}
+          <span className="block font-medium">
+            {user.first_name} {user.last_name}
+            {user.id === me?.id && " (you)"}
+          </span>
+          <span className="block text-caption font-normal text-fg-secondary">
+            {user.email}
+          </span>
         </>
       ),
     },
     {
-      header: "Type",
-      cell: (role) => (role.kind === "ADMIN" ? "Admin" : "Tenant or landlord"),
-    },
-    { header: "Inherits from", cell: (role) => nameOf(role.parent) },
-    {
       header: "Permissions",
-      cell: (role) =>
-        role.permissions.length + role.inherited_permissions.length,
+      cell: ({ user, access }) => {
+        if (user.is_top_level_admin)
+          return <PermissionChip>All permissions (super admin)</PermissionChip>;
+        const codes = access?.effective ?? [];
+        if (codes.length === 0)
+          return <span className="text-fg-tertiary">None</span>;
+        return (
+          <ul className="flex flex-wrap gap-1.5">
+            {codes.slice(0, SHOWN_PERMISSIONS).map((code) => (
+              <li key={code}>
+                <PermissionChip>{nameOf(code)}</PermissionChip>
+              </li>
+            ))}
+            {codes.length > SHOWN_PERMISSIONS && (
+              <li className="self-center text-caption text-fg-secondary">
+                + {codes.length - SHOWN_PERMISSIONS} more
+              </li>
+            )}
+          </ul>
+        );
+      },
     },
-    { header: "People", cell: (role) => role.holder_count },
     {
-      header: "Status",
-      cell: (role) => (role.is_active ? "Active" : "Inactive"),
+      header: "MFA",
+      cell: ({ user }) =>
+        user.has_authenticator ? (
+          <StatusBadge tone="success">On</StatusBadge>
+        ) : (
+          <StatusBadge tone="warning">Setup pending</StatusBadge>
+        ),
+    },
+    {
+      header: "Last active",
+      className: "whitespace-nowrap",
+      cell: ({ user }) =>
+        user.last_login_at ? <LocalTime iso={user.last_login_at} /> : "Never",
     },
   ];
 
   return (
     <DataTable
-      caption="Roles"
+      caption="Admins"
       columns={columns}
-      rows={roles}
-      rowKey={(role) => role.code}
-      empty={<p className="font-medium">No roles yet</p>}
+      rows={team}
+      rowKey={({ user }) => user.id}
+      rowHref={({ user }) => Route.admin.admin_permissions(user.id)}
+      empty={<p className="font-medium">No admins yet</p>}
     />
+  );
+}
+
+function PermissionChip({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <StatusBadge tone="neutral" className="font-normal">
+      {children}
+    </StatusBadge>
   );
 }

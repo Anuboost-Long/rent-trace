@@ -4,13 +4,22 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type NavLinkProp = Readonly<{ item: NavItem; onNavigate?: () => void }>;
+export type SidebarTone = "admin" | "default";
 
-export default function NavLink({ item, onNavigate }: NavLinkProp) {
-  const pathname = usePathname();
-  const isActive = item.exact
+type NavLinkProp = Readonly<{
+  item: NavItem;
+  tone: SidebarTone;
+  onNavigate?: () => void;
+}>;
+
+export const isNavItemActive = (item: NavItem, pathname: string) =>
+  item.exact
     ? pathname === item.href
     : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+export default function NavLink({ item, tone, onNavigate }: NavLinkProp) {
+  const isActive = isNavItemActive(item, usePathname());
+  const isAdmin = tone === "admin";
 
   return (
     <Link
@@ -19,12 +28,22 @@ export default function NavLink({ item, onNavigate }: NavLinkProp) {
       onClick={onNavigate}
       aria-current={isActive ? "page" : undefined}
       className={clsx(
-        "flex h-10 items-center rounded-lg",
-        isActive && "bg-foreground/10",
-        "px-2.5 group-data-collapsed:justify-center group-data-collapsed:px-0",
-        "text-sm",
-        isActive ? "font-semibold" : "text-foreground/70",
-        "hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-foreground",
+        "flex h-10 items-center rounded-lg text-body-sm",
+        "px-3 group-data-collapsed:justify-center group-data-collapsed:px-0",
+        "focus-visible:outline-2 focus-visible:outline-offset-2",
+        isAdmin
+          ? [
+              "focus-visible:outline-on-brand",
+              isActive
+                ? "bg-admin-active font-medium text-on-brand"
+                : "text-on-brand/85 hover:bg-admin-active/60",
+            ]
+          : [
+              "focus-visible:outline-brand-border",
+              isActive
+                ? "bg-brand-subtle font-medium text-admin-text"
+                : "text-fg-secondary hover:bg-subtle",
+            ],
       )}
     >
       <item.icon aria-hidden className="size-5 shrink-0" />

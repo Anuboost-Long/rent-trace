@@ -9,10 +9,10 @@ export default async function MyInvitations() {
 
   return (
     <section aria-labelledby="invitations-heading" className="mb-10">
-      <h2 id="invitations-heading" className="text-lg font-semibold">
+      <h2 id="invitations-heading" className="text-section">
         Invitations waiting for you
       </h2>
-      <ul className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+      <ul className="mt-3 divide-y divide-default rounded-xl border border-default">
         {data.map((invitation) => (
           <li
             key={invitation.id}
@@ -22,7 +22,7 @@ export default async function MyInvitations() {
               <p className="font-medium">
                 {invitation.property_name}, {invitation.unit_name}
               </p>
-              <p className="text-sm text-foreground/70">
+              <p className="text-sm text-fg-secondary">
                 {invitation.invited_by
                   ? `${invitation.invited_by} invited you`
                   : "You've been invited"}

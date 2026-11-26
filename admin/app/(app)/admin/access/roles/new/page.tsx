@@ -2,6 +2,7 @@ import {
   handleGetPermissions,
   handleGetRoles,
 } from "@/api/services/access/serve-action";
+import LoadError from "@/components/common/load-error";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { FormSkeleton } from "@/components/layout/page-skeletons";
 import { Route } from "@/constants/web-routes";
@@ -17,11 +18,11 @@ export default function NewRolePage() {
     <>
       <Breadcrumbs
         trail={[
-          { label: "Access", href: Route.admin.access },
+          { label: "Roles", href: Route.admin.roles },
           { label: "New role" },
         ]}
       />
-      <h1 className="mt-4 mb-6 text-2xl font-semibold">New role</h1>
+      <h1 className="mt-4 mb-6 text-heading">New role</h1>
       <Suspense fallback={<FormSkeleton />}>
         <NewRole />
       </Suspense>
@@ -36,11 +37,7 @@ async function NewRole() {
   ]);
   const error = roles.error ?? permissions.error;
   if (error) {
-    return (
-      <p role="alert" className="text-red-600">
-        {error.message}
-      </p>
-    );
+    return <LoadError error={error} />;
   }
   return (
     <RoleEditor

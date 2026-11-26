@@ -177,7 +177,7 @@ export default function ComboboxInput({
           id={listId}
           role="listbox"
           aria-label={label}
-          className="absolute top-full z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-foreground/15 bg-background p-1"
+          className="absolute top-full z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-default bg-background p-1"
         >
           {visible.map((option, index) => (
             <li
@@ -190,12 +190,12 @@ export default function ComboboxInput({
               onClick={() => choose(option)}
               className={clsx(
                 "flex h-10 cursor-pointer items-center justify-between gap-3 rounded-md px-3 text-sm",
-                index === activeIndex && "bg-foreground/10",
+                index === activeIndex && "bg-muted",
                 option.value === value && "font-semibold",
               )}
             >
               <span className="truncate">{option.label}</span>
-              <span className="flex shrink-0 items-center gap-2 text-foreground/60">
+              <span className="flex shrink-0 items-center gap-2 text-fg-tertiary">
                 {option.hint}
                 {option.value === value && (
                   <Check aria-hidden className="size-4" />
@@ -206,7 +206,7 @@ export default function ComboboxInput({
           {(loading || visible.length === 0) && (
             <li
               role="presentation"
-              className="px-3 py-2 text-sm text-foreground/60"
+              className="px-3 py-2 text-sm text-fg-tertiary"
             >
               <span role="status">{loading ? "Searching…" : emptyMessage}</span>
             </li>

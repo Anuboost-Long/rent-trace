@@ -5,7 +5,7 @@ type CheckInputProp = Readonly<
 export default function CheckInput({ label, ...props }: CheckInputProp) {
   return (
     <label className="flex items-center gap-2">
-      <input {...props} type="checkbox" className="size-4 accent-foreground" />
+      <input {...props} type="checkbox" className="size-4 accent-brand" />
       {label}
     </label>
   );

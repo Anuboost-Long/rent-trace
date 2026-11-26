@@ -16,3 +16,8 @@ export const canDeleteUser = (actor: Actor, target: Target) =>
   actor.permissions.includes("accounts.delete") &&
   actor.id !== target.id &&
   !target.is_top_level_admin;
+
+export const canBanUser = (actor: Actor, target: Target) =>
+  actor.permissions.includes("bans.manage") &&
+  actor.id !== target.id &&
+  !target.is_top_level_admin;

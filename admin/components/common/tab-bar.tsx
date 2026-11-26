@@ -55,10 +55,10 @@ export default function TabBar({
               className={clsx(
                 "flex h-12 items-center px-3 text-sm whitespace-nowrap",
                 "transition-colors duration-200 motion-reduce:transition-none",
-                "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground",
+                "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border",
                 tab.active
-                  ? "font-semibold"
-                  : "text-foreground/70 hover:text-foreground",
+                  ? "font-semibold text-fg-brand"
+                  : "text-fg-secondary hover:text-foreground",
               )}
             >
               {tab.label}
@@ -69,7 +69,7 @@ export default function TabBar({
           <span
             aria-hidden
             className={clsx(
-              "pointer-events-none absolute bottom-0 left-0 h-0.5 bg-foreground",
+              "pointer-events-none absolute bottom-0 left-0 h-0.5 bg-brand-border",
               "transition-[translate,width] duration-300 ease-out motion-reduce:transition-none",
             )}
             style={{

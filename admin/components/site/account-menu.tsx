@@ -14,7 +14,7 @@ type AccountMenuProp = Readonly<{
 }>;
 
 const itemClassName =
-  "flex h-10 w-full items-center gap-2 rounded-lg px-3 text-sm hover:bg-foreground/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground";
+  "flex h-10 w-full items-center gap-2 rounded-lg px-3 text-sm hover:bg-subtle focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-border";
 
 export default function AccountMenu({
   name,
@@ -44,10 +44,10 @@ export default function AccountMenu({
 
   return (
     <details ref={menuRef} className="group relative">
-      <summary className="flex h-10 cursor-pointer list-none items-center gap-2 rounded-lg border border-foreground/15 pr-2 pl-1.5 hover:bg-foreground/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground">
+      <summary className="flex h-10 cursor-pointer list-none items-center gap-2 rounded-lg border border-default pr-2 pl-1.5 hover:bg-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border">
         <span
           aria-hidden
-          className="flex size-7 items-center justify-center rounded-md bg-foreground text-sm font-semibold text-background"
+          className="flex size-7 items-center justify-center rounded-md bg-brand text-sm font-semibold text-on-brand"
         >
           {name.charAt(0).toUpperCase()}
         </span>
@@ -60,11 +60,11 @@ export default function AccountMenu({
         />
         <span className="sr-only">Account menu</span>
       </summary>
-      <div className="absolute right-0 z-40 mt-2 w-64 animate-panel-in rounded-xl border border-foreground/15 bg-background p-2 motion-reduce:animate-none">
-        <div className="border-b border-foreground/15 px-3 pt-1 pb-3">
+      <div className="absolute right-0 z-40 mt-2 w-64 animate-panel-in rounded-xl border border-default bg-background p-2 motion-reduce:animate-none">
+        <div className="border-b border-default px-3 pt-1 pb-3">
           <p className="truncate font-medium">{name}</p>
-          <p className="truncate text-sm text-foreground/70">{email}</p>
-          <p className="mt-1 text-xs text-foreground/60">{roleLabel}</p>
+          <p className="truncate text-sm text-fg-secondary">{email}</p>
+          <p className="mt-1 text-xs text-fg-tertiary">{roleLabel}</p>
         </div>
         <div className="mt-2 flex flex-col">
           <Link href={homeHref} className={itemClassName}>

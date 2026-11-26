@@ -5,6 +5,7 @@ import {
   REFRESH_COOKIE,
   setSessionCookies,
 } from "@/api/services/auth/session-cookies";
+import { SESSION_ENDED } from "@/constants/security";
 import { Route } from "@/constants/web-routes";
 import type { SignedIn } from "@/types/auth/models";
 import { isApiKeyFailure, logApiKeyFailure } from "@/utils/api-key-failure";
@@ -14,16 +15,18 @@ const isPublicPage = (req: NextRequest) =>
   req.nextUrl.pathname === Route.home ||
   req.nextUrl.pathname.startsWith(Route.listings);
 
-const redirectToSignIn = (req: NextRequest) => {
+const redirectToSignIn = (req: NextRequest, sessionEnded = false) => {
   const url = new URL(Route.auth.sign_in, req.url);
   url.searchParams.set("redirect", req.nextUrl.pathname + req.nextUrl.search);
+  if (sessionEnded) url.searchParams.set("reason", SESSION_ENDED);
   const response = NextResponse.redirect(url);
   clearSessionCookies(response.cookies);
   return response;
 };
 
-const withoutSession = (req: NextRequest) => {
-  if (!isPublicPage(req)) return redirectToSignIn(req);
+// `sessionEnded`: the API refused to refresh a session the person had, e.g. it expired or was revoked.
+const withoutSession = (req: NextRequest, sessionEnded: boolean) => {
+  if (!isPublicPage(req)) return redirectToSignIn(req, sessionEnded);
   const response = NextResponse.next();
   clearSessionCookies(response.cookies);
   return response;
@@ -66,7 +69,7 @@ export async function proxy(req: NextRequest) {
       logApiKeyFailure();
       return NextResponse.next();
     }
-    return withoutSession(req);
+    return withoutSession(req, refreshed !== null);
   }
 
   const signedIn = (await refreshed.json()) as SignedIn;

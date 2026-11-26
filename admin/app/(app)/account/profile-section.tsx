@@ -22,7 +22,7 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
   return (
     <section aria-labelledby="profile-heading">
       <div className="flex items-center justify-between gap-4">
-        <h2 id="profile-heading" className="text-lg font-semibold">
+        <h2 id="profile-heading" className="text-section">
           Profile
         </h2>
         {!editing && (
@@ -49,7 +49,7 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
               phone_number: String(form.get("phone_number") ?? ""),
             });
           }}
-          className="mt-3 flex flex-col gap-4 rounded-xl border border-foreground/15 p-4"
+          className="mt-3 flex flex-col gap-4 rounded-xl border border-default p-4"
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <TextInput
@@ -77,11 +77,11 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
             defaultValue={user.phone_number ?? ""}
             error={error?.fields.phone_number}
           />
-          <p className="text-sm text-foreground/70">
+          <p className="text-sm text-fg-secondary">
             Your email is how you sign in, so it can&apos;t be changed here.
           </p>
           {error && Object.keys(error.fields).length === 0 && (
-            <p role="alert" className="text-sm text-red-600">
+            <p role="alert" className="text-sm text-error">
               {error.message}
             </p>
           )}
@@ -95,7 +95,7 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
           </div>
         </form>
       ) : (
-        <dl className="mt-3 divide-y divide-foreground/15 rounded-xl border border-foreground/15">
+        <dl className="mt-3 divide-y divide-default rounded-xl border border-default">
           <Row label="Name">
             {user.first_name} {user.last_name}
           </Row>
@@ -112,7 +112,7 @@ function Row({
 }: Readonly<{ label: string; children: React.ReactNode }>) {
   return (
     <div className="grid gap-1 p-4 sm:grid-cols-[12rem_1fr]">
-      <dt className="text-sm text-foreground/70">{label}</dt>
+      <dt className="text-sm text-fg-secondary">{label}</dt>
       <dd>{children}</dd>
     </div>
   );

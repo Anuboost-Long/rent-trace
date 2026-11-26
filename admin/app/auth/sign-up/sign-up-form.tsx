@@ -65,18 +65,18 @@ export default function SignUpForm({ onSent }: SignUpFormProp) {
         <RadioInput name="role" value="TENANT" label="Tenant" defaultChecked />
         <RadioInput name="role" value="LANDLORD" label="Landlord" />
         {error?.fields.role && (
-          <p className="text-sm text-red-600">{error.fields.role}</p>
+          <p className="text-sm text-error">{error.fields.role}</p>
         )}
       </fieldset>
       {error && Object.keys(error.fields).length === 0 && (
-        <p role="alert" className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-error">
           {error.message}
         </p>
       )}
       <Button type="submit" pending={pending}>
         {pending ? "Creating account…" : "Create account"}
       </Button>
-      <p className="text-sm text-foreground/70">
+      <p className="text-sm text-fg-secondary">
         Already have an account?{" "}
         <Link href={Route.auth.sign_in} className="font-medium underline">
           Sign in

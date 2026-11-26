@@ -1,11 +1,14 @@
 import { handleGetAdminContactRequests } from "@/api/services/contact-requests/serve-action";
+import LoadError from "@/components/common/load-error";
 import LocalTime from "@/components/common/local-time";
+import StatusBadge from "@/components/common/status-badge";
 import DataTable, { type Column } from "@/components/common/table/data-table";
 import Pagination from "@/components/common/table/pagination";
 import RequestsFilter from "@/components/contact-requests/requests-filter";
 import PageHeader from "@/components/layout/page-header";
 import { ListSkeleton } from "@/components/layout/page-skeletons";
 import { ContactRequestStatusLabel } from "@/constants/contact-requests";
+import { ContactRequestStatusTone, toneFor } from "@/constants/status-tones";
 import { Route } from "@/constants/web-routes";
 import type { AdminContactRequest } from "@/types/contact-requests/models";
 import type { Metadata } from "next";
@@ -26,7 +29,7 @@ const columns: Column<AdminContactRequest>[] = [
     cell: (request) => (
       <>
         <p className="font-medium">{request.listing.title}</p>
-        <p className="text-xs text-foreground/60">
+        <p className="text-xs text-fg-tertiary">
           {request.unit ? `${request.unit.name}, ` : ""}
           {request.listing.suburb} {request.listing.state}
         </p>
@@ -49,9 +52,11 @@ const columns: Column<AdminContactRequest>[] = [
     header: "Status",
     cell: (request) => (
       <>
-        {ContactRequestStatusLabel[request.status]}
+        <StatusBadge tone={toneFor(ContactRequestStatusTone, request.status)}>
+          {ContactRequestStatusLabel[request.status]}
+        </StatusBadge>
         {request.decided_at && (
-          <p className="text-xs text-foreground/60">
+          <p className="text-xs text-fg-tertiary">
             <LocalTime iso={request.decided_at} />
           </p>
         )}
@@ -105,9 +110,7 @@ async function Requests({
         canSearch
       />
       {error ? (
-        <p role="alert" className="text-red-600">
-          {error.message}
-        </p>
+        <LoadError error={error} />
       ) : (
         <>
           <DataTable
@@ -118,7 +121,7 @@ async function Requests({
             empty={
               <>
                 <p className="font-medium">No requests found</p>
-                <p className="mt-1 text-foreground/70">
+                <p className="mt-1 text-fg-secondary">
                   They appear here when a tenant asks about a listed property.
                 </p>
               </>

@@ -48,14 +48,14 @@ export default function TermChangeReview({
   return (
     <section
       aria-labelledby="review-heading"
-      className="mb-8 rounded-xl border border-foreground/15 p-5"
+      className="mb-8 rounded-xl border border-default p-5"
     >
-      <h2 id="review-heading" className="text-lg font-semibold">
+      <h2 id="review-heading" className="text-section">
         {expired
           ? "A proposed change expired"
           : "Your landlord proposed a change"}
       </h2>
-      <p className="mt-1 text-sm text-foreground/70">
+      <p className="mt-1 text-sm text-fg-secondary">
         {expired ? (
           "Nobody answered in time, so nothing changed. Your landlord can send it again."
         ) : (

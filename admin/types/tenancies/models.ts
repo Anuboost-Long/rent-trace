@@ -115,6 +115,7 @@ export type TenancyFilters = {
   q?: string;
   status?: string;
   page?: number;
+  page_size?: number;
 };
 
 export type TenancyTerms = {
