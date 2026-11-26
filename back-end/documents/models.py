@@ -12,6 +12,26 @@ class DocumentType(models.TextChoices):
     OTHER = "OTHER"
 
 
+class DocumentQuerySet(models.QuerySet):
+    def on_unit(self, unit_id):
+        return self.filter(property_unit_id=unit_id, deleted_at__isnull=True)
+
+    def on_tenancy(self, tenancy_id):
+        return self.filter(tenancy_id=tenancy_id, deleted_at__isnull=True)
+
+    def with_versions(self):
+        return self.select_related("current_version").prefetch_related(
+            models.Prefetch(
+                "versions",
+                queryset=DocumentVersion.objects.select_related(
+                    "uploaded_by", "confirmation_request"
+                )
+                .prefetch_related("files__file", "confirmation_request__decisions")
+                .order_by("version_no"),
+            )
+        )
+
+
 class Document(MutableRecord):
     property_unit = models.ForeignKey(
         "properties.PropertyUnit", models.PROTECT, related_name="documents"
@@ -19,10 +39,19 @@ class Document(MutableRecord):
     tenancy = models.ForeignKey(
         "tenancies.Tenancy", models.PROTECT, null=True, blank=True, related_name="documents"
     )
+    maintenance_issue = models.ForeignKey(
+        "maintenance.MaintenanceIssue",
+        models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="documents",
+    )
     document_type = models.TextField(choices=DocumentType)
     current_version = models.ForeignKey(
         "DocumentVersion", models.PROTECT, null=True, blank=True, related_name="+"
     )
+
+    objects = DocumentQuerySet.as_manager()
 
     class Meta(MutableRecord.Meta):
         db_table = "documents"
