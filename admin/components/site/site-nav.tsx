@@ -2,6 +2,7 @@
 import TabBar from "@/components/common/tab-bar";
 import { Route } from "@/constants/web-routes";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 export type RoleLink = Readonly<{
   href: string;
@@ -9,10 +10,17 @@ export type RoleLink = Readonly<{
   activePrefix: string;
 }>;
 
+let lastRoleLink: RoleLink | null = null;
+
 export default function SiteNav({
   roleLink,
 }: Readonly<{ roleLink: RoleLink | null }>) {
   const pathname = usePathname();
+  const shown = roleLink ?? lastRoleLink;
+
+  useEffect(() => {
+    if (roleLink) lastRoleLink = roleLink;
+  }, [roleLink]);
 
   const tabs = [
     {
@@ -20,12 +28,12 @@ export default function SiteNav({
       label: "Browse rentals",
       active: pathname.startsWith(Route.listings),
     },
-    ...(roleLink
+    ...(shown
       ? [
           {
-            href: roleLink.href,
-            label: roleLink.label,
-            active: pathname.startsWith(roleLink.activePrefix),
+            href: shown.href,
+            label: shown.label,
+            active: pathname.startsWith(shown.activePrefix),
             className: "hidden md:flex",
           },
         ]
