@@ -39,7 +39,7 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 12 November 2026 and were not re-tested then.
 
 Not yet built: documents screens, and the screens for everything in reviews past tenant condition
-evidence (asking for information, corrections, removal). Those tables exist in the back end but have no API or screens.
+evidence (asking for information, corrections, removal). Their APIs are built; the screens are not.
 
 Known issues from the 14 November 2026 walkthrough (test landlord and tenants, local
 database):
