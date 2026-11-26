@@ -33,3 +33,32 @@ class RespondToInformationDto(serializers.Serializer):
     title = serializers.CharField(max_length=200, required=False)
     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     observed_at = serializers.DateTimeField(required=False)
+
+
+class RequestCorrectionDto(serializers.Serializer):
+    record_id = serializers.IntegerField(help_text="The condition note to correct.")
+    title = serializers.CharField(max_length=200, required=False)
+    what_is_incorrect = serializers.CharField()
+    proposed_replacement = serializers.CharField(help_text="The corrected description.")
+    why_change_needed = serializers.CharField()
+
+
+CORRECTION_STATUSES = [
+    ReviewStatus.PENDING_REVIEW,
+    ReviewStatus.APPROVED,
+    ReviewStatus.REJECTED,
+    ReviewStatus.STALE,
+    ReviewStatus.CANCELLED,
+]
+
+
+class CorrectionListQueryDto(serializers.Serializer):
+    status = serializers.ChoiceField(
+        choices=CORRECTION_STATUSES,
+        required=False,
+        help_text="Defaults to the corrections waiting for a decision.",
+    )
+
+
+class UnitCorrectionsQueryDto(serializers.Serializer):
+    unit_id = serializers.IntegerField()

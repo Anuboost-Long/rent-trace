@@ -1,5 +1,6 @@
 from rest_framework.exceptions import NotFound
 
+from conditions.models import ConditionRecord, ConditionRecordType
 from properties.models import PropertyUnit
 from properties.services.shared.queries import live_properties
 from reviews.models import ReviewRequest
@@ -47,3 +48,57 @@ def find_evidence_I_am_party_to(user, request_id, *, lock=False):
 
 def reloaded(request):
     return ReviewRequest.objects.with_details().get(pk=request.pk)
+
+
+NO_NOTE = "No condition note with this id."
+NO_CORRECTION = "No correction with this id."
+
+
+def find_note_tenant_may_correct(unit, record_id):
+    found = ConditionRecord.objects.filter(
+        pk=record_id,
+        property_unit=unit,
+        record_type=ConditionRecordType.BASELINE,
+        is_shown_to_tenants=True,
+        deleted_at__isnull=True,
+    ).first()
+    if found is None:
+        raise NotFound(NO_NOTE)
+    return found
+
+
+def find_note_landlord_may_correct(user, record_id):
+    found = (
+        ConditionRecord.objects.filter(
+            pk=record_id,
+            property_unit__property__in=live_properties(user),
+            record_type=ConditionRecordType.DISCREPANCY,
+            accepted_version__isnull=False,
+            deleted_at__isnull=True,
+        )
+        .select_related("property_unit__property")
+        .first()
+    )
+    if found is None:
+        raise NotFound(NO_NOTE)
+    return found
+
+
+def find_correction_I_asked(user, request_id, *, lock=False):
+    requests = ReviewRequest.objects.corrections().filter(requested_by=user)
+    found = _locked(requests.with_correction_details(), lock).filter(pk=request_id).first()
+    if found is None:
+        raise NotFound(NO_CORRECTION)
+    return found
+
+
+def find_correction_for_admin(request_id, *, lock=False):
+    requests = _locked(ReviewRequest.objects.corrections().with_correction_details(), lock)
+    found = requests.filter(pk=request_id).first()
+    if found is None:
+        raise NotFound(NO_CORRECTION)
+    return found
+
+
+def reloaded_correction(request):
+    return ReviewRequest.objects.with_correction_details().get(pk=request.pk)
