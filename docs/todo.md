@@ -1,39 +1,46 @@
 # To do
 
-Updated 26 November 2026. Kept so a fresh session can pick up on what's left without re-deriving
+Updated 27 November 2026. Kept so a fresh session can pick up on what's left without re-deriving
 context. Older done-item detail lives in `git log` and the feature docs, not here.
 
 ## What's left
 
-Reviews phase 2a (escalation and the admin queue) is built and walked through (26 Nov 2026). Next,
-in the order I'd do them (details in [Reviews](features/reviews.md)):
+The reviews family and documents are built **at the API level** and have bare test forms at
+`/tools/wireframe` (see [Reviews](features/reviews.md), [Documents](features/documents.md) and
+[API wireframe pages](features/api-wireframe.md)). The project works **API first, UI later**. CI runs on
+every pull request ([Continuous integration](ci.md)); require its checks for `main` in GitHub's
+branch rules.
 
-1. **Evidence files**: let a tenant attach photos to a condition report (open question 4).
-2. Ask for more information (`NEEDS_INFORMATION`), then locked corrections, then a super admin acting
-   with `on_behalf_of`.
-3. Data removal, then documents (documents have no API yet).
+API gaps, in the order I'd do them:
+
+1. **Maintenance photos and receipts:** the attachment tables exist with no upload API. A receipt for a
+   repair should be a `RECEIPT` document linked to the issue (that link exists).
+2. **Write `business_change_history`** for property, unit, rent and bond edits.
+3. **Super admin maintenance actions:** proposing and answering a closing, booking a tradesperson,
+   marking a visit done (only acknowledge, start and close-when-vacant exist).
+4. Documents: tenants uploading, escalating a flagged document to an admin, expiry of a confirmation
+   request. Reviews: escalating from `NEEDS_INFORMATION`, removal for more than condition records.
+5. Smaller: unit areas, communication logs, email change, phone bans, tenants leaving.
+
+Screens (for the front-end teammate, from the wireframe pages): reviews and documents in the new design,
+including `NEEDS_INFORMATION` in the existing lists.
 
 Smaller gaps:
 
-- Restart `npm run dev` and look at the tab animation (sliding underline and content,
-  `components/common/tab-bar.tsx`, `tab-content.tsx`); it has not been seen move, because the dev
-  server served stale CSS.
-- Not seen at phone width: the reviews screens (the browser window would not resize), and the admin
-  screens after an admin _rejection_.
+- Not seen: the tab animation (needs a dev-server restart), the new screens at phone width, the
+  wireframe admin approve and reject forms, and a report photo upload from a form.
 - Not yet walked through: the landlord overview (16 Nov) and super admin maintenance status moves
   (17 Nov).
 - The authenticator reset email has never been seen arriving (the Gmail token has expired).
 - The dev overlay's "Date.now()" blocking-route warning shows on every signed-in page. `next build`
   is clean, so it is dev-only; cause not found.
 - `npm audit` reports 7 moderate vulnerabilities in admin.
-- `business_change_history` is not written for property and unit edits.
-
-(Done items D and E, local-time dates and the landlord overview, are in their feature documents:
-[Date display](features/date-display.md), [Admin overview](features/admin-overview.md).)
+- Run `python manage.py migrate` on any other database after pulling (six migrations landed 27 Nov).
 
 ## Context a new session needs
 
-- Branch `feat/reviews` (merged work from `feat/database-models`). Back end on :8000, admin on :3000, Postgres and Redis in Docker.
+- Work happens on short branches off `main`, one pull request each, straight into `main` (stacked PRs
+  were merged into the wrong base once). Back end on :8000, admin on :3000, Postgres and Redis in Docker.
 - The back end sends **real email through the Gmail API** (`config/.env`). Never trigger a send to
   a made-up address from the screens. For automated tests, `mock.patch` the email function (e.g.
   `tenancies.integrations.emails.send_invitation`, `communications.integrations.emails._send`).

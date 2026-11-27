@@ -14,10 +14,10 @@ permissions:
   contents: read
 
 jobs:
-  back-end:
-    name: Back end
+  back-end-checks:
+    name: Back end checks
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: back-end
@@ -55,8 +55,8 @@ jobs:
       DB_SSLMODE: disable
       REDIS_URL: redis://localhost:6379/0
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.14"
           cache: pip
@@ -66,6 +66,17 @@ jobs:
           echo "DJANGO_SECRET_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
           echo "JWT_SIGNING_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
       - run: pip install -r requirements-dev.txt
+      - name: Every app with tests is in a test group below
+        run: |
+          missing=0
+          for dir in */tests; do
+            app="${dir%/tests}"
+            if ! grep -Eq "^[[:space:]]*apps:.*[[:space:]\"]${app}([[:space:]\"]|$)" ../.github/workflows/ci.yml; then
+              echo "::error::${app} has tests but is in no test group in .github/workflows/ci.yml"
+              missing=1
+            fi
+          done
+          exit $missing
       - name: Lint
         run: ruff check .
       - name: Format
@@ -76,8 +87,73 @@ jobs:
         run: python manage.py makemigrations --check --dry-run
       - name: OpenAPI schema is valid
         run: python manage.py spectacular --validate --fail-on-warn --file /dev/null
+
+  back-end-tests:
+    name: Back end tests (${{ matrix.group }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: 1
+            apps: "tenancies conditions overview tokens locations"
+          - group: 2
+            apps: "properties reviews notifications common"
+          - group: 3
+            apps: "accounts users access bans"
+          - group: 4
+            apps: "maintenance providers communications listings documents"
+    defaults:
+      run:
+        working-directory: back-end
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: renttrace
+          POSTGRES_USER: renttrace
+          POSTGRES_PASSWORD: renttrace
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U renttrace -d renttrace"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+      redis:
+        image: redis:8-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DB_NAME: renttrace
+      DB_USER: renttrace
+      DB_PASSWORD: renttrace
+      DB_HOST: localhost
+      DB_PORT: "5432"
+      DB_SSLMODE: disable
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: back-end/requirements*.txt
+      - name: Generate throwaway secrets
+        run: |
+          echo "DJANGO_SECRET_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+          echo "JWT_SIGNING_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+      - run: pip install -r requirements-dev.txt
       - name: Tests
-        run: python manage.py test --parallel
+        run: python manage.py test --parallel=auto ${{ matrix.apps }}
 
   admin:
     name: Admin app
@@ -87,8 +163,8 @@ jobs:
       run:
         working-directory: admin
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
