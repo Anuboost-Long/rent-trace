@@ -3,7 +3,7 @@ import BrandLogo from "@/components/common/brand-logo";
 import { groupNavItems, type NavItem } from "@/constants/navigation";
 import type { Me } from "@/types/auth/models";
 import clsx from "clsx";
-import { ChevronLeft } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { memo } from "react";
 
 import NavLink, { type SidebarTone } from "./nav-link";
@@ -120,15 +120,13 @@ function SidebarContent({
           title="Log out"
           onClick={onSignOut}
           className={clsx(
-            "flex h-10 w-full items-center gap-3 rounded-lg border px-3 text-body-sm",
+            "flex h-10 w-full items-center gap-3 rounded-lg border px-3 text-body-sm font-medium",
+            "border-error-border bg-error-background text-error hover:bg-error-border/60",
             "group-data-collapsed:justify-center group-data-collapsed:px-0",
-            "focus-visible:outline-2 focus-visible:outline-offset-2",
-            isAdmin
-              ? "border-on-brand/30 text-on-brand hover:bg-admin-active focus-visible:outline-on-brand"
-              : "border-strong text-fg-brand hover:bg-brand-subtle focus-visible:outline-brand-border",
+            "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error-accent",
           )}
         >
-          <ChevronLeft aria-hidden className="size-5 shrink-0" />
+          <LogOut aria-hidden className="size-5 shrink-0" />
           <span className="group-data-collapsed:sr-only">Log out</span>
         </button>
       </div>
