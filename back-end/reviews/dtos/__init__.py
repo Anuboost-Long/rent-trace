@@ -3,6 +3,8 @@ from reviews.dtos.cases import (
     CaseListQueryDto,
     DecideCaseDto,
     EscalateEvidenceDto,
+    RequestInformationDto,
+    RespondToInformationDto,
 )
 from reviews.dtos.evidence import (
     ApproveEvidenceDto,

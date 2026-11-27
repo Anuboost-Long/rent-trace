@@ -186,6 +186,31 @@ admin who decides an escalated case can open them; nobody else can (404).
 - **Not in this slice:** removing a photo (withdraw and send a new report instead), PDFs, and photos
   on anything but condition reports.
 
+## Asking for more information — API built 27 November 2026
+
+Back end only for now: 56 `reviews` tests pass (14 new in `test_request_information.py` and
+`test_respond_to_information.py`). The screens come later; the tenant and landlord lists still treat
+`NEEDS_INFORMATION` as an unknown status until they are built. Instead of approving or rejecting at
+once, the landlord can ask the tenant for more, and the tenant answers.
+
+- **Ask:** `POST /api/landlord/condition-evidence/<id>/request-information/` with a `reason` and an
+  `idempotency_key` (permission `reviews.decide`). Only while the report is waiting (not expired). The
+  report moves to `NEEDS_INFORMATION`, a `REQUEST_INFORMATION` decision is recorded, and the tenant is
+  told. Landlords can ask more than once.
+- **Answer:** `POST /api/tenant/tenancies/<id>/condition-evidence/<request_id>/respond/` with a
+  required `message` and optional `title`, `description` and `observed_at` changes (permission
+  `reviews.submit`). Only while `NEEDS_INFORMATION`. It adds a new numbered submission and a new
+  condition version that supersedes the old one; photos carry over, and the tenant can add more
+  photos first. The report returns to `PENDING_REVIEW` with a fresh 14-day window, and the owners
+  are told. Old submissions are never edited.
+- **Meanwhile:** the landlord cannot approve, reject or escalate it (400, "Waiting for the tenant's
+  reply."). The tenant can withdraw it or add photos. It does not expire while it waits for the tenant
+  (assumption: the tenant can always withdraw).
+- **Responses** gain `revision_no` and `information_request` (the landlord's latest question, or
+  null). The status shows as `NEEDS_INFORMATION`.
+- **Notifications:** `CONDITION_EVIDENCE_INFO_REQUESTED` (tenant) and `CONDITION_EVIDENCE_INFO_PROVIDED`
+  (owners), migration `notifications/0011`; both link to the tenancy.
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.

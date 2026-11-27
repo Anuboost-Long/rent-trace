@@ -47,6 +47,10 @@ An invite to an address with no account, or an unverified one, makes no notifica
 the inviter's screen doesn't change either way. A person who signs up later sees the
 invitation in their Tenancies page too, because that list is built from their email.
 
+Two kinds for asking for more information, `CONDITION_EVIDENCE_INFO_REQUESTED` (the tenant, when the
+landlord asks) and `CONDITION_EVIDENCE_INFO_PROVIDED` (the owners, when the tenant answers; migration
+`notifications/0011`), link to the tenancy. API only so far, no screen yet.
+
 Two more kinds, `REVIEW_CASE_ESCALATED` (admins who can decide; leads to Review cases) and
 `REVIEW_CASE_DECIDED` (the tenant and every current owner; leads to the tenancy), are written when
 someone asks an admin to decide and when an admin decides (migration `notifications/0010`). Not seen

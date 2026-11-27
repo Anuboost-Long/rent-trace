@@ -16,6 +16,11 @@ urlpatterns = [
         name="tenant-condition-evidence-photo",
     ),
     path(
+        "<int:request_id>/respond/",
+        views.RespondToInformationView.as_view(),
+        name="tenant-condition-evidence-respond",
+    ),
+    path(
         "<int:request_id>/escalate/",
         views.EscalateMyEvidenceView.as_view(),
         name="tenant-condition-evidence-escalate",
