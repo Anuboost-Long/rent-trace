@@ -69,7 +69,7 @@ class MaintenanceIssueQuerySet(models.QuerySet):
             "reported_by",
             "service_category",
             "open_closure_proposal__proposed_by",
-        )
+        ).prefetch_related("files__file__uploaded_by")
 
     def newest_first(self):
         return self.order_by("-reported_at", "-id")

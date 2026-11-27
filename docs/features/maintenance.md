@@ -120,8 +120,26 @@ carry the issue title, never contact details.
 
 ### Not in the first version
 
-Photos on an issue, comments, assigning a provider, recurring issues, and service categories (the
-fields exist and stay empty).
+Comments, recurring issues, and receipts shown inside the issue (receipts are documents linked to the
+issue; see below). Photos are built (below).
+
+### Photos on an issue
+
+Decided and built 28 November 2026 (API only; screens to follow). Anyone who can see an issue (the
+tenants of its tenancy, past ones included, and the property's owners) can add photos to show what is
+wrong, while the issue is not closed.
+
+- `POST /api/maintenance/<id>/photos/` (multipart `file`, optional `caption`; permission
+  `maintenance.report`): JPEG or PNG up to 10 MB, at most 10 per issue (400 beyond that or for other
+  file types). Closed issues refuse new photos.
+- `GET /api/maintenance/<id>/photos/<file_id>/` downloads one (`maintenance.view`); admins use
+  `GET /api/admin/maintenance/<id>/photos/<file_id>/` (`maintenance.admin_view`). Anyone who cannot see
+  the issue gets a 404.
+- `DELETE /api/maintenance/<id>/photos/<file_id>/` removes a photo, only the person who added it and only
+  while the issue is open (the file is hidden, not deleted).
+- The issue detail lists `photos` (id, name, caption, who added it, when, and whether it is yours).
+- **Receipts** are documents: a landlord publishes a `RECEIPT` document linked to the issue with
+  `maintenance_issue_id` (see [Documents](documents.md)); tenants see it on their tenancy's documents.
 
 ### Trade and tradesperson
 

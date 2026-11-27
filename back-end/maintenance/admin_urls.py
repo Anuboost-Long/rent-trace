@@ -6,6 +6,11 @@ urlpatterns = [
     path("", views.AdminIssuesView.as_view(), name="admin-maintenance"),
     path("<int:issue_id>/", views.AdminIssueDetailView.as_view(), name="admin-maintenance-detail"),
     path(
+        "<int:issue_id>/photos/<int:file_id>/",
+        views.AdminIssuePhotoView.as_view(),
+        name="admin-maintenance-photo",
+    ),
+    path(
         "<int:issue_id>/acknowledge/",
         views.AdminAcknowledgeIssueView.as_view(),
         name="admin-maintenance-acknowledge",

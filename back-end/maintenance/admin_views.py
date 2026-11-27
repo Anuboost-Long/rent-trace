@@ -1,3 +1,4 @@
+from django.http import FileResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 
@@ -37,6 +38,24 @@ class AdminIssueDetailView(PermissionedView):
     @extend_schema(operation_id="admin_maintenance_detail", responses=resources.IssueDetailResource)
     def get(self, request, issue_id):
         return _detail(request, issue_id)
+
+
+class AdminIssuePhotoView(PermissionedView):
+    required_permissions = {"GET": "maintenance.admin_view"}
+
+    @extend_schema(
+        operation_id="admin_maintenance_photo_file",
+        responses={(200, "application/octet-stream"): bytes},
+    )
+    def get(self, request, issue_id, file_id):
+        stored, content = services.open_issue_photo(
+            user=request.user, issue_id=issue_id, file_id=file_id, as_admin=True
+        )
+        response = FileResponse(
+            content, content_type=stored.mime_type, filename=stored.original_name
+        )
+        response["Cache-Control"] = "private, max-age=3600"
+        return response
 
 
 class SuperAdminActionView(PermissionedView):

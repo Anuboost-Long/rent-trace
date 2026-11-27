@@ -1,4 +1,6 @@
+from django.http import FileResponse
 from drf_spectacular.utils import extend_schema
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
@@ -81,6 +83,53 @@ class IssueDetailView(MaintenanceView):
 
     @extend_schema(operation_id="maintenance_detail", responses=resources.IssueDetailResource)
     def get(self, request, issue_id):
+        return _detail(request, issue_id)
+
+
+def _photo_response(stored, content):
+    response = FileResponse(content, content_type=stored.mime_type, filename=stored.original_name)
+    response["Cache-Control"] = "private, max-age=3600"
+    return response
+
+
+class IssuePhotosView(MaintenanceView):
+    required_permissions = {"POST": "maintenance.report"}
+    parser_classes = [MultiPartParser]
+
+    @extend_schema(
+        operation_id="maintenance_photo_add",
+        request={"multipart/form-data": dtos.AddIssuePhotoDto},
+        responses={201: resources.IssueDetailResource},
+    )
+    def post(self, request, issue_id):
+        fields = _validated(dtos.AddIssuePhotoDto, request.data)
+        services.add_issue_photo(
+            user=request.user,
+            issue_id=issue_id,
+            upload=fields["file"],
+            caption=fields.get("caption"),
+        )
+        response = _detail(request, issue_id)
+        response.status_code = 201
+        return response
+
+
+class IssuePhotoView(MaintenanceView):
+    required_permissions = {"GET": "maintenance.view", "DELETE": "maintenance.report"}
+
+    @extend_schema(
+        operation_id="maintenance_photo_file",
+        responses={(200, "application/octet-stream"): bytes},
+    )
+    def get(self, request, issue_id, file_id):
+        stored, content = services.open_issue_photo(
+            user=request.user, issue_id=issue_id, file_id=file_id
+        )
+        return _photo_response(stored, content)
+
+    @extend_schema(operation_id="maintenance_photo_remove", responses=resources.IssueDetailResource)
+    def delete(self, request, issue_id, file_id):
+        services.remove_issue_photo(user=request.user, issue_id=issue_id, file_id=file_id)
         return _detail(request, issue_id)
 
 

@@ -1,4 +1,5 @@
 from maintenance.services.acknowledge_issue import acknowledge_issue
+from maintenance.services.add_issue_photo import add_issue_photo
 from maintenance.services.assign_provider import assign_provider
 from maintenance.services.close_vacant import close_vacant
 from maintenance.services.complete_visit import complete_visit
@@ -6,7 +7,9 @@ from maintenance.services.get_any_issue import get_any_issue
 from maintenance.services.get_issue import get_issue
 from maintenance.services.list_all_issues import list_all_issues
 from maintenance.services.list_issues import list_issues
+from maintenance.services.open_issue_photo import open_issue_photo
 from maintenance.services.propose_closure import propose_closure
+from maintenance.services.remove_issue_photo import remove_issue_photo
 from maintenance.services.report_issue import report_issue
 from maintenance.services.respond_to_closure import respond_to_closure
 from maintenance.services.start_work import start_work

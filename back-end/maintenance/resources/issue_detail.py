@@ -24,6 +24,7 @@ class IssueDetailResource(IssueSummaryResource):
     assignment = serializers.SerializerMethodField(
         help_text="The tradesperson booked now, with their contact details."
     )
+    photos = serializers.SerializerMethodField(help_text="The photos added to this issue.")
     provider_options = serializers.SerializerMethodField(
         help_text="Landlord only: tradespeople linked to this property, preferred and matching first."
     )
@@ -39,7 +40,23 @@ class IssueDetailResource(IssueSummaryResource):
             "actions",
             "my_side",
             "assignment",
+            "photos",
             "provider_options",
+        ]
+
+    def get_photos(self, issue) -> list[dict]:
+        me = self.context.get("user")
+        return [
+            {
+                "id": link.file_id,
+                "name": link.file.original_name,
+                "caption": link.caption,
+                "added_by": _name(link.file.uploaded_by),
+                "added_at": link.created_at,
+                "is_mine": me is not None and link.file.uploaded_by_id == me.pk,
+            }
+            for link in issue.files.all()
+            if link.file.deleted_at is None
         ]
 
     def get_open_closure(self, issue) -> dict | None:
