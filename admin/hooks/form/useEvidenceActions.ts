@@ -1,5 +1,6 @@
 "use client";
 import {
+  handleAddEvidencePhoto,
   handleAnswerEvidence,
   handleEscalateEvidence,
   handleSubmitEvidence,
@@ -29,8 +30,28 @@ const useEvidenceActions = () => {
     pending,
     error,
     clearError: () => setError(null),
-    submit: (tenancyId: number, body: EvidenceBody) =>
-      run(handleSubmitEvidence(tenancyId, body)),
+    submit: async (tenancyId: number, body: EvidenceBody, photos: File[]) => {
+      setPending(true);
+      setError(null);
+      const { data, error: submitError } = await handleSubmitEvidence(
+        tenancyId,
+        body,
+      );
+      let failure = submitError;
+      if (data) {
+        for (const photo of photos) {
+          const added = await handleAddEvidencePhoto(tenancyId, data.id, photo);
+          if (added.error) {
+            failure = added.error;
+            break;
+          }
+        }
+      }
+      setPending(false);
+      setError(failure);
+      if (data) router.refresh();
+      return data !== null;
+    },
     withdraw: (tenancyId: number, id: number) =>
       run(handleWithdrawEvidence(tenancyId, id)),
     escalate: (id: number, reason: string, tenancyId?: number) =>

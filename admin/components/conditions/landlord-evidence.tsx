@@ -9,6 +9,7 @@ import type { ConditionEvidence } from "@/types/evidence/models";
 import { useState } from "react";
 
 import EscalateDialog from "./escalate-dialog";
+import EvidencePhotos from "./evidence-photos";
 
 export default function LandlordEvidence({
   reports,
@@ -47,6 +48,11 @@ export default function LandlordEvidence({
                   {report.author} saw it <LocalTime iso={report.observed_at} />{" "}
                   · {evidenceLabel(report, "landlord")}
                 </p>
+                <EvidencePhotos
+                  photos={report.photos}
+                  audience="landlord"
+                  tenancyId={report.tenancy_id}
+                />
                 {report.rejection_reason && (
                   <p className="mt-1 text-sm text-foreground/80">
                     Reason: {report.rejection_reason}

@@ -24,6 +24,11 @@ def escalation(case):
     return next((h for h in case.status_history.all() if h.action == ESCALATE), None)
 
 
+def photos_of(report):
+    submission = report.current_submission
+    return [link.file for link in submission.files.all()] if submission else []
+
+
 def place_of(report) -> str:
     place = report.target.condition_record.property_unit.property
     return place.property_name or f"{place.address_line_1}, {place.suburb}"

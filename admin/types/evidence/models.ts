@@ -6,6 +6,8 @@ export type EvidenceStatus =
   | "CANCELLED"
   | "EXPIRED";
 
+export type EvidencePhoto = { id: number; name: string };
+
 export type ConditionEvidence = {
   id: number;
   status: EvidenceStatus;
@@ -16,6 +18,7 @@ export type ConditionEvidence = {
   tenancy_id: number;
   author: string;
   rejection_reason: string | null;
+  photos: EvidencePhoto[];
   escalated_at: string | null;
   admin_reason: string | null;
   submitted_at: string;
@@ -40,6 +43,7 @@ export type ReviewCase = {
   place: string;
   author: string;
   landlord_rejection_reason: string | null;
+  photos: EvidencePhoto[];
   escalated_by: string | null;
   escalated_at: string | null;
   escalation_reason: string | null;

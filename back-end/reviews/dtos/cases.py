@@ -18,3 +18,7 @@ class CaseListQueryDto(serializers.Serializer):
         required=False,
         help_text="Defaults to the cases waiting for a decision.",
     )
+
+
+class AddEvidencePhotoDto(serializers.Serializer):
+    file = serializers.FileField(help_text="A JPEG or PNG photo, up to 10 MB.")

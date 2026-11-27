@@ -106,6 +106,20 @@ export const EndPoints = {
       byEndpoint(
         `tenant/tenancies/${tenancyId}/condition-evidence/${id}/escalate/`,
       ),
+    add_photo: (tenancyId: number | string, id: number) =>
+      byEndpoint(
+        `tenant/tenancies/${tenancyId}/condition-evidence/${id}/photos/`,
+      ),
+    photo: {
+      tenant: (tenancyId: string, fileId: string) =>
+        byEndpoint(
+          `tenant/tenancies/${tenancyId}/condition-evidence/photos/${fileId}/`,
+        ),
+      landlord: (_tenancyId: string, fileId: string) =>
+        byEndpoint(`landlord/condition-evidence/photos/${fileId}/`),
+      admin: (_tenancyId: string, fileId: string) =>
+        byEndpoint(`admin/review-cases/photos/${fileId}/`),
+    },
     escalate_landlord: (id: number) =>
       byEndpoint(`landlord/condition-evidence/${id}/escalate/`),
   },

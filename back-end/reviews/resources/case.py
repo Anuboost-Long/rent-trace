@@ -1,13 +1,16 @@
 from datetime import datetime
 
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from reviews.models import ReviewRequest
+from reviews.resources.photo import EvidencePhotoResource
 from reviews.resources.shared import (
     admin_decision,
     escalation,
     landlord_rejection,
     name_of,
+    photos_of,
     place_of,
 )
 
@@ -33,6 +36,7 @@ class CaseResource(serializers.ModelSerializer):
     place = serializers.SerializerMethodField()
     author = serializers.SerializerMethodField(help_text="The tenant who wrote the report.")
     landlord_rejection_reason = serializers.SerializerMethodField()
+    photos = serializers.SerializerMethodField()
     escalated_by = serializers.SerializerMethodField()
     escalated_at = serializers.SerializerMethodField()
     escalation_reason = serializers.SerializerMethodField()
@@ -52,6 +56,7 @@ class CaseResource(serializers.ModelSerializer):
             "place",
             "author",
             "landlord_rejection_reason",
+            "photos",
             "escalated_by",
             "escalated_at",
             "escalation_reason",
@@ -68,6 +73,10 @@ class CaseResource(serializers.ModelSerializer):
     def get_landlord_rejection_reason(self, case) -> str | None:
         rejection = landlord_rejection(case.parent_request)
         return rejection.reason if rejection else None
+
+    @extend_schema_field(EvidencePhotoResource(many=True))
+    def get_photos(self, case):
+        return EvidencePhotoResource(photos_of(case.parent_request), many=True).data
 
     def get_escalated_by(self, case) -> str | None:
         row = escalation(case)

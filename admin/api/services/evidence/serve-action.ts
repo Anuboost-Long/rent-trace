@@ -1,6 +1,6 @@
 "use server";
 import { EndPoints } from "@/api/api-config";
-import { ApiServiceServer } from "@/api/api-helper";
+import { ApiServiceServer, ApiUploadServer } from "@/api/api-helper";
 import type {
   ConditionEvidence,
   EvidenceBody,
@@ -130,6 +130,24 @@ export const handleDecideCase = async (
       url: EndPoints.reviewCases.decide(id, action),
       method: "POST",
       data: { idempotency_key: idempotencyKey, reason },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleAddEvidencePhoto = async (
+  tenancyId: number,
+  id: number,
+  photo: File,
+) => {
+  try {
+    const formData = new FormData();
+    formData.set("file", photo);
+    const data = await ApiUploadServer<ConditionEvidence>({
+      url: EndPoints.evidence.add_photo(tenancyId, id),
+      formData,
     });
     return { data, error: null };
   } catch (error) {

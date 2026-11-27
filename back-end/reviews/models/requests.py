@@ -70,6 +70,7 @@ class ReviewRequestQuerySet(models.QuerySet):
         ).prefetch_related(
             "decisions",
             "scopes",
+            "current_submission__files__file",
             models.Prefetch(
                 "child_requests",
                 queryset=ReviewRequest.objects.cases_with_trail(),
@@ -93,6 +94,7 @@ class ReviewRequestQuerySet(models.QuerySet):
             models.Prefetch("status_history", ReviewStatusHistory.objects.select_related("actor")),
             "decisions",
             "parent_request__decisions",
+            "parent_request__current_submission__files__file",
         )
 
 
