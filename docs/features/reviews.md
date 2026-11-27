@@ -211,6 +211,37 @@ once, the landlord can ask the tenant for more, and the tenant answers.
 - **Notifications:** `CONDITION_EVIDENCE_INFO_REQUESTED` (tenant) and `CONDITION_EVIDENCE_INFO_PROVIDED`
   (owners), migration `notifications/0011`; both link to the tenancy.
 
+## Locked corrections — API built 27 November 2026
+
+Back end only for now: 73 `reviews` tests pass (17 new, in `test_request_correction.py`,
+`test_decide_correction.py` and `test_list_corrections.py`). No screens yet. A note people rely on is not changed by one side alone: either side asks an
+admin to correct it, and the admin decides.
+
+- **What can be corrected** (assumption, change if wrong): a _shown_ landlord note on the tenant's own
+  unit (the tenant asks), and an _approved_ tenant condition report on a property the landlord owns
+  (the landlord asks). Landlords still edit their own baseline notes directly through
+  `/api/landlord/conditions/`; that behaviour is unchanged.
+- **Ask:** `POST /api/tenant/tenancies/<id>/condition-corrections/` (tenant) or
+  `POST /api/landlord/condition-corrections/` (landlord), body `record_id`, `what_is_incorrect`,
+  `proposed_replacement` (the new description), `why_change_needed`, optional `title`. Permission
+  `reviews.submit`. It creates a `LOCKED_CORRECTION` request on the Admin route, waiting for a
+  decision. Only one correction can wait per note (400). Nothing about the note changes yet; the
+  proposed wording is kept in the submission, not as a condition version, so the landlord can still edit
+  meanwhile.
+- **List and withdraw:** `GET .../condition-corrections/` (tenant: their tenancy's; landlord:
+  `?unit_id=`), `POST .../<id>/cancel/` by whoever asked, while it is waiting. `reviews.view` and
+  `reviews.submit`.
+- **Admin:** `GET /api/admin/condition-corrections/?status=` (paged, default waiting) and
+  `POST .../<id>/approve/` or `.../reject/` with a `reason` (required both ways) and an
+  `idempotency_key`; permission `reviews.admin_review`. Approving writes a new condition version that
+  supersedes the accepted one, makes it the accepted version and writes `business_change_history` with the
+  old and new version numbers. Rejecting changes nothing.
+- **Stale:** if the note changed after the request was written (row version differs), deciding marks the
+  request `STALE` instead of applying it, and the requester must ask again.
+- **Told:** admins who can decide when one is asked; the requester and the property's owners when it is
+  decided. Notification kinds `CONDITION_CORRECTION_REQUESTED` and `CONDITION_CORRECTION_DECIDED`
+  (migration `notifications/0012`).
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.

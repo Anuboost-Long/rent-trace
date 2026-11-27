@@ -6,6 +6,11 @@ def _tenancy_id(request):
     return request.target.condition_record.tenancy_id
 
 
+def _scope_tenancy_id(request):
+    scope = request.scopes.first()
+    return scope.tenancy_id if scope else None
+
+
 def _name(person):
     return f"{person.first_name} {person.last_name}"
 
@@ -77,4 +82,24 @@ def information_provided(request, author, owners, title, message):
         title="A tenant answered your question",
         body=f"{_name(author)} replied about: {title}. {message}",
         subject_id=_tenancy_id(request),
+    )
+
+
+def correction_requested(request, admins, asker, title):
+    notify(
+        admins,
+        kind=Kind.CONDITION_CORRECTION_REQUESTED,
+        title="A condition note needs a correction decision",
+        body=f"{_name(asker)} asked for a correction to: {title}.",
+        subject_id=request.pk,
+    )
+
+
+def correction_decided(request, owners, title, outcome, reason):
+    notify(
+        [request.requested_by, *owners],
+        kind=Kind.CONDITION_CORRECTION_DECIDED,
+        title=f"An admin {outcome} a condition correction",
+        body=f"An admin {outcome} the correction to: {title}. Reason: {reason}",
+        subject_id=_scope_tenancy_id(request),
     )

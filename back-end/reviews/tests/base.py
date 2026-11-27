@@ -85,3 +85,41 @@ class EvidenceApiTestCase(TenancyApiTestCase):
         self.as_user(user or self.tina)
         payload = {"message": "The north wall, last Tuesday.", **fields}
         return self.post(f"{self.tenant_url}{evidence['id']}/respond/", payload)
+
+    def shown_note(self):
+        """A landlord note that tenants can see."""
+        self.as_user(self.lou)
+        created = self.post(
+            "/api/landlord/conditions/",
+            {
+                "unit_id": self.unit.pk,
+                "title": "Kitchen benchtop",
+                "description": "Small chip near the sink.",
+                "observed_at": "2026-11-13T00:00:00Z",
+                "is_shown_to_tenants": True,
+            },
+        )
+        assert created.status_code == 201, created.data
+        return created.data
+
+    def correction_fields(self, record_id, **extra):
+        return {
+            "record_id": record_id,
+            "what_is_incorrect": "There is no chip.",
+            "proposed_replacement": "Benchtop in good condition.",
+            "why_change_needed": "I checked the photos at move-in.",
+            **extra,
+        }
+
+    def ask_tenant_correction(self, record_id, user=None, **extra):
+        self.as_user(user or self.tina)
+        url = f"/api/tenant/tenancies/{self.tenancy['id']}/condition-corrections/"
+        return self.post(url, self.correction_fields(record_id, **extra))
+
+    def decide_correction(
+        self, request_id, action, key=None, reason="Checked the inspection report."
+    ):
+        return self.post(
+            f"/api/admin/condition-corrections/{request_id}/{action}/",
+            {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
+        )

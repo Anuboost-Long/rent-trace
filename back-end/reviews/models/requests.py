@@ -56,6 +56,16 @@ class ReviewRequestQuerySet(models.QuerySet):
     def cases_for(self, report):
         return self.filter(kind=ReviewKind.DISPUTE, parent_request=report)
 
+    def corrections(self):
+        return self.filter(kind=ReviewKind.LOCKED_CORRECTION)
+
+    def with_correction_details(self):
+        return self.select_related(
+            "requested_by",
+            "current_submission__base_condition_version",
+            "target__condition_record__property_unit__property",
+        ).prefetch_related("decisions")
+
     def admin_cases(self):
         return self.filter(kind=ReviewKind.DISPUTE, review_route=ReviewRoute.ADMIN)
 
