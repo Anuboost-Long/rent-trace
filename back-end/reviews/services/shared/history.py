@@ -7,7 +7,16 @@ from reviews.models import ReviewStatusHistory
 
 
 def record_transition(
-    request, to_status, action, actor, reason, *, from_status=None, submission=None, decision=None
+    request,
+    to_status,
+    action,
+    actor,
+    reason,
+    *,
+    from_status=None,
+    submission=None,
+    decision=None,
+    on_behalf_of=None,
 ):
     """Writes the status history row for a move. Call it with the request row locked."""
     last = request.status_history.aggregate(last=Max("sequence_no"))["last"] or 0
@@ -18,6 +27,7 @@ def record_transition(
         to_status=to_status,
         action=action,
         actor=actor,
+        on_behalf_of=on_behalf_of,
         submission=submission,
         decision=decision,
         reason=reason,
@@ -26,7 +36,9 @@ def record_transition(
     )
 
 
-def record_change(request, actor, action, before_values, after_values, reason):
+def record_change(
+    request, actor, action, before_values, after_values, reason, *, on_behalf_of=None
+):
     last = request.target.change_history.aggregate(last=Max("sequence_no"))["last"] or 0
     return BusinessChangeHistory.objects.create(
         target=request.target,
@@ -36,6 +48,7 @@ def record_change(request, actor, action, before_values, after_values, reason):
         before_values=before_values,
         after_values=after_values,
         reason=reason,
+        on_behalf_of=on_behalf_of,
         created_by=actor,
         correlation_id=uuid.uuid4(),
     )

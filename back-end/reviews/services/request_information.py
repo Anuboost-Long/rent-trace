@@ -2,6 +2,7 @@ from django.db import transaction
 
 from reviews.models import ReviewDecisionType, ReviewStatus
 from reviews.services.shared import notices
+from reviews.services.shared.acting import owner_acted_for
 from reviews.services.shared.decisions import (
     move,
     record_decision,
@@ -13,8 +14,9 @@ from reviews.services.shared.scope import find_evidence_I_answer, reloaded
 
 
 @transaction.atomic
-def request_information(*, user, request_id, reason, idempotency_key):
-    request = find_evidence_I_answer(user, request_id, lock=True)
+def request_information(*, user, request_id, reason, idempotency_key, as_admin=False):
+    request = find_evidence_I_answer(user, request_id, lock=True, as_admin=as_admin)
+    on_behalf_of = owner_acted_for(request, as_admin=as_admin)
     if was_already_decided(request, idempotency_key):
         return reloaded(request)
     require_pending(request)
@@ -32,6 +34,7 @@ def request_information(*, user, request_id, reason, idempotency_key):
         from_status=ReviewStatus.PENDING_REVIEW,
         submission=request.current_submission,
         decision=decision,
+        on_behalf_of=on_behalf_of,
     )
     notices.information_requested(
         request, request.current_submission.proposed_condition_version.title, reason
