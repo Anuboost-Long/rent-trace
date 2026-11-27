@@ -131,6 +131,7 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
                   }}
                 />
                 <Button
+                  type="button"
                   variant="quiet"
                   size="sm"
                   className="gap-2"
@@ -142,6 +143,7 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
                 </Button>
                 {showsPicture && (
                   <Button
+                    type="button"
                     variant="quiet"
                     size="sm"
                     className="gap-2"
@@ -204,7 +206,12 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
             <Button type="submit" pending={pending}>
               {pending ? "Saving…" : "Save changes"}
             </Button>
-            <Button variant="quiet" onClick={stopEditing} disabled={pending}>
+            <Button
+              type="button"
+              variant="quiet"
+              onClick={stopEditing}
+              disabled={pending}
+            >
               Cancel
             </Button>
           </div>
