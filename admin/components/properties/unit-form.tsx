@@ -122,7 +122,13 @@ export default function UnitForm({
         <Button type="submit" size="sm" pending={pending}>
           {unit ? "Save unit" : "Add unit"}
         </Button>
-        <Button variant="quiet" size="sm" onClick={onCancel} disabled={pending}>
+        <Button
+          type="button"
+          variant="quiet"
+          size="sm"
+          onClick={onCancel}
+          disabled={pending}
+        >
           Cancel
         </Button>
       </div>
