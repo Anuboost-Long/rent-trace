@@ -33,9 +33,18 @@ documents endpoint from a form: pick the action, fill the fields, see the status
 Typecheck and lint are clean; `npm test` (6 tests, including the path allowlist). In Chrome on a
 production build with `WIREFRAME_ENABLED=true`, signed in as a tenant: the index renders, the report
 and correction lists load on open, and filling the "Reports: add" form created a report (no JSON
-written by hand). Also as a landlord: the report list loaded for the unit and the approve form approved a report
-from just its id (the key was generated for me). **Not seen:** the admin page, file uploads from the
-file pickers, and the download route.
+written by hand). Also as a landlord: the report list loaded for the unit, the approve form approved a report from just
+its id (the key was generated for me), and the publish form uploaded a file from its file picker
+(a tenancy agreement, which then showed `WAITING`). As the tenant: the same agreement listed as
+waiting and the confirm form confirmed it. As an admin: the review-case, correction, removal,
+document and unit-report lists all loaded. The download route returned the uploaded image (200, right
+type and size) for the landlord and the admin, and 404 for a missing file and a path-traversal attempt.
+**Not seen:** the admin action forms (approve and reject), and the other file forms (a report photo).
+
+**Found while testing:** six migrations from the recent API slices (`accounts/0014`,
+`documents/0003`, `notifications/0011` to `0014`) had not been applied to the dev database, so the
+document calls answered 500. They are applied now. Run `python manage.py migrate` on any other
+database.
 
 ## Source locations
 
