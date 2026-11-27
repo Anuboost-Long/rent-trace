@@ -262,6 +262,31 @@ report. The records show the super admin as the actor, and the person they acted
 - **Not covered:** escalating for a party (a super admin can already decide the case in Review cases),
   adding photos for a tenant, and submitting a report for a tenant.
 
+## Data removal — API built 27 November 2026
+
+Back end only for now: 96 `reviews` tests pass (16 new, in `test_request_removal.py`,
+`test_decide_removal.py` and `test_list_removals.py`). No screens. Nothing is deleted: an approved removal **hides** records and files.
+
+- **What can be removed (first version):** condition records. A tenant can ask to remove their **own**
+  condition reports; a landlord can ask to remove any condition record on a property they own.
+  Hiding a record also hides records related to it and the photos attached to its submissions
+  (`include_descendants`, on by default). Other targets (properties, units, maintenance issues,
+  documents) are for later.
+- **Ask:** `POST /api/tenant/tenancies/<id>/removal-requests/` or `POST /api/landlord/removal-requests/`,
+  body `record_ids` (1 to 20), `reason`, optional `include_descendants`; permission
+  `reviews.request_removal`. It creates a `DATA_REMOVAL` request on the Admin route with one
+  `removal_request_items` row per record. A record with a waiting removal cannot be asked again (400);
+  records you cannot remove are a 404.
+- **List and withdraw:** `GET` on both (tenant by tenancy, landlord `?unit_id=`), `POST .../<id>/cancel/`
+  by whoever asked while it is waiting.
+- **Admin:** `GET /api/admin/removal-requests/?status=` (paged) and `POST .../<id>/approve/` or
+  `.../reject/` with a required `reason` and an `idempotency_key`; permission `reviews.review_removal`.
+  Approving sets `deleted_at` and `deleted_by` on each record and its descendants and writes
+  `removal_effects` rows (`HIDE_RECORD`, `HIDE_DESCENDANTS`, `HIDE_FILE`) and change history. Hidden
+  records disappear from reports, lists and photo downloads (404). Rejecting changes nothing.
+- **Told:** admins who can decide when one is asked; the asker and the owners when it is decided
+  (kinds `DATA_REMOVAL_REQUESTED`, `DATA_REMOVAL_DECIDED`; migration `notifications/0013`).
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.

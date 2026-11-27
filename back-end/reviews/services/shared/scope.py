@@ -105,3 +105,58 @@ def find_correction_for_admin(request_id, *, lock=False):
 
 def reloaded_correction(request):
     return ReviewRequest.objects.with_correction_details().get(pk=request.pk)
+
+
+NO_RECORD = "One of the condition records cannot be removed by you."
+NO_REMOVAL = "No removal request with this id."
+
+
+def find_records_tenant_may_remove(unit, user, record_ids):
+    mine = ReviewRequest.objects.evidence().filter(requested_by=user)
+    found = (
+        ConditionRecord.objects.filter(
+            pk__in=record_ids,
+            property_unit=unit,
+            record_type=ConditionRecordType.DISCREPANCY,
+            deleted_at__isnull=True,
+        )
+        .filter(pk__in=mine.values("target__condition_record_id"))
+        .select_for_update(of=("self",))
+    )
+    return _all_or_not_found(found, record_ids)
+
+
+def find_records_landlord_may_remove(user, record_ids):
+    found = ConditionRecord.objects.filter(
+        pk__in=record_ids,
+        property_unit__property__in=live_properties(user),
+        deleted_at__isnull=True,
+    ).select_for_update(of=("self",))
+    return _all_or_not_found(found, record_ids)
+
+
+def _all_or_not_found(found, record_ids):
+    records = list(found)
+    if len(records) != len(set(record_ids)):
+        raise NotFound(NO_RECORD)
+    return records
+
+
+def find_removal_I_asked(user, request_id, *, lock=False):
+    requests = ReviewRequest.objects.removals().filter(requested_by=user)
+    found = _locked(requests.with_removal_details(), lock).filter(pk=request_id).first()
+    if found is None:
+        raise NotFound(NO_REMOVAL)
+    return found
+
+
+def find_removal_for_admin(request_id, *, lock=False):
+    requests = _locked(ReviewRequest.objects.removals().with_removal_details(), lock)
+    found = requests.filter(pk=request_id).first()
+    if found is None:
+        raise NotFound(NO_REMOVAL)
+    return found
+
+
+def reloaded_removal(request):
+    return ReviewRequest.objects.with_removal_details().get(pk=request.pk)

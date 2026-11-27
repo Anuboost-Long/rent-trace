@@ -47,6 +47,10 @@ An invite to an address with no account, or an unverified one, makes no notifica
 the inviter's screen doesn't change either way. A person who signs up later sees the
 invitation in their Tenancies page too, because that list is built from their email.
 
+Two kinds for data removal, `DATA_REMOVAL_REQUESTED` (admins who can review removals; the id is the
+request) and `DATA_REMOVAL_DECIDED` (the asker and the owners; the id is the tenancy when there is one;
+migration `notifications/0013`), have no screen yet.
+
 Two kinds for locked corrections, `CONDITION_CORRECTION_REQUESTED` (admins who can decide; the id is
 the request) and `CONDITION_CORRECTION_DECIDED` (the asker and the owners; the id is the tenancy;
 migration `notifications/0012`), have no screen yet.

@@ -123,3 +123,24 @@ class EvidenceApiTestCase(TenancyApiTestCase):
             f"/api/admin/condition-corrections/{request_id}/{action}/",
             {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
         )
+
+    def record_of(self, evidence):
+        return ReviewRequest.objects.get(pk=evidence["id"]).target.condition_record_id
+
+    def ask_tenant_removal(self, record_ids, user=None, **extra):
+        self.as_user(user or self.tina)
+        url = f"/api/tenant/tenancies/{self.tenancy['id']}/removal-requests/"
+        return self.post(url, {"record_ids": record_ids, "reason": "Entered by mistake.", **extra})
+
+    def ask_landlord_removal(self, record_ids, user=None, **extra):
+        self.as_user(user or self.lou)
+        return self.post(
+            "/api/landlord/removal-requests/",
+            {"record_ids": record_ids, "reason": "Not accurate.", **extra},
+        )
+
+    def decide_removal(self, request_id, action, key=None, reason="Fine to hide."):
+        return self.post(
+            f"/api/admin/removal-requests/{request_id}/{action}/",
+            {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
+        )

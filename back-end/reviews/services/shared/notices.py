@@ -103,3 +103,23 @@ def correction_decided(request, owners, title, outcome, reason):
         body=f"An admin {outcome} the correction to: {title}. Reason: {reason}",
         subject_id=_scope_tenancy_id(request),
     )
+
+
+def removal_requested(request, admins, asker, count):
+    notify(
+        admins,
+        kind=Kind.DATA_REMOVAL_REQUESTED,
+        title="A data removal needs a decision",
+        body=f"{_name(asker)} asked to remove {count} condition record(s).",
+        subject_id=request.pk,
+    )
+
+
+def removal_decided(request, owners, outcome, reason):
+    notify(
+        [request.requested_by, *owners],
+        kind=Kind.DATA_REMOVAL_DECIDED,
+        title=f"An admin {outcome} a data removal",
+        body=f"An admin {outcome} the removal request. Reason: {reason}",
+        subject_id=_scope_tenancy_id(request),
+    )
