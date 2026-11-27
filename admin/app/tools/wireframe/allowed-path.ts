@@ -1,5 +1,6 @@
 const SAFE_PATH = /^[a-z0-9\-/]+$/;
 const ALLOWED = [
+  /^auth\/profile\/picture\/$/,
   /^tenant\/tenancies\/\d+\/(condition-evidence|condition-corrections|removal-requests|documents)\//,
   /^landlord\/(condition-evidence|condition-corrections|removal-requests|documents)\//,
   /^admin\/(review-cases|condition-corrections|removal-requests|documents|condition-evidence)\//,

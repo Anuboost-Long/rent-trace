@@ -94,6 +94,9 @@ class User(MutableRecord):
     account_status = models.TextField(choices=AccountStatus, default=AccountStatus.ACTIVE)
     is_top_level_admin = models.BooleanField(default=False)
     last_login_at = models.DateTimeField(null=True, blank=True)
+    avatar_file = models.OneToOneField(
+        "files.File", models.PROTECT, null=True, blank=True, related_name="avatar_of"
+    )
 
     objects = UserQuerySet.as_manager()
 

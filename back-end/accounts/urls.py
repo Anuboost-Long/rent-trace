@@ -21,6 +21,8 @@ urlpatterns = [
     path("mfa/verify/", views.VerifyMfaView.as_view(), name="mfa-verify"),
     path("me/", views.MeView.as_view(), name="me"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
+    path("profile/picture/", views.ProfilePictureView.as_view(), name="profile-picture"),
+    path("users/<int:user_id>/picture/", views.UserPictureView.as_view(), name="user-picture"),
     path("signing-key/", views.SigningKeyView.as_view(), name="signing-key"),
     path("onboarding/", views.OnboardingView.as_view(), name="onboarding"),
 ]

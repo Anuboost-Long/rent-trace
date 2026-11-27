@@ -1,6 +1,6 @@
 import CallForm, { DownloadForm } from "../call-form";
 import { requireWireframe } from "../enabled";
-import { adminCalls } from "../spec";
+import { adminCalls, profileCalls } from "../spec";
 
 export default async function Page({
   searchParams,
@@ -14,7 +14,7 @@ export default async function Page({
       <p>
         <a href="/tools/wireframe">Back</a>
       </p>
-      {adminCalls(unitId).map((call) => (
+      {[...adminCalls(unitId), ...profileCalls].map((call) => (
         <CallForm key={`${call.method}${call.title}`} call={call} />
       ))}
       <DownloadForm role="admin" />

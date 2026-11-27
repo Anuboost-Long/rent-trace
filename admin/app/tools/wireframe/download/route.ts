@@ -12,6 +12,7 @@ const pathFor = (params: URLSearchParams) => {
   const tenancy = params.get("tenancy") ?? "";
   const kind = params.get("kind");
   if (!NUMERIC.test(file)) return null;
+  if (kind === "avatar") return `auth/users/${file}/picture/`;
   const documents = kind === "document";
   switch (role) {
     case "tenant":
