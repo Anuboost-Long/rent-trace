@@ -5,37 +5,30 @@ context. Older done-item detail lives in `git log` and the feature docs, not her
 
 ## What's left
 
-The reviews family and documents are built **at the API level** and have bare test forms at
-`/tools/wireframe` (see [Reviews](features/reviews.md), [Documents](features/documents.md) and
-[API wireframe pages](features/api-wireframe.md)). The project works **API first, UI later**. CI runs on
-every pull request ([Continuous integration](ci.md)); require its checks for `main` in GitHub's
-branch rules.
+**Working mode (28 Nov 2026):** everything goes on one branch, `feat/launch-ready`, with one draft PR (#22)
+so CI runs on every push. One final PR into `main` when the whole thing is ready. Plan, in order:
 
-API gaps, in the order I'd do them:
+1. **Remaining APIs** (back end, with tests and docs):
+   - Maintenance photos on an issue, and receipts for a repair as documents linked to the issue.
+   - Write `business_change_history` for property, unit, rent and bond edits.
+   - Super admin maintenance actions: propose and answer a closing, book a tradesperson, mark a visit
+     done.
+   - Documents: tenants uploading; escalating a flagged document to an admin; expiry of a confirmation.
+2. **Screens that use every API** (admin app, in the new design): condition reports with photos,
+   asking for more information, corrections, removal requests, escalation and the Review cases queues,
+   the super admin acting for someone, documents (publish, versions, confirm, flag), maintenance photos
+   and receipts, and profile pictures next to names. The wireframe pages are the map.
+3. **Back-and-forth testing:** walk every flow as tenant, landlord, admin and super admin in a browser, on
+   phone width too, and fix what breaks. Run the full back-end suite.
+4. **Mobile** (`mobile/`, an Expo app): move on to it once the above is done.
 
-1. **Maintenance photos and receipts:** the attachment tables exist with no upload API. A receipt for a
-   repair should be a `RECEIPT` document linked to the issue (that link exists).
-2. **Write `business_change_history`** for property, unit, rent and bond edits.
-3. **Super admin maintenance actions:** proposing and answering a closing, booking a tradesperson,
-   marking a visit done (only acknowledge, start and close-when-vacant exist).
-4. Documents: tenants uploading, escalating a flagged document to an admin, expiry of a confirmation
-   request. Reviews: escalating from `NEEDS_INFORMATION`, removal for more than condition records.
-5. Smaller: unit areas, communication logs, email change, phone bans, tenants leaving.
+Loose ends to fold in on the way: the authenticator reset email has never been seen arriving (the Gmail
+token has expired); `npm audit` reports 7 moderate vulnerabilities in admin; the dev overlay's
+"Date.now()" warning (dev-only, `next build` is clean); the tab animation and phone-width layouts have
+not been seen. Run `python manage.py migrate` on any other database after pulling.
 
-Screens (for the front-end teammate, from the wireframe pages): reviews and documents in the new design,
-including `NEEDS_INFORMATION` in the existing lists.
-
-Smaller gaps:
-
-- Not seen: the tab animation (needs a dev-server restart), the new screens at phone width, the
-  wireframe admin approve and reject forms, and a report photo upload from a form.
-- Not yet walked through: the landlord overview (16 Nov) and super admin maintenance status moves
-  (17 Nov).
-- The authenticator reset email has never been seen arriving (the Gmail token has expired).
-- The dev overlay's "Date.now()" blocking-route warning shows on every signed-in page. `next build`
-  is clean, so it is dev-only; cause not found.
-- `npm audit` reports 7 moderate vulnerabilities in admin.
-- Run `python manage.py migrate` on any other database after pulling (six migrations landed 27 Nov).
+(Done items D and E, local-time dates and the landlord overview, are in their feature documents:
+[Date display](features/date-display.md), [Admin overview](features/admin-overview.md).)
 
 ## Context a new session needs
 
