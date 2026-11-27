@@ -153,7 +153,7 @@ jobs:
           echo "JWT_SIGNING_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
       - run: pip install -r requirements-dev.txt
       - name: Tests
-        run: python manage.py test --parallel ${{ matrix.apps }}
+        run: python manage.py test --parallel=auto ${{ matrix.apps }}
 
   admin:
     name: Admin app
