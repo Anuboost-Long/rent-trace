@@ -25,7 +25,7 @@ const run = async (path: string, send: () => Promise<unknown>) => {
 };
 
 export const callJson = async (call: {
-  method: "GET" | "POST";
+  method: "GET" | "POST" | "DELETE";
   path: string;
   query?: Record<string, string | number>;
   json?: unknown;

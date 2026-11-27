@@ -1,6 +1,6 @@
 import CallForm, { DownloadForm } from "../../call-form";
 import { requireWireframe } from "../../enabled";
-import { tenantCalls } from "../../spec";
+import { profileCalls, tenantCalls } from "../../spec";
 
 export default async function Page({
   params,
@@ -13,7 +13,7 @@ export default async function Page({
       <p>
         <a href="/tools/wireframe">Back</a>
       </p>
-      {tenantCalls(tenancyId).map((call) => (
+      {[...tenantCalls(tenancyId), ...profileCalls].map((call) => (
         <CallForm key={`${call.method}${call.title}`} call={call} />
       ))}
       <DownloadForm role="tenant" tenancy={tenancyId} />

@@ -1,6 +1,6 @@
 "use server";
 import { EndPoints } from "@/api/api-config";
-import { ApiServiceServer } from "@/api/api-helper";
+import { ApiServiceServer, ApiUploadServer } from "@/api/api-helper";
 import {
   ACCESS_COOKIE,
   clearSessionCookies,
@@ -166,6 +166,30 @@ export const handleUpdateProfile = async (body: ProfileBody) => {
       url: EndPoints.auth.profile,
       method: "PATCH",
       data: body,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, { redirectOnUnauth: true });
+  }
+};
+
+export const handleSetProfilePicture = async (formData: FormData) => {
+  try {
+    const data = await ApiUploadServer<Me>({
+      url: EndPoints.auth.profile_picture,
+      formData,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, { redirectOnUnauth: true });
+  }
+};
+
+export const handleRemoveProfilePicture = async () => {
+  try {
+    const data = await ApiServiceServer<Me>({
+      url: EndPoints.auth.profile_picture,
+      method: "DELETE",
     });
     return { data, error: null };
   } catch (error) {

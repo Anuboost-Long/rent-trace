@@ -3,11 +3,14 @@ from accounts.services.change_password import change_password
 from accounts.services.complete_onboarding import complete_onboarding
 from accounts.services.confirm_mfa import confirm_mfa
 from accounts.services.enrol_mfa import enrol_mfa
+from accounts.services.open_profile_picture import open_profile_picture
 from accounts.services.preview_password_reset import preview_password_reset
 from accounts.services.refresh import refresh
+from accounts.services.remove_profile_picture import remove_profile_picture
 from accounts.services.request_password_reset import request_password_reset
 from accounts.services.resend_verification import resend_verification
 from accounts.services.reset_password import reset_password
+from accounts.services.set_profile_picture import set_profile_picture
 from accounts.services.shared.sessions import Device, SignedIn
 from accounts.services.sign_in_with_google import sign_in_with_google
 from accounts.services.sign_in_with_password import sign_in_with_password

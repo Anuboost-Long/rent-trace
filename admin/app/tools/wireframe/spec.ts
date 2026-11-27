@@ -13,7 +13,7 @@ export type Field =
 
 export type Call = {
   title: string;
-  method: "GET" | "POST";
+  method: "GET" | "POST" | "DELETE";
   path: string;
   fields?: Field[];
   note?: string;
@@ -358,3 +358,17 @@ export const adminCalls = (unitId: string): Call[] => {
     },
   ];
 };
+
+export const profileCalls: Call[] = [
+  {
+    title: "Profile picture: set or replace",
+    method: "POST",
+    path: "auth/profile/picture/",
+    fields: [{ kind: "file", name: "file", required: true }],
+  },
+  {
+    title: "Profile picture: remove",
+    method: "DELETE",
+    path: "auth/profile/picture/",
+  },
+];

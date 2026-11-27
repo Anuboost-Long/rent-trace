@@ -48,7 +48,12 @@ export default function Navbar({ title, onOpenMenu }: NavbarProp) {
             title={`${user.first_name} ${user.last_name}`}
             className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border"
           >
-            <Avatar firstName={user.first_name} lastName={user.last_name} />
+            <Avatar
+              firstName={user.first_name}
+              lastName={user.last_name}
+              userId={user.id}
+              pictureId={user.picture_id}
+            />
           </Link>
         )}
       </div>

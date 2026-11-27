@@ -11,6 +11,7 @@ test("reviews and documents routes are allowed", () => {
     "landlord/documents/",
     "admin/review-cases/2/approve/",
     "admin/condition-evidence/9/respond/",
+    "auth/profile/picture/",
   ]) {
     assert.equal(isAllowedPath(path), true, path);
   }
@@ -19,6 +20,8 @@ test("reviews and documents routes are allowed", () => {
 test("everything else is refused", () => {
   for (const path of [
     "auth/sign-in/",
+    "auth/profile/",
+    "auth/profile/picture/x/",
     "admin/users/",
     "landlord/properties/",
     "tenant/tenancies/x/documents/",

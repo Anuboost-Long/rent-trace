@@ -5,6 +5,11 @@ from accounts.services.shared.account_rules import is_admin_side
 
 
 class UserResource(serializers.ModelSerializer):
+    picture_id = serializers.IntegerField(
+        source="avatar_file_id",
+        allow_null=True,
+        help_text="The profile picture's file id, or null. It changes when the picture does.",
+    )
     roles = serializers.SerializerMethodField()
     role_names = serializers.SerializerMethodField()
     is_admin = serializers.SerializerMethodField()
@@ -25,6 +30,7 @@ class UserResource(serializers.ModelSerializer):
             "is_admin",
             "created_at",
             "last_login_at",
+            "picture_id",
         ]
 
     def get_roles(self, user) -> list[str]:

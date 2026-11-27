@@ -104,6 +104,8 @@ async function HeaderActions() {
       )}
       <AccountMenu
         name={`${viewer.first_name} ${viewer.last_name}`.trim()}
+        userId={viewer.id}
+        pictureId={viewer.picture_id}
         email={viewer.email}
         roleLabel={audience ? AUDIENCE_LABEL[audience] : "Setting up"}
         homeHref={homePathFor(viewer)}

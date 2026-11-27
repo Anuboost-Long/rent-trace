@@ -1,4 +1,6 @@
+from django.http import FileResponse
 from drf_spectacular.utils import extend_schema
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
@@ -244,6 +246,52 @@ class ProfileView(PermissionedView):
         changes = _validated(dtos.UpdateProfileDto, request)
         user = services.update_profile(user=request.user, changes=changes)
         return Response(resources.MeResource(user, context={"session": request.auth}).data)
+
+
+class ProfilePictureView(PermissionedView):
+    required_permissions = {
+        "POST": "accounts.update_profile",
+        "DELETE": "accounts.update_profile",
+    }
+    parser_classes = [MultiPartParser]
+
+    @extend_schema(
+        operation_id="auth_profile_picture_set",
+        request={"multipart/form-data": dtos.ProfilePictureDto},
+        responses=resources.MeResource,
+    )
+    def post(self, request):
+        serializer = dtos.ProfilePictureDto(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = services.set_profile_picture(
+            user=request.user, upload=serializer.validated_data["file"]
+        )
+        return Response(resources.MeResource(user, context={"session": request.auth}).data)
+
+    @extend_schema(
+        operation_id="auth_profile_picture_remove",
+        request=None,
+        responses=resources.MeResource,
+    )
+    def delete(self, request):
+        user = services.remove_profile_picture(user=request.user)
+        return Response(resources.MeResource(user, context={"session": request.auth}).data)
+
+
+class UserPictureView(PermissionedView):
+    required_permissions = {"GET": "files.download"}
+
+    @extend_schema(
+        operation_id="auth_user_picture",
+        responses={(200, "application/octet-stream"): bytes},
+    )
+    def get(self, request, user_id):
+        picture, content = services.open_profile_picture(viewer=request.user, user_id=user_id)
+        response = FileResponse(
+            content, content_type=picture.mime_type, filename=picture.original_name
+        )
+        response["Cache-Control"] = "private, max-age=3600"
+        return response
 
 
 class MfaView(APIView):

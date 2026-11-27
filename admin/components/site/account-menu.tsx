@@ -2,11 +2,14 @@
 import { handleSignOut } from "@/api/services/auth/serve-action";
 import { Route } from "@/constants/web-routes";
 import { ChevronDown, LogOut, UserRound } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 type AccountMenuProp = Readonly<{
   name: string;
+  userId: number;
+  pictureId: number | null;
   email: string;
   roleLabel: string;
   homeHref: string;
@@ -18,6 +21,8 @@ const itemClassName =
 
 export default function AccountMenu({
   name,
+  userId,
+  pictureId,
   email,
   roleLabel,
   homeHref,
@@ -47,9 +52,20 @@ export default function AccountMenu({
       <summary className="flex h-10 cursor-pointer list-none items-center gap-2 rounded-lg border border-default pr-2 pl-1.5 hover:bg-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-border">
         <span
           aria-hidden
-          className="flex size-7 items-center justify-center rounded-md bg-brand text-sm font-semibold text-on-brand"
+          className="flex size-7 items-center justify-center overflow-hidden rounded-md bg-brand text-sm font-semibold text-on-brand"
         >
-          {name.charAt(0).toUpperCase()}
+          {pictureId ? (
+            <Image
+              src={`/profile-pictures/${userId}?v=${pictureId}`}
+              alt=""
+              width={56}
+              height={56}
+              unoptimized
+              className="size-full object-cover"
+            />
+          ) : (
+            name.charAt(0).toUpperCase()
+          )}
         </span>
         <span className="hidden max-w-32 truncate text-sm font-medium sm:inline">
           {name}

@@ -125,7 +125,7 @@ const submit = async (call: Call, fields: Field[], form: HTMLFormElement) => {
           ),
         ) as Record<string, string | number>,
       })
-    : callJson({ method: "POST", path, json: values });
+    : callJson({ method: call.method, path, json: values });
 };
 
 export default function CallForm({ call }: Readonly<{ call: Call }>) {
@@ -213,6 +213,9 @@ export function DownloadForm({
             <select name="kind">
               <option value="photo">photo (report)</option>
               <option value="document">document</option>
+              <option value="avatar">
+                profile picture (file id = user id)
+              </option>
             </select>
           </label>
         </p>
