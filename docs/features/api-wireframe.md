@@ -33,8 +33,9 @@ documents endpoint from a form: pick the action, fill the fields, see the status
 Typecheck and lint are clean; `npm test` (6 tests, including the path allowlist). In Chrome on a
 production build with `WIREFRAME_ENABLED=true`, signed in as a tenant: the index renders, the report
 and correction lists load on open, and filling the "Reports: add" form created a report (no JSON
-written by hand). **Not seen:** the landlord and admin pages, file uploads from the file pickers, and
-the download route.
+written by hand). Also as a landlord: the report list loaded for the unit and the approve form approved a report
+from just its id (the key was generated for me). **Not seen:** the admin page, file uploads from the
+file pickers, and the download route.
 
 ## Source locations
 
