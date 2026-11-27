@@ -45,6 +45,9 @@ endpoints covers every profile.
   choosing a different photo (preview shown, top bar unchanged until saving), saving it (Photo row
   updated), then removing it and saving (initials back). **Not seen:** the landlord and admin top bars, the
   site-header account menu, and phone width.
+- **Fix, 28 Nov 2026:** the Add or Change photo, Remove and Cancel buttons were inside the form without
+  `type="button"`, so pressing one submitted the form and left edit mode. They are plain buttons now; only
+  Save changes submits. Checked in Chrome: Change photo and Remove leave the form open.
 - Images reach the browser through `app/profile-pictures/[userId]/route.ts`, which adds the sign-in cookie
   server side.
 
