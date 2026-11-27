@@ -230,6 +230,9 @@ export const EndPoints = {
     sign_out: byEndpoint("auth/sign-out/"),
     me: byEndpoint("auth/me/"),
     profile: byEndpoint("auth/profile/"),
+    profile_picture: byEndpoint("auth/profile/picture/"),
+    user_picture: (id: number | string) =>
+      byEndpoint(`auth/users/${id}/picture/`),
     change_password: byEndpoint("auth/change-password/"),
     mfa_enrol: byEndpoint("auth/mfa/enrol/"),
     mfa_confirm: byEndpoint("auth/mfa/confirm/"),

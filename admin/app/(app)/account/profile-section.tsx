@@ -1,23 +1,70 @@
 "use client";
+import Avatar from "@/components/common/avatar";
 import Button from "@/components/common/button";
 import TextInput from "@/components/common/inputs/text-input";
-import useUpdateProfile from "@/hooks/form/useUpdateProfile";
+import useUpdateProfile, {
+  type PictureChange,
+} from "@/hooks/form/useUpdateProfile";
 import type { Me } from "@/types/auth/models";
-import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { ImagePlus, Pencil, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+const MAX_PICTURE_BYTES = 10_000_000;
+const PICTURE_TYPES = ["image/jpeg", "image/png"];
 
 type ProfileSectionProp = Readonly<{ user: Me }>;
 
 export default function ProfileSection({ user }: ProfileSectionProp) {
   const [editing, setEditing] = useState(false);
-  const { pending, error, clearError, save } = useUpdateProfile(() =>
-    setEditing(false),
+  const [newFile, setNewFile] = useState<File | null>(null);
+  const [removing, setRemoving] = useState(false);
+  const [pictureProblem, setPictureProblem] = useState<string | null>(null);
+  const picker = useRef<HTMLInputElement>(null);
+  const preview = useMemo(
+    () => (newFile ? URL.createObjectURL(newFile) : null),
+    [newFile],
   );
+  useEffect(
+    () => () => {
+      if (preview) URL.revokeObjectURL(preview);
+    },
+    [preview],
+  );
+
+  const { pending, error, clearError, save } = useUpdateProfile(() => {
+    setEditing(false);
+    setNewFile(null);
+    setRemoving(false);
+  });
 
   const stopEditing = () => {
     setEditing(false);
+    setNewFile(null);
+    setRemoving(false);
+    setPictureProblem(null);
     clearError();
   };
+
+  const choose = (file: File | undefined) => {
+    if (!file) return;
+    if (!PICTURE_TYPES.includes(file.type)) {
+      setPictureProblem("Choose a JPEG or PNG image.");
+    } else if (file.size > MAX_PICTURE_BYTES) {
+      setPictureProblem("The picture must be 10 MB or smaller.");
+    } else {
+      setPictureProblem(null);
+      setNewFile(file);
+      setRemoving(false);
+    }
+  };
+
+  const pictureChange: PictureChange = newFile
+    ? { file: newFile }
+    : removing
+      ? { remove: true }
+      : null;
+  const showsPicture =
+    preview !== null || (user.picture_id !== null && !removing);
 
   return (
     <section aria-labelledby="profile-heading">
@@ -43,14 +90,82 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
           onSubmit={(event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);
-            save({
-              first_name: String(form.get("first_name")),
-              last_name: String(form.get("last_name")),
-              phone_number: String(form.get("phone_number") ?? ""),
-            });
+            save(
+              {
+                first_name: String(form.get("first_name")),
+                last_name: String(form.get("last_name")),
+                phone_number: String(form.get("phone_number") ?? ""),
+              },
+              pictureChange,
+            );
           }}
           className="mt-3 flex flex-col gap-4 rounded-xl border border-default p-4"
         >
+          <div className="flex flex-wrap items-center gap-4">
+            {preview ? (
+              // eslint-disable-next-line @next/next/no-img-element -- a local preview, not a served image
+              <img
+                src={preview}
+                alt="New profile picture"
+                className="size-16 rounded-full object-cover"
+              />
+            ) : (
+              <Avatar
+                firstName={user.first_name}
+                lastName={user.last_name}
+                userId={user.id}
+                pictureId={removing ? null : user.picture_id}
+                className="size-16 text-section"
+              />
+            )}
+            <div>
+              <div className="flex flex-wrap gap-2">
+                <input
+                  ref={picker}
+                  type="file"
+                  accept="image/jpeg,image/png"
+                  hidden
+                  onChange={(event) => {
+                    choose(event.target.files?.[0]);
+                    event.target.value = "";
+                  }}
+                />
+                <Button
+                  variant="quiet"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => picker.current?.click()}
+                  disabled={pending}
+                >
+                  <ImagePlus aria-hidden className="size-4" />
+                  {showsPicture ? "Change photo" : "Add photo"}
+                </Button>
+                {showsPicture && (
+                  <Button
+                    variant="quiet"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => {
+                      setNewFile(null);
+                      setRemoving(true);
+                    }}
+                    disabled={pending}
+                  >
+                    <Trash2 aria-hidden className="size-4" />
+                    Remove
+                  </Button>
+                )}
+              </div>
+              <p className="mt-1 text-caption text-fg-tertiary">
+                JPEG or PNG, up to 10 MB. It changes when you save.
+              </p>
+              {pictureProblem && (
+                <p role="alert" className="mt-1 text-sm text-error">
+                  {pictureProblem}
+                </p>
+              )}
+            </div>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <TextInput
               label="First name"
@@ -96,6 +211,15 @@ export default function ProfileSection({ user }: ProfileSectionProp) {
         </form>
       ) : (
         <dl className="mt-3 divide-y divide-default rounded-xl border border-default">
+          <Row label="Photo">
+            <Avatar
+              firstName={user.first_name}
+              lastName={user.last_name}
+              userId={user.id}
+              pictureId={user.picture_id}
+              className="size-12 text-body-sm"
+            />
+          </Row>
           <Row label="Name">
             {user.first_name} {user.last_name}
           </Row>

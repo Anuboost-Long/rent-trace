@@ -16,6 +16,7 @@ export type User = {
   is_top_level_admin: boolean;
   created_at: string;
   last_login_at: string | null;
+  picture_id: number | null;
 };
 
 export type Me = User & { mfa_status: MfaStatus; permissions: string[] };
