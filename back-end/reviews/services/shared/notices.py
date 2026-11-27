@@ -1,5 +1,6 @@
 from notifications.models import NotificationKind as Kind
 from notifications.services.shared import notify
+from tenancies.models import TenancyParty
 
 
 def _tenancy_id(request):
@@ -122,4 +123,41 @@ def removal_decided(request, owners, outcome, reason):
         title=f"An admin {outcome} a data removal",
         body=f"An admin {outcome} the removal request. Reason: {reason}",
         subject_id=_scope_tenancy_id(request),
+    )
+
+
+def _tenants_of(document):
+    parties = TenancyParty.objects.filter(tenancy_id=document.tenancy_id).current()
+    return [party.tenant for party in parties.select_related("tenant")]
+
+
+def document_added(document, title):
+    if document.tenancy_id is None:
+        return
+    notify(
+        _tenants_of(document),
+        kind=Kind.DOCUMENT_ADDED,
+        title="A document was added to your tenancy",
+        body=f"Your landlord added: {title}.",
+        subject_id=document.tenancy_id,
+    )
+
+
+def document_confirmation_requested(document, title):
+    notify(
+        _tenants_of(document),
+        kind=Kind.DOCUMENT_CONFIRMATION_REQUESTED,
+        title="A document needs your confirmation",
+        body=f"Your landlord published: {title}. Open your tenancy to confirm or flag it.",
+        subject_id=document.tenancy_id,
+    )
+
+
+def document_confirmation_answered(document, owners, tenant, title, outcome, reason=None):
+    notify(
+        owners,
+        kind=Kind.DOCUMENT_CONFIRMATION_ANSWERED,
+        title=f"A tenant {outcome} a document",
+        body=f"{_name(tenant)} {outcome}: {title}." + (f" Reason: {reason}" if reason else ""),
+        subject_id=document.tenancy_id,
     )
