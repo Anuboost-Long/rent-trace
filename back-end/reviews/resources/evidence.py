@@ -4,7 +4,7 @@ from typing import Literal
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from reviews.models import ReviewRequest, ReviewStatus
+from reviews.models import ReviewDecisionType, ReviewRequest, ReviewStatus
 from reviews.resources.photo import EvidencePhotoResource
 from reviews.resources.shared import (
     admin_decision,
@@ -34,6 +34,10 @@ class EvidenceResource(serializers.ModelSerializer):
     rejection_reason = serializers.SerializerMethodField(
         help_text="Why the landlord rejected it, or null."
     )
+    revision_no = serializers.IntegerField(source="current_submission.revision_no")
+    information_request = serializers.SerializerMethodField(
+        help_text="What the landlord last asked for, or null."
+    )
     photos = serializers.SerializerMethodField()
     escalated_at = serializers.SerializerMethodField(
         help_text="When someone asked an admin to decide, or null."
@@ -54,6 +58,8 @@ class EvidenceResource(serializers.ModelSerializer):
             "tenancy_id",
             "author",
             "rejection_reason",
+            "revision_no",
+            "information_request",
             "photos",
             "escalated_at",
             "admin_reason",
@@ -77,6 +83,14 @@ class EvidenceResource(serializers.ModelSerializer):
     @extend_schema_field(EvidencePhotoResource(many=True))
     def get_photos(self, request):
         return EvidencePhotoResource(photos_of(request), many=True).data
+
+    def get_information_request(self, request) -> str | None:
+        asks = [
+            d
+            for d in request.decisions.all()
+            if d.decision == ReviewDecisionType.REQUEST_INFORMATION
+        ]
+        return max(asks, key=lambda d: d.pk).reason if asks else None
 
     def get_escalated_at(self, request) -> datetime | None:
         row = escalation(self._case(request))

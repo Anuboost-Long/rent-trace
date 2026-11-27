@@ -4,7 +4,7 @@ from reviews.models import Dispute, ReviewKind, ReviewRequest, ReviewStatus
 from reviews.services.shared.history import record_transition
 
 
-def open_dispute(report, opener, reason, now, *, side, route):
+def open_dispute(report, opener, reason, now, *, side, route, on_behalf_of=None):
     case = ReviewRequest.objects.create(
         target=report.target,
         kind=ReviewKind.DISPUTE,
@@ -26,5 +26,7 @@ def open_dispute(report, opener, reason, now, *, side, route):
         created_by=opener,
         correlation_id=uuid.uuid4(),
     )
-    record_transition(case, ReviewStatus.PENDING_REVIEW, "OPEN_DISPUTE", opener, reason)
+    record_transition(
+        case, ReviewStatus.PENDING_REVIEW, "OPEN_DISPUTE", opener, reason, on_behalf_of=on_behalf_of
+    )
     return case

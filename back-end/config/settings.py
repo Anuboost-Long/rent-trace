@@ -229,6 +229,8 @@ SPECTACULAR_SETTINGS = {
     "SECURITY": [{"apiKey": []}],
     "ENUM_NAME_OVERRIDES": {
         "SelfServiceRoleEnum": "accounts.dtos.fields.SELF_SERVICE_ROLES",
+        "ReviewStatusEnum": "reviews.models.ReviewStatus",
+        "CorrectionStatusEnum": "reviews.dtos.cases.CORRECTION_STATUSES",
         "AuthMethodEnum": "accounts.models.AuthMethod",
         "TenancyStatusEnum": "tenancies.models.TenancyStatus",
         "MaintenanceStatusEnum": "maintenance.models.MaintenanceStatus",

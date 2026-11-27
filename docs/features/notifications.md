@@ -47,6 +47,22 @@ An invite to an address with no account, or an unverified one, makes no notifica
 the inviter's screen doesn't change either way. A person who signs up later sees the
 invitation in their Tenancies page too, because that list is built from their email.
 
+Three kinds for documents, `DOCUMENT_ADDED` (tenants), `DOCUMENT_CONFIRMATION_REQUESTED` (tenants) and
+`DOCUMENT_CONFIRMATION_ANSWERED` (the owners), link to the tenancy (migration `notifications/0014`); see
+[Documents](documents.md). No screen yet.
+
+Two kinds for data removal, `DATA_REMOVAL_REQUESTED` (admins who can review removals; the id is the
+request) and `DATA_REMOVAL_DECIDED` (the asker and the owners; the id is the tenancy when there is one;
+migration `notifications/0013`), have no screen yet.
+
+Two kinds for locked corrections, `CONDITION_CORRECTION_REQUESTED` (admins who can decide; the id is
+the request) and `CONDITION_CORRECTION_DECIDED` (the asker and the owners; the id is the tenancy;
+migration `notifications/0012`), have no screen yet.
+
+Two kinds for asking for more information, `CONDITION_EVIDENCE_INFO_REQUESTED` (the tenant, when the
+landlord asks) and `CONDITION_EVIDENCE_INFO_PROVIDED` (the owners, when the tenant answers; migration
+`notifications/0011`), link to the tenancy. API only so far, no screen yet.
+
 Two more kinds, `REVIEW_CASE_ESCALATED` (admins who can decide; leads to Review cases) and
 `REVIEW_CASE_DECIDED` (the tenant and every current owner; leads to the tenancy), are written when
 someone asks an admin to decide and when an admin decides (migration `notifications/0010`). Not seen

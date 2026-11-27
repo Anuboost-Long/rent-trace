@@ -186,6 +186,107 @@ admin who decides an escalated case can open them; nobody else can (404).
 - **Not in this slice:** removing a photo (withdraw and send a new report instead), PDFs, and photos
   on anything but condition reports.
 
+## Asking for more information — API built 27 November 2026
+
+Back end only for now: 56 `reviews` tests pass (14 new in `test_request_information.py` and
+`test_respond_to_information.py`). The screens come later; the tenant and landlord lists still treat
+`NEEDS_INFORMATION` as an unknown status until they are built. Instead of approving or rejecting at
+once, the landlord can ask the tenant for more, and the tenant answers.
+
+- **Ask:** `POST /api/landlord/condition-evidence/<id>/request-information/` with a `reason` and an
+  `idempotency_key` (permission `reviews.decide`). Only while the report is waiting (not expired). The
+  report moves to `NEEDS_INFORMATION`, a `REQUEST_INFORMATION` decision is recorded, and the tenant is
+  told. Landlords can ask more than once.
+- **Answer:** `POST /api/tenant/tenancies/<id>/condition-evidence/<request_id>/respond/` with a
+  required `message` and optional `title`, `description` and `observed_at` changes (permission
+  `reviews.submit`). Only while `NEEDS_INFORMATION`. It adds a new numbered submission and a new
+  condition version that supersedes the old one; photos carry over, and the tenant can add more
+  photos first. The report returns to `PENDING_REVIEW` with a fresh 14-day window, and the owners
+  are told. Old submissions are never edited.
+- **Meanwhile:** the landlord cannot approve, reject or escalate it (400, "Waiting for the tenant's
+  reply."). The tenant can withdraw it or add photos. It does not expire while it waits for the tenant
+  (assumption: the tenant can always withdraw).
+- **Responses** gain `revision_no` and `information_request` (the landlord's latest question, or
+  null). The status shows as `NEEDS_INFORMATION`.
+- **Notifications:** `CONDITION_EVIDENCE_INFO_REQUESTED` (tenant) and `CONDITION_EVIDENCE_INFO_PROVIDED`
+  (owners), migration `notifications/0011`; both link to the tenancy.
+
+## Locked corrections — API built 27 November 2026
+
+Back end only for now: 73 `reviews` tests pass (17 new, in `test_request_correction.py`,
+`test_decide_correction.py` and `test_list_corrections.py`). No screens yet. A note people rely on is not changed by one side alone: either side asks an
+admin to correct it, and the admin decides.
+
+- **What can be corrected** (assumption, change if wrong): a _shown_ landlord note on the tenant's own
+  unit (the tenant asks), and an _approved_ tenant condition report on a property the landlord owns
+  (the landlord asks). Landlords still edit their own baseline notes directly through
+  `/api/landlord/conditions/`; that behaviour is unchanged.
+- **Ask:** `POST /api/tenant/tenancies/<id>/condition-corrections/` (tenant) or
+  `POST /api/landlord/condition-corrections/` (landlord), body `record_id`, `what_is_incorrect`,
+  `proposed_replacement` (the new description), `why_change_needed`, optional `title`. Permission
+  `reviews.submit`. It creates a `LOCKED_CORRECTION` request on the Admin route, waiting for a
+  decision. Only one correction can wait per note (400). Nothing about the note changes yet; the
+  proposed wording is kept in the submission, not as a condition version, so the landlord can still edit
+  meanwhile.
+- **List and withdraw:** `GET .../condition-corrections/` (tenant: their tenancy's; landlord:
+  `?unit_id=`), `POST .../<id>/cancel/` by whoever asked, while it is waiting. `reviews.view` and
+  `reviews.submit`.
+- **Admin:** `GET /api/admin/condition-corrections/?status=` (paged, default waiting) and
+  `POST .../<id>/approve/` or `.../reject/` with a `reason` (required both ways) and an
+  `idempotency_key`; permission `reviews.admin_review`. Approving writes a new condition version that
+  supersedes the accepted one, makes it the accepted version and writes `business_change_history` with the
+  old and new version numbers. Rejecting changes nothing.
+- **Stale:** if the note changed after the request was written (row version differs), deciding marks the
+  request `STALE` instead of applying it, and the requester must ask again.
+- **Told:** admins who can decide when one is asked; the requester and the property's owners when it is
+  decided. Notification kinds `CONDITION_CORRECTION_REQUESTED` and `CONDITION_CORRECTION_DECIDED`
+  (migration `notifications/0012`).
+
+## A super admin acting for someone — API built 27 November 2026
+
+Back end only for now: 80 `reviews` tests pass (7 new, in `test_super_admin_acts.py`). No screens. A super admin (`is_top_level_admin`) can do a party's action on a condition
+report. The records show the super admin as the actor, and the person they acted for goes in
+`on_behalf_of` (the rule in the project notes: only on `review_status_history` and
+`business_change_history`, and never the same person as the actor).
+
+- **Endpoints** (super admin only, plus the permission the action needs):
+  `GET /api/admin/condition-evidence/?unit_id=` (any admin with `reviews.admin_review`), and
+  `POST /api/admin/condition-evidence/<id>/` followed by `approve`, `reject` or `request-information`
+  (acting as the property's **primary owner**; body as for the landlord), and `cancel` or `respond`
+  (acting as the report's **author**; body as for the tenant).
+- **Recorded as:** the admin is `reviewer` on the decision (side `LANDLORD`) and `actor` on the status
+  history; `on_behalf_of` is the primary owner or the author. Approving also sets `on_behalf_of` on
+  the change history. A regular admin gets 403.
+- **Same rules apply:** an expired, answered or withdrawn report is refused the same way; retrying an
+  answer with the same `idempotency_key` changes nothing.
+- **Not covered:** escalating for a party (a super admin can already decide the case in Review cases),
+  adding photos for a tenant, and submitting a report for a tenant.
+
+## Data removal — API built 27 November 2026
+
+Back end only for now: 96 `reviews` tests pass (16 new, in `test_request_removal.py`,
+`test_decide_removal.py` and `test_list_removals.py`). No screens. Nothing is deleted: an approved removal **hides** records and files.
+
+- **What can be removed (first version):** condition records. A tenant can ask to remove their **own**
+  condition reports; a landlord can ask to remove any condition record on a property they own.
+  Hiding a record also hides records related to it and the photos attached to its submissions
+  (`include_descendants`, on by default). Other targets (properties, units, maintenance issues,
+  documents) are for later.
+- **Ask:** `POST /api/tenant/tenancies/<id>/removal-requests/` or `POST /api/landlord/removal-requests/`,
+  body `record_ids` (1 to 20), `reason`, optional `include_descendants`; permission
+  `reviews.request_removal`. It creates a `DATA_REMOVAL` request on the Admin route with one
+  `removal_request_items` row per record. A record with a waiting removal cannot be asked again (400);
+  records you cannot remove are a 404.
+- **List and withdraw:** `GET` on both (tenant by tenancy, landlord `?unit_id=`), `POST .../<id>/cancel/`
+  by whoever asked while it is waiting.
+- **Admin:** `GET /api/admin/removal-requests/?status=` (paged) and `POST .../<id>/approve/` or
+  `.../reject/` with a required `reason` and an `idempotency_key`; permission `reviews.review_removal`.
+  Approving sets `deleted_at` and `deleted_by` on each record and its descendants and writes
+  `removal_effects` rows (`HIDE_RECORD`, `HIDE_DESCENDANTS`, `HIDE_FILE`) and change history. Hidden
+  records disappear from reports, lists and photo downloads (404). Rejecting changes nothing.
+- **Told:** admins who can decide when one is asked; the asker and the owners when it is decided
+  (kinds `DATA_REMOVAL_REQUESTED`, `DATA_REMOVAL_DECIDED`; migration `notifications/0013`).
+
 ## Build order
 
 Each phase ships on its own, with tests and a browser walkthrough, and updates this document.

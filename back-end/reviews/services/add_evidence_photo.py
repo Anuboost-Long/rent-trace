@@ -8,7 +8,7 @@ from files.models import File, UploadStatus
 from properties.models import PropertyFileKind
 from properties.services.shared.uploads import check_upload, sha256_of
 from reviews.models import ReviewSubmissionFile
-from reviews.services.shared.decisions import require_pending
+from reviews.services.shared.decisions import require_open
 from reviews.services.shared.scope import find_evidence_I_wrote, reloaded
 
 MAX_PHOTOS = 5
@@ -29,7 +29,7 @@ def add_evidence_photo(*, user, request_id, upload):
 @transaction.atomic
 def _record(user, request_id, upload, key, mime_type, checksum):
     request = find_evidence_I_wrote(user, request_id, lock=True)
-    require_pending(request)
+    require_open(request)
     if request.current_submission.files.count() >= MAX_PHOTOS:
         raise ValidationError({"file": TOO_MANY})
     stored = File.objects.create(

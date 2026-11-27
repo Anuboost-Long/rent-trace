@@ -73,3 +73,74 @@ class EvidenceApiTestCase(TenancyApiTestCase):
             f"{ADMIN_URL}{case_id}/{action}/",
             {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
         )
+
+    def ask(self, evidence, user=None, key=None, reason="Which wall, and when?"):
+        self.as_user(user or self.lou)
+        return self.post(
+            f"{LANDLORD_URL}{evidence['id']}/request-information/",
+            {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
+        )
+
+    def respond(self, evidence, user=None, **fields):
+        self.as_user(user or self.tina)
+        payload = {"message": "The north wall, last Tuesday.", **fields}
+        return self.post(f"{self.tenant_url}{evidence['id']}/respond/", payload)
+
+    def shown_note(self):
+        """A landlord note that tenants can see."""
+        self.as_user(self.lou)
+        created = self.post(
+            "/api/landlord/conditions/",
+            {
+                "unit_id": self.unit.pk,
+                "title": "Kitchen benchtop",
+                "description": "Small chip near the sink.",
+                "observed_at": "2026-11-13T00:00:00Z",
+                "is_shown_to_tenants": True,
+            },
+        )
+        assert created.status_code == 201, created.data
+        return created.data
+
+    def correction_fields(self, record_id, **extra):
+        return {
+            "record_id": record_id,
+            "what_is_incorrect": "There is no chip.",
+            "proposed_replacement": "Benchtop in good condition.",
+            "why_change_needed": "I checked the photos at move-in.",
+            **extra,
+        }
+
+    def ask_tenant_correction(self, record_id, user=None, **extra):
+        self.as_user(user or self.tina)
+        url = f"/api/tenant/tenancies/{self.tenancy['id']}/condition-corrections/"
+        return self.post(url, self.correction_fields(record_id, **extra))
+
+    def decide_correction(
+        self, request_id, action, key=None, reason="Checked the inspection report."
+    ):
+        return self.post(
+            f"/api/admin/condition-corrections/{request_id}/{action}/",
+            {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
+        )
+
+    def record_of(self, evidence):
+        return ReviewRequest.objects.get(pk=evidence["id"]).target.condition_record_id
+
+    def ask_tenant_removal(self, record_ids, user=None, **extra):
+        self.as_user(user or self.tina)
+        url = f"/api/tenant/tenancies/{self.tenancy['id']}/removal-requests/"
+        return self.post(url, {"record_ids": record_ids, "reason": "Entered by mistake.", **extra})
+
+    def ask_landlord_removal(self, record_ids, user=None, **extra):
+        self.as_user(user or self.lou)
+        return self.post(
+            "/api/landlord/removal-requests/",
+            {"record_ids": record_ids, "reason": "Not accurate.", **extra},
+        )
+
+    def decide_removal(self, request_id, action, key=None, reason="Fine to hide."):
+        return self.post(
+            f"/api/admin/removal-requests/{request_id}/{action}/",
+            {"idempotency_key": str(key or uuid.uuid4()), "reason": reason},
+        )

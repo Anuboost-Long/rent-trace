@@ -83,6 +83,7 @@ PERMISSIONS = [
     ("documents.view", "View documents", "documents", EVERYONE),
     ("documents.publish", "Upload document versions", "documents", {LANDLORD}),
     ("documents.confirm", "Confirm or flag a document", "documents", {TENANT}),
+    ("documents.admin_view", "View documents as an admin", "documents", {ADMIN}),
     ("providers.view", "View service providers", "providers", EVERYONE),
     ("providers.manage", "Manage providers and recommendations", "providers", {LANDLORD}),
     ("providers.manage_categories", "Manage service categories", "providers", {ADMIN}),

@@ -45,7 +45,17 @@ class ReviewRoute(models.TextChoices):
 
 class ReviewRequestQuerySet(models.QuerySet):
     def evidence(self):
-        return self.filter(kind=ReviewKind.EVIDENCE_REVIEW)
+        return self.filter(
+            kind=ReviewKind.EVIDENCE_REVIEW, target__condition_record__deleted_at__isnull=True
+        )
+
+    def removals(self):
+        return self.filter(kind=ReviewKind.DATA_REMOVAL)
+
+    def with_removal_details(self):
+        return self.select_related("requested_by").prefetch_related(
+            "decisions", "removal_items__target__condition_record__versions"
+        )
 
     def on_properties(self, properties):
         return self.filter(target__condition_record__property_unit__property__in=properties)
@@ -55,6 +65,16 @@ class ReviewRequestQuerySet(models.QuerySet):
 
     def cases_for(self, report):
         return self.filter(kind=ReviewKind.DISPUTE, parent_request=report)
+
+    def corrections(self):
+        return self.filter(kind=ReviewKind.LOCKED_CORRECTION)
+
+    def with_correction_details(self):
+        return self.select_related(
+            "requested_by",
+            "current_submission__base_condition_version",
+            "target__condition_record__property_unit__property",
+        ).prefetch_related("decisions")
 
     def admin_cases(self):
         return self.filter(kind=ReviewKind.DISPUTE, review_route=ReviewRoute.ADMIN)

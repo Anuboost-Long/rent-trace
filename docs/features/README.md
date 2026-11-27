@@ -32,13 +32,15 @@ Every feature has a document here. See `CLAUDE.md` for the rule.
 | [Service providers](service-providers.md)            | Walked through 14 Nov 2026 (landlord and tenant); admin read-only list and linking from a property walked through 16 Nov 2026                                                                                                  |
 | [Date display](date-display.md)                      | In progress; nothing verified yet                                                                                                                                                                                              |
 | [Reviews](reviews.md)                                | In progress 25 Nov 2026; tenant condition evidence built (back end tests pass, screens typecheck); walked through 25 Nov 2026 (report, approve, reject, withdraw, tenant inbox link)                                           |
-| [Admin design alignment](admin-design-alignment.md)  | Built 25 Nov 2026 (all 8 phases, existing APIs only); typecheck, lint and tests pass; not yet seen in a browser |
+| [Documents](documents.md)                            | API built 27 Nov 2026 (21 tests); no screens                                                                                                                                                                                   |
+| [API wireframe pages](api-wireframe.md)              | Built 27 Nov 2026; bare test forms for the reviews and documents APIs (tenant page seen)                                                                                                                                       |
+| [Admin design alignment](admin-design-alignment.md)  | Built 25 Nov 2026 (all 8 phases, existing APIs only); typecheck, lint and tests pass; not yet seen in a browser                                                                                                                |
 
 "Shipped" docs were written from the code and the back-end README on
 12 November 2026 and were not re-tested then.
 
-Not yet built: documents, and everything in reviews past tenant condition evidence (disputes,
-the admin queue, data removal). Those tables exist in the back end but have no API or screens.
+Not yet built: documents screens, and the screens for everything in reviews past tenant condition
+evidence (asking for information, corrections, removal). Their APIs are built; the screens are not.
 
 Known issues from the 14 November 2026 walkthrough (test landlord and tenants, local
 database):

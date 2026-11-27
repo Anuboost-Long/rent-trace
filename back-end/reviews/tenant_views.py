@@ -57,3 +57,22 @@ class EscalateMyEvidenceView(TenantView):
             user=request.user, request_id=request_id, reason=fields["reason"]
         )
         return Response(resources.EvidenceResource(escalated).data)
+
+
+class RespondToInformationView(TenantView):
+    required_permissions = {"POST": "reviews.submit"}
+
+    @extend_schema(
+        operation_id="tenant_condition_evidence_respond",
+        request=dtos.RespondToInformationDto,
+        responses=resources.EvidenceResource,
+    )
+    def post(self, request, tenancy_id, request_id):
+        fields = validated(dtos.RespondToInformationDto, request.data)
+        answered = services.respond_to_information(
+            user=request.user,
+            request_id=request_id,
+            message=fields.pop("message"),
+            changes=fields,
+        )
+        return Response(resources.EvidenceResource(answered).data)

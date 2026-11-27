@@ -71,3 +71,22 @@ class EscalateEvidenceView(LandlordView):
             user=request.user, request_id=request_id, reason=fields["reason"]
         )
         return Response(resources.EvidenceResource(escalated).data)
+
+
+class RequestInformationView(LandlordView):
+    required_permissions = {"POST": "reviews.decide"}
+
+    @extend_schema(
+        operation_id="landlord_condition_evidence_request_information",
+        request=dtos.RequestInformationDto,
+        responses=resources.EvidenceResource,
+    )
+    def post(self, request, request_id):
+        fields = validated(dtos.RequestInformationDto, request.data)
+        asked = services.request_information(
+            user=request.user,
+            request_id=request_id,
+            reason=fields["reason"],
+            idempotency_key=fields["idempotency_key"],
+        )
+        return Response(resources.EvidenceResource(asked).data)
