@@ -345,6 +345,16 @@ admin). Left out because the API has no matching action: the design's "New remov
 recording a request for someone) and "Restore records", and the chip counts and photo thumbnails (items
 carry only a record id and title). Parties ask for removal from their own screens, which are not built yet.
 
+## Corrections screen — built 28 November 2026
+
+Admin screen at `/admin/corrections` (nav item "Corrections", permission `reviews.admin_review`), following
+the dispute-case design A3: filter chips (Waiting, Approved, Rejected), a table, and a detail page with
+what the party says (what is incorrect, the proposed replacement, why), a Before and after comparison and a
+Decision card (**Approve correction** or **Reject**, reason required). Added
+`GET /api/admin/condition-corrections/<id>/` for the detail page (1 new test). Typecheck, lint and the
+production build pass; **not yet seen in a browser**. Left out because the API has no matching action:
+"Request more information" on a correction, the Parties list, photo proof and "Add on behalf of a party".
+
 ## Not done
 
 The screens for everything built after the first slice (asking for information, corrections, removal,

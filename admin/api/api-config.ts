@@ -123,6 +123,13 @@ export const EndPoints = {
     escalate_landlord: (id: number) =>
       byEndpoint(`landlord/condition-evidence/${id}/escalate/`),
   },
+  corrections: {
+    list: byEndpoint("admin/condition-corrections/"),
+    detail: (id: number | string) =>
+      byEndpoint(`admin/condition-corrections/${id}/`),
+    decide: (id: number, action: "approve" | "reject") =>
+      byEndpoint(`admin/condition-corrections/${id}/${action}/`),
+  },
   removals: {
     list: byEndpoint("admin/removal-requests/"),
     detail: (id: number | string) =>

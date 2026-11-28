@@ -104,6 +104,17 @@ class AdminCorrectionsView(PermissionedView):
         return paginator.get_paginated_response(resources.CorrectionResource(page, many=True).data)
 
 
+class AdminCorrectionView(PermissionedView):
+    required_permissions = {"GET": "reviews.admin_review"}
+
+    @extend_schema(
+        operation_id="admin_condition_correction_detail", responses=resources.CorrectionResource
+    )
+    def get(self, request, request_id):
+        found = services.get_correction_for_admin(request_id=request_id)
+        return Response(resources.CorrectionResource(found).data)
+
+
 class DecideCorrectionView(PermissionedView):
     required_permissions = {"POST": "reviews.admin_review"}
 

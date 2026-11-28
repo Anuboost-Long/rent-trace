@@ -28,6 +28,8 @@ export const RemovalStatusTone: Record<string, StatusTone> = {
   APPROVED: "success",
 };
 
+export const CorrectionStatusTone = RemovalStatusTone;
+
 export const BanStatusTone: Record<string, StatusTone> = { ACTIVE: "error" };
 
 export const TokenStatusTone: Record<string, StatusTone> = {

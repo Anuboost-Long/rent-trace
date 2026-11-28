@@ -10,6 +10,7 @@ import {
   LayoutGrid,
   MessageSquare,
   MonitorSmartphone,
+  PenLine,
   Scale,
   Trash2,
   Users,
@@ -112,6 +113,14 @@ export const Navigation: Record<Audience, Navigation> = {
         permission: "reviews.admin_review",
         group: OPERATIONS,
         description: "Reports an admin has been asked to decide",
+      },
+      {
+        label: "Corrections",
+        href: Route.admin.corrections,
+        icon: PenLine,
+        permission: "reviews.admin_review",
+        group: OPERATIONS,
+        description: "Condition notes a tenant or landlord asked to change",
       },
       {
         label: "Removal requests",
