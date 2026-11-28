@@ -14,7 +14,10 @@ browser yet.** What changed for the person signing in:
   key, shown in groups of four), then enter the 6-digit code in six boxes.
 - **Entering a code** uses the same six boxes, with "Use a backup code" to switch to a plain text
   field and "Back to log in" to sign out.
-- **Backup codes** show in a two-column grid with Copy, Download (a `.txt` file) and Continue.
+- **Backup codes** show under a warning that this is the only time they appear and each works once, in one
+  grouped two-column block, with Copy (changes to "Copied"), Download (a `.txt` file) and Continue. Copy and
+  Download raise an alert. Updated 28 November 2026; typecheck, lint and build pass, **not yet seen in a
+  browser** (`admin/components/auth/backup-codes.tsx`).
 
 ## Status — 18 November 2026 (forgot and reset password)
 
