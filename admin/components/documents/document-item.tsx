@@ -82,7 +82,11 @@ export default function DocumentItem({
           <Files version={latest} audience={audience} tenancyId={tenancyId} />
           {latest.flag_reason && (
             <p className="mt-2 text-body-sm">
-              <span className="text-fg-secondary">Flagged because: </span>
+              <span className="text-fg-secondary">
+                {latest.confirmation === "CONFIRMED"
+                  ? "Flagged earlier because: "
+                  : "Flagged because: "}
+              </span>
               {latest.flag_reason}
             </p>
           )}
