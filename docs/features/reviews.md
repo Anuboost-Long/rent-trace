@@ -336,5 +336,4 @@ Existing:
 
 ## Not done
 
-Everything above. Also outside this feature: documents have no API, `business_change_history`
-is not written for property and unit edits, and reviews of providers are not planned.
+Everything above. Also outside this feature: documents have no API, and reviews of providers are not planned.

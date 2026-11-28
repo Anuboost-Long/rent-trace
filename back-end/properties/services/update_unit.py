@@ -13,5 +13,5 @@ def update_unit(*, actor, property_id, unit_id, changes, owned_by=None):
         clean.get("rent_amount", unit.rent_amount),
         clean.get("rent_frequency", unit.rent_frequency),
     )
-    save_changes(actor, unit, changes)
+    save_changes(actor, unit, changes, action="UPDATE_UNIT")
     return unit

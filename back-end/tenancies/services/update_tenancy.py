@@ -2,6 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
+from history.recording import changed_fields, record_business_change
 from properties.services.shared.rent import check_rent
 from tenancies.models import TenancyStatus, TenancyTermChange, TermChangeStatus
 from tenancies.services.shared import notices
@@ -39,9 +40,10 @@ def update_tenancy(*, actor, tenancy_id, changes, owned_by=None):
     before = current_money(tenancy)
     after = {field: clean.get(field, before[field]) for field in MONEY_FIELDS}
     dates_changed = [f for f in DATE_FIELDS if f in clean and clean[f] != getattr(tenancy, f)]
-    for field, value in clean.items():
-        if field not in MONEY_FIELDS:
-            setattr(tenancy, field, value)
+    plain = {field: value for field, value in clean.items() if field not in MONEY_FIELDS}
+    old_plain, new_plain = changed_fields(tenancy, plain)
+    for field, value in plain.items():
+        setattr(tenancy, field, value)
     _check_period(tenancy, dates_changed)
     check_rent(after["rent_amount"], after["rent_frequency"])
     if tenancy.status == TenancyStatus.ACTIVE and dates_changed:
@@ -53,6 +55,12 @@ def update_tenancy(*, actor, tenancy_id, changes, owned_by=None):
     tenancy.updated_by = actor
     tenancy.row_version += 1
     tenancy.save()
+    if outcome == "applied":
+        old_plain.update({f: v for f, v in before.items() if before[f] != after[f]})
+        new_plain.update({f: v for f, v in after.items() if before[f] != after[f]})
+    record_business_change(
+        tenancy, actor, "UPDATE_TENANCY", old_plain, new_plain, "Edited through the app"
+    )
     if outcome == "proposed":
         notices.terms_proposed(tenancy, tenants)
     if dates_changed or outcome == "applied":

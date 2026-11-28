@@ -19,7 +19,7 @@ def change_listing_status(*, actor, property_id, listing_status, owned_by=None, 
         _check_landlord_may_change(target, listing_status)
     if listing_status in PUBLIC:
         _check_can_be_listed(target)
-    save_changes(actor, target, {"listing_status": listing_status})
+    save_changes(actor, target, {"listing_status": listing_status}, action="CHANGE_LISTING_STATUS")
     return get_property(property_id=property_id, owned_by=owned_by)
 
 

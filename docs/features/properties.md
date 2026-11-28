@@ -77,4 +77,16 @@ documents.
 
 ## Not done
 
-- Writing to `business_change_history`.
+- Nothing: `business_change_history` is now written for property, unit, listing and occupancy edits and removals (see Change history below).
+
+## Change history
+
+Added 28 November 2026. Every edit to a property or unit writes one `business_change_history` row on that
+record's review target (created the first time): the actions `UPDATE_PROPERTY`, `UPDATE_UNIT`,
+`CHANGE_LISTING_STATUS`, `CHANGE_OCCUPANCY`, `DELETE_UNIT` and `DELETE_PROPERTY`. A row holds the
+`before_values` and `after_values` of only the fields that changed (decimals and dates as plain JSON),
+the person who did it, and a numbered sequence per record. A save that changes nothing writes nothing.
+Tenancy edits are recorded the same way (`UPDATE_TENANCY`: dates, notes and any rent or bond change that
+applied at once; `APPLY_TERM_CHANGE` when every tenant approves a rise); see
+[Tenancy terms](tenancy-terms.md). There is no API to read the history yet. Tests:
+`back-end/history/tests/test_business_change_history.py`, helper `back-end/history/recording.py`.
