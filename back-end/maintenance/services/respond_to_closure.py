@@ -4,25 +4,38 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from maintenance.models import ClosureDecision, MaintenanceStatus, MaintenanceTrigger
 from maintenance.services.shared import notices
 from maintenance.services.shared.closing import clear_open_proposal, close_issue
-from maintenance.services.shared.parties import side_of
+from maintenance.services.shared.parties import opposite_side, side_of, side_users
 from maintenance.services.shared.scope import find_issue
 
 NO_LONGER_OPEN = "This proposal is no longer open."
 STALE = "The issue changed since this was proposed. Ask for it again."
 OWN = "You can't answer your own proposal."
 OTHER_SIDE = "Only the other side can answer this proposal."
+NOBODY_TO_ACT_FOR = "Nobody is left on the other side to act for."
+
+
+def answering_side(issue, user, proposal, as_admin):
+    """The side the person answers for, and who an admin stands in for (None for a party)."""
+    side = side_of(user, issue)
+    if side is not None or not as_admin:
+        return side, None
+    side = opposite_side(proposal.proposer_side)
+    people = side_users(issue, side)
+    if not people:
+        raise ValidationError({"proposal": NOBODY_TO_ACT_FOR})
+    return side, people[0]
 
 
 @transaction.atomic
-def respond_to_closure(*, user, issue_id, proposal_id, decision):
+def respond_to_closure(*, user, issue_id, proposal_id, decision, as_admin=False):
     """The other side approves or rejects an open closure proposal. The issue is locked first."""
-    issue = find_issue(user, issue_id, lock=True)
+    issue = find_issue(user, issue_id, lock=True, as_admin=as_admin)
     proposal = issue.open_closure_proposal
     if issue.status == MaintenanceStatus.CLOSED or proposal is None or proposal.pk != proposal_id:
         raise ValidationError({"proposal": NO_LONGER_OPEN})
-    side = side_of(user, issue)
     if proposal.proposed_by_id == user.pk:
         raise PermissionDenied(OWN)
+    side, on_behalf_of = answering_side(issue, user, proposal, as_admin)
     if side is None or side == proposal.proposer_side:
         raise PermissionDenied(OTHER_SIDE)
     if decision == ClosureDecision.REJECTED:
@@ -39,6 +52,7 @@ def respond_to_closure(*, user, issue_id, proposal_id, decision):
         user,
         proposal.reason,
         proposal=proposal,
+        on_behalf_of=on_behalf_of,
     )
     notices.closed(issue, [proposal.proposed_by])
     return issue

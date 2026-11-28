@@ -40,5 +40,13 @@ def side_of(user, issue):
     return None
 
 
+def side_users(issue, side):
+    return current_owner_users(issue) if side == PartySide.LANDLORD else current_tenant_users(issue)
+
+
+def opposite_side(side):
+    return PartySide.TENANT if side == PartySide.LANDLORD else PartySide.LANDLORD
+
+
 def other_side_users(issue, side):
-    return current_tenant_users(issue) if side == PartySide.LANDLORD else current_owner_users(issue)
+    return side_users(issue, opposite_side(side))

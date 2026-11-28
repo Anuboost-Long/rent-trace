@@ -6,6 +6,7 @@ from accounts.security.permissioned_view import PermissionedView
 from accounts.security.super_admin_permission import IsSuperAdmin
 from common.pagination import PagePagination
 from maintenance import dtos, resources, services
+from maintenance.models import ClosureDecision
 from maintenance.views import _validated
 
 
@@ -101,4 +102,90 @@ class AdminCloseVacantView(SuperAdminActionView):
     def post(self, request, issue_id):
         fields = _validated(dtos.ClosureDto, request.data)
         services.close_vacant(user=request.user, issue_id=issue_id, as_admin=True, **fields)
+        return _detail(request, issue_id)
+
+
+class AdminProposeClosureView(SuperAdminActionView):
+    required_permissions = {"POST": "maintenance.propose_closure"}
+
+    @extend_schema(
+        operation_id="admin_maintenance_propose_closure",
+        request=dtos.ClosureDto,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id):
+        fields = _validated(dtos.ClosureDto, request.data)
+        services.propose_closure(user=request.user, issue_id=issue_id, as_admin=True, **fields)
+        return _detail(request, issue_id)
+
+
+class AdminWithdrawClosureView(SuperAdminActionView):
+    required_permissions = {"POST": "maintenance.propose_closure"}
+
+    @extend_schema(
+        operation_id="admin_maintenance_withdraw_closure",
+        request=None,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id):
+        services.withdraw_closure(user=request.user, issue_id=issue_id, as_admin=True)
+        return _detail(request, issue_id)
+
+
+class AdminApproveClosureView(SuperAdminActionView):
+    required_permissions = {"POST": "maintenance.review_closure"}
+    decision = ClosureDecision.APPROVED
+
+    @extend_schema(
+        operation_id="admin_maintenance_approve_closure",
+        request=None,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id, proposal_id):
+        services.respond_to_closure(
+            user=request.user,
+            issue_id=issue_id,
+            proposal_id=proposal_id,
+            decision=self.decision,
+            as_admin=True,
+        )
+        return _detail(request, issue_id)
+
+
+class AdminRejectClosureView(AdminApproveClosureView):
+    decision = ClosureDecision.REJECTED
+
+    @extend_schema(
+        operation_id="admin_maintenance_reject_closure",
+        request=None,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id, proposal_id):
+        return super().post(request, issue_id, proposal_id)
+
+
+class AdminAssignProviderView(SuperAdminActionView):
+    required_permissions = {"POST": "maintenance.confirm_start"}
+
+    @extend_schema(
+        operation_id="admin_maintenance_assign_provider",
+        request=dtos.AssignProviderDto,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id):
+        fields = _validated(dtos.AssignProviderDto, request.data)
+        services.assign_provider(user=request.user, issue_id=issue_id, as_admin=True, **fields)
+        return _detail(request, issue_id)
+
+
+class AdminCompleteVisitView(SuperAdminActionView):
+    required_permissions = {"POST": "maintenance.confirm_start"}
+
+    @extend_schema(
+        operation_id="admin_maintenance_complete_visit",
+        request=None,
+        responses=resources.IssueDetailResource,
+    )
+    def post(self, request, issue_id):
+        services.complete_visit(user=request.user, issue_id=issue_id, as_admin=True)
         return _detail(request, issue_id)
