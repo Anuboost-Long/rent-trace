@@ -1,1 +1,2 @@
 from documents.resources.document import DocumentResource
+from documents.resources.document_case import DocumentCasePageResource, DocumentCaseResource

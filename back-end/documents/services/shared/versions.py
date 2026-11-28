@@ -61,9 +61,22 @@ def _ask_to_confirm(document, version, actor, now, audit):
     superseded = ReviewRequest.objects.filter(
         target__document=document,
         kind=ReviewKind.DOCUMENT_CONFIRMATION,
-        status=ReviewStatus.PENDING_REVIEW,
+        status__in=[ReviewStatus.PENDING_REVIEW, ReviewStatus.DISPUTED],
     )
     for older in superseded:
+        older_status = older.status
+        for case in ReviewRequest.objects.cases_for(older).filter(
+            status=ReviewStatus.PENDING_REVIEW
+        ):
+            finish(case, ReviewStatus.CANCELLED, actor, now=now)
+            record_transition(
+                case,
+                ReviewStatus.CANCELLED,
+                "SUPERSEDE",
+                actor,
+                "A newer version was published",
+                from_status=ReviewStatus.PENDING_REVIEW,
+            )
         finish(older, ReviewStatus.CANCELLED, actor, now=now)
         record_transition(
             older,
@@ -71,7 +84,7 @@ def _ask_to_confirm(document, version, actor, now, audit):
             "SUPERSEDE",
             actor,
             "A newer version was published",
-            from_status=ReviewStatus.PENDING_REVIEW,
+            from_status=older_status,
         )
     target = ReviewTarget.objects.get_or_create(document=document, defaults=audit)[0]
     request = ReviewRequest.objects.create(

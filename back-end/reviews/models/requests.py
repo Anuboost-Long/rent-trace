@@ -77,7 +77,25 @@ class ReviewRequestQuerySet(models.QuerySet):
         ).prefetch_related("decisions")
 
     def admin_cases(self):
-        return self.filter(kind=ReviewKind.DISPUTE, review_route=ReviewRoute.ADMIN)
+        return self.filter(
+            kind=ReviewKind.DISPUTE,
+            review_route=ReviewRoute.ADMIN,
+            target__condition_record__isnull=False,
+        )
+
+    def document_cases(self):
+        return self.filter(
+            kind=ReviewKind.DISPUTE,
+            review_route=ReviewRoute.ADMIN,
+            target__document__isnull=False,
+        )
+
+    def with_document_case_details(self):
+        return self.select_related(
+            "requested_by",
+            "dispute",
+            "parent_request__current_submission__proposed_document_version__document",
+        ).prefetch_related("decisions", "parent_request__decisions")
 
     def in_tenancy(self, tenancy_id):
         return self.filter(scopes__tenancy_id=tenancy_id)

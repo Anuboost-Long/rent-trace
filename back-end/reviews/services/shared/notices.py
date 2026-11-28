@@ -153,6 +153,33 @@ def document_confirmation_requested(document, title):
     )
 
 
+def document_escalated(case, admins, escalator, others, title, reason):
+    notify(
+        admins,
+        kind=Kind.DOCUMENT_ESCALATED,
+        title="A document needs an admin decision",
+        body=f"{_name(escalator)} asked for a decision on: {title}. Reason: {reason}",
+        subject_id=case.pk,
+    )
+    notify(
+        others,
+        kind=Kind.DOCUMENT_SENT_TO_ADMIN,
+        title="A document was sent to an admin",
+        body=f"{_name(escalator)} asked an admin to decide: {title}. Reason: {reason}",
+        subject_id=case.parent_request.target.document.tenancy_id,
+    )
+
+
+def document_decided(document, people, title, outcome, reason):
+    notify(
+        people,
+        kind=Kind.DOCUMENT_DECIDED,
+        title=f"An admin {outcome} a document",
+        body=f"An admin {outcome}: {title}. Reason: {reason}",
+        subject_id=document.tenancy_id,
+    )
+
+
 def document_confirmation_answered(document, owners, tenant, title, outcome, reason=None):
     notify(
         owners,

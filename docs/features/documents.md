@@ -1,8 +1,9 @@
 # Documents
 
-## Status — 27 November 2026
+## Status — 28 November 2026
 
-API built, no screens. Back end: 21 tests pass in `documents` (publish, add a version, confirm or flag,
+API built, no screens. Expiry and escalation added on 28 November (15 + 4 new tests; documents, reviews,
+notifications and accounts suites pass: 242). Back end: 21 tests pass in `documents` (publish, add a version, confirm or flag,
 list and open files), and the accounts and notifications suites still pass; ruff, migration check and
 OpenAPI validation are clean. The screens come later (the project is working API first).
 
@@ -52,8 +53,28 @@ Decided 27 November 2026.
   `reason`).
 - Admin (`documents.admin_view`, a new admin-only permission, seeded by `accounts/0014`):
   `GET /api/admin/documents/?unit_id=`, `GET .../<id>/`, `GET .../files/<file_id>/`.
-- Each version shows `confirmation`: null (no consent needed), `WAITING`, `CONFIRMED`, `FLAGGED` or
-  `SUPERSEDED` (a newer version replaced it before it was answered), plus the `flag_reason`.
+- Each version shows `confirmation`: null (no consent needed), `WAITING`, `CONFIRMED`, `FLAGGED`,
+  `EXPIRED`, `ESCALATED` or `SUPERSEDED` (a newer version replaced it before it was answered), plus the
+  `flag_reason`.
+- **Expiry** (added 28 November 2026): a version nobody answered for 14 days reads `EXPIRED`. It is worked
+  out when read, like condition reports; nothing is stored or scheduled, and nobody is told. An expired
+  version can no longer be confirmed or flagged. The landlord publishes it again as a new version.
+- **Escalation** (added 28 November 2026): when a version is `FLAGGED` or `EXPIRED`, the tenant or the
+  landlord can press a button to ask an admin to decide, with a required reason
+  (`reviews.escalate`, which both roles already hold). Only the newest version can be sent, and only
+  once. The version then reads `ESCALATED`, and the admins who hold `reviews.admin_review` get a
+  notification (`DOCUMENT_ESCALATED`) and the other side gets `DOCUMENT_SENT_TO_ADMIN`. The admin
+  **confirms** it (it becomes the current version, written to `business_change_history` as
+  `ADMIN_CONFIRM_DOCUMENT_VERSION`) or **upholds the flag** (nothing becomes current, and it cannot be
+  sent again). Both need a reason. Everyone on the tenancy and the owners get `DOCUMENT_DECIDED`.
+  Publishing a newer version closes an open case. The case is a `DISPUTE` request on the admin route,
+  kept apart from condition cases: `admin_cases()` now returns condition cases only, so the existing
+  Review cases queue is unchanged.
+- Routes: tenant `POST /api/tenant/tenancies/<id>/documents/versions/<version_id>/escalate/`; landlord
+  `POST /api/landlord/documents/<id>/versions/<version_id>/escalate/` (both `{reason}`); admin
+  `GET /api/admin/documents/cases/?status=` (default waiting; paged) and
+  `POST /api/admin/documents/cases/<case_id>/approve/` or `/reject/` (`{idempotency_key, reason}`),
+  all under `reviews.admin_review`.
 - Notification kinds `DOCUMENT_ADDED`, `DOCUMENT_CONFIRMATION_REQUESTED` and
   `DOCUMENT_CONFIRMATION_ANSWERED` (migration `notifications/0014`) link to the tenancy.
 
@@ -67,5 +88,5 @@ Decided 27 November 2026.
 
 ## Not done
 
-No screens. Also: tenants uploading, escalating a flagged document to an admin, expiry of a
-confirmation request, and every screen.
+No screens. Also: tenants uploading, and every screen. A super admin deciding a document case is the
+same as any admin; nobody acts for a party on documents yet.
