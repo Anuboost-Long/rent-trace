@@ -336,4 +336,6 @@ Existing:
 
 ## Not done
 
-Everything above. Also outside this feature: documents have no API, and reviews of providers are not planned.
+The screens for everything built after the first slice (asking for information, corrections, removal,
+the super admin acting for someone). Reviews of providers are not planned. Documents are in
+[Documents](documents.md).
