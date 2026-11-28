@@ -98,6 +98,7 @@ export default function PhotoTile({
               <Check aria-hidden className="size-4" />
             </Button>
             <Button
+              type="button"
               variant="quiet"
               size="icon"
               aria-label="Cancel"

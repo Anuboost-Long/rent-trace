@@ -11,6 +11,11 @@ urlpatterns = [
         name="landlord-document-versions",
     ),
     path(
+        "<int:document_id>/versions/<int:version_id>/escalate/",
+        views.LandlordEscalateVersionView.as_view(),
+        name="landlord-document-escalate",
+    ),
+    path(
         "files/<int:file_id>/",
         file_views.LandlordDocumentFileView.as_view(),
         name="landlord-document-file",

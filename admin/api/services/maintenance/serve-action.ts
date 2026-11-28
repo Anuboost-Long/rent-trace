@@ -1,6 +1,6 @@
 "use server";
 import { EndPoints } from "@/api/api-config";
-import { ApiServiceServer } from "@/api/api-helper";
+import { ApiServiceServer, ApiUploadServer } from "@/api/api-helper";
 import type {
   AssignBody,
   ClosureAnswer,
@@ -98,10 +98,14 @@ export const handleRespondClosure = async (
   id: number,
   proposalId: number,
   answer: ClosureAnswer,
+  audience?: MaintenanceAudience,
 ) => {
   try {
     const data = await ApiServiceServer<IssueDetail>({
-      url: EndPoints.maintenance.respond(id, proposalId, answer),
+      url:
+        audience === "admin"
+          ? EndPoints.admin_maintenance.respond(id, proposalId, answer)
+          : EndPoints.maintenance.respond(id, proposalId, answer),
       method: "POST",
     });
     return { data, error: null };
@@ -115,6 +119,30 @@ export const handleGetIssueCategories = async () => {
     const data = await ApiServiceServer<ServiceCategory[]>({
       url: EndPoints.maintenance.categories,
       method: "GET",
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleAddIssuePhoto = async (id: number, formData: FormData) => {
+  try {
+    const data = await ApiUploadServer<IssueDetail>({
+      url: EndPoints.maintenance.photos(id),
+      formData,
+    });
+    return { data, error: null };
+  } catch (error) {
+    return handleSSRActionError(error, redirectOnUnauth);
+  }
+};
+
+export const handleRemoveIssuePhoto = async (id: number, fileId: number) => {
+  try {
+    const data = await ApiServiceServer<IssueDetail>({
+      url: EndPoints.maintenance.photo(id, fileId),
+      method: "DELETE",
     });
     return { data, error: null };
   } catch (error) {

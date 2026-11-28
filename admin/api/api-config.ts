@@ -123,6 +123,55 @@ export const EndPoints = {
     escalate_landlord: (id: number) =>
       byEndpoint(`landlord/condition-evidence/${id}/escalate/`),
   },
+  documents: {
+    tenant: {
+      list: (tenancyId: number | string) =>
+        byEndpoint(`tenant/tenancies/${tenancyId}/documents/`),
+      answer: (
+        tenancyId: number,
+        versionId: number,
+        action: "confirm" | "flag" | "escalate",
+      ) =>
+        byEndpoint(
+          `tenant/tenancies/${tenancyId}/documents/versions/${versionId}/${action}/`,
+        ),
+      file: (tenancyId: number | string, fileId: number | string) =>
+        byEndpoint(`tenant/tenancies/${tenancyId}/documents/files/${fileId}/`),
+    },
+    landlord: {
+      list: byEndpoint("landlord/documents/"),
+      versions: (documentId: number) =>
+        byEndpoint(`landlord/documents/${documentId}/versions/`),
+      escalate: (documentId: number, versionId: number) =>
+        byEndpoint(
+          `landlord/documents/${documentId}/versions/${versionId}/escalate/`,
+        ),
+      file: (_tenancyId: number | string, fileId: number | string) =>
+        byEndpoint(`landlord/documents/files/${fileId}/`),
+    },
+    admin: {
+      list: byEndpoint("admin/documents/"),
+      file: (_tenancyId: number | string, fileId: number | string) =>
+        byEndpoint(`admin/documents/files/${fileId}/`),
+      cases: byEndpoint("admin/documents/cases/"),
+      decide: (id: number, action: "approve" | "reject") =>
+        byEndpoint(`admin/documents/cases/${id}/${action}/`),
+    },
+  },
+  corrections: {
+    list: byEndpoint("admin/condition-corrections/"),
+    detail: (id: number | string) =>
+      byEndpoint(`admin/condition-corrections/${id}/`),
+    decide: (id: number, action: "approve" | "reject") =>
+      byEndpoint(`admin/condition-corrections/${id}/${action}/`),
+  },
+  removals: {
+    list: byEndpoint("admin/removal-requests/"),
+    detail: (id: number | string) =>
+      byEndpoint(`admin/removal-requests/${id}/`),
+    decide: (id: number, action: "approve" | "reject") =>
+      byEndpoint(`admin/removal-requests/${id}/${action}/`),
+  },
   reviewCases: {
     list: byEndpoint("admin/review-cases/"),
     decide: (id: number, action: "approve" | "reject") =>
@@ -136,12 +185,19 @@ export const EndPoints = {
       byEndpoint(`maintenance/${id}/${path}/`),
     respond: (id: number, proposalId: number, answer: string) =>
       byEndpoint(`maintenance/${id}/closure/${proposalId}/${answer}/`),
+    photos: (id: number) => byEndpoint(`maintenance/${id}/photos/`),
+    photo: (id: number | string, fileId: number | string) =>
+      byEndpoint(`maintenance/${id}/photos/${fileId}/`),
   },
   admin_maintenance: {
     list: byEndpoint("admin/maintenance/"),
     detail: (id: number | string) => byEndpoint(`admin/maintenance/${id}/`),
     action: (id: number, path: string) =>
       byEndpoint(`admin/maintenance/${id}/${path}/`),
+    respond: (id: number, proposalId: number, answer: string) =>
+      byEndpoint(`admin/maintenance/${id}/closure/${proposalId}/${answer}/`),
+    photo: (id: number | string, fileId: number | string) =>
+      byEndpoint(`admin/maintenance/${id}/photos/${fileId}/`),
   },
   notifications: {
     list: byEndpoint("notifications/"),

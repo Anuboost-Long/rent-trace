@@ -8,6 +8,7 @@ from reviews.services.cancel_evidence import cancel_evidence
 from reviews.services.cancel_removal import cancel_removal
 from reviews.services.escalate_evidence import escalate_evidence
 from reviews.services.list_corrections import (
+    get_correction_for_admin,
     list_correction_queue,
     list_corrections_for_tenancy,
     list_corrections_for_unit,
@@ -18,6 +19,7 @@ from reviews.services.list_evidence import (
     list_my_evidence,
 )
 from reviews.services.list_removals import (
+    get_removal_for_admin,
     list_removal_queue,
     list_removals_for_tenancy,
     list_removals_for_unit,

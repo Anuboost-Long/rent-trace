@@ -1,13 +1,14 @@
 "use client";
 import { handleDecideCase } from "@/api/services/evidence/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useCaseActions = () => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const decide = async (
     id: number,
@@ -24,7 +25,12 @@ const useCaseActions = () => {
     );
     setPending(false);
     setError(error);
-    if (!error) router.refresh();
+    if (!error) {
+      toast.success(
+        action === "approve" ? "Report approved" : "Report rejected",
+      );
+      router.refresh();
+    }
     return !error;
   };
 

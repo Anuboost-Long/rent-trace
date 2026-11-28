@@ -63,7 +63,14 @@ def _decide(tenant, tenancy, version, request, idempotency_key, reason, confirm)
     )
     status = ReviewStatus.APPROVED if confirm else ReviewStatus.REJECTED
     if confirm:
-        _make_current(request, document, version, tenant)
+        make_current(
+            request,
+            document,
+            version,
+            tenant,
+            action="CONFIRM_DOCUMENT_VERSION",
+            reason="Confirmed by the tenant",
+        )
     finish(request, status, tenant, now=now, applied=confirm)
     record_transition(
         request,
@@ -81,17 +88,17 @@ def _decide(tenant, tenancy, version, request, idempotency_key, reason, confirm)
     )
 
 
-def _make_current(request, document, version, tenant):
+def make_current(request, document, version, actor, *, action, reason):
     before = document.current_version.version_no if document.current_version else None
     record_change(
         request,
-        tenant,
-        "CONFIRM_DOCUMENT_VERSION",
+        actor,
+        action,
         {"current_version": before},
         {"current_version": version.version_no},
-        "Confirmed by the tenant",
+        reason,
     )
     document.current_version = version
-    document.updated_by = tenant
+    document.updated_by = actor
     document.row_version += 1
     document.save()

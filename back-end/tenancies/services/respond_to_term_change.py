@@ -4,6 +4,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework.exceptions import NotFound, ValidationError
 
+from history.recording import record_business_change
 from tenancies.models import TenancyTermChange, TenancyTermDecision, TermChangeStatus, TermDecision
 from tenancies.services.request_housemate import lock_my_tenancy
 from tenancies.services.shared import notices
@@ -90,8 +91,18 @@ def _finish(change, status, actor, now):
 
 
 def _apply(tenancy, change, approver, now):
-    apply_money(tenancy, change_money(change))
+    before, after = current_money(tenancy), change_money(change)
+    apply_money(tenancy, after)
     tenancy.updated_by = approver
     tenancy.row_version += 1
     tenancy.save()
+    moved = [field for field in after if before[field] != after[field]]
+    record_business_change(
+        tenancy,
+        approver,
+        "APPLY_TERM_CHANGE",
+        {field: before[field] for field in moved},
+        {field: after[field] for field in moved},
+        "Approved by every current tenant",
+    )
     _finish(change, TermChangeStatus.APPLIED, approver, now)

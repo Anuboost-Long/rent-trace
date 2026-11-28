@@ -16,6 +16,11 @@ urlpatterns = [
         name="tenant-document-flag",
     ),
     path(
+        "versions/<int:version_id>/escalate/",
+        views.TenantEscalateVersionView.as_view(),
+        name="tenant-document-escalate",
+    ),
+    path(
         "files/<int:file_id>/",
         file_views.TenantDocumentFileView.as_view(),
         name="tenant-document-file",

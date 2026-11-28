@@ -19,6 +19,20 @@ class ListCorrectionsTests(EvidenceApiTestCase):
         self.assertEqual(queue.data["count"], 1)
         self.assertEqual(queue.data["results"][0]["place"], queue.data["results"][0]["place"])
 
+    def test_an_admin_opens_one_correction_by_id_and_others_cannot(self):
+        note = self.shown_note()
+        request_id = self.ask_tenant_correction(note["id"]).data["id"]
+        self.sign_in_as_admin(email="admin@example.com")
+
+        opened = self.client.get(f"{ADMIN}{request_id}/")
+        missing = self.client.get(f"{ADMIN}999999/")
+        self.as_user(self.lou)
+
+        self.assertEqual(opened.status_code, 200, opened.data)
+        self.assertEqual(opened.data["id"], request_id)
+        self.assertEqual(missing.status_code, 404)
+        self.assertEqual(self.client.get(f"{ADMIN}{request_id}/").status_code, 403)
+
     def test_decided_ones_move_to_the_other_filters(self):
         note = self.shown_note()
         request_id = self.ask_tenant_correction(note["id"]).data["id"]

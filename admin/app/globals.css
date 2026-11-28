@@ -176,3 +176,11 @@ body {
     animation: slide-from-left 280ms ease-out;
   }
 }
+
+@utility scrollbar-hidden {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

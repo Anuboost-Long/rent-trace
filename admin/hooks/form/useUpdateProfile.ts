@@ -4,10 +4,11 @@ import {
   handleSetProfilePicture,
   handleUpdateProfile,
 } from "@/api/services/auth/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import type { ProfileBody } from "@/types/auth/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 export type PictureChange = { file: File } | { remove: true } | null;
 
@@ -22,7 +23,7 @@ const applyPicture = (change: PictureChange) => {
 const useUpdateProfile = (onSaved: () => void) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const save = async (body: ProfileBody, picture: PictureChange = null) => {
     setPending(true);
@@ -34,6 +35,7 @@ const useUpdateProfile = (onSaved: () => void) => {
     setPending(false);
     setError(error);
     if (!data) return;
+    toast.success("Profile saved");
     router.refresh();
     onSaved();
   };

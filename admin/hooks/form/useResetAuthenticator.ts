@@ -3,15 +3,16 @@ import {
   handleResendAuthenticatorNotice,
   handleResetAuthenticator,
 } from "@/api/services/users/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useResetAuthenticator = (userId: number) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
   const [emailSent, setEmailSent] = useState<boolean | null>(null);
   const [resending, setResending] = useState(false);
 
@@ -26,6 +27,11 @@ const useResetAuthenticator = (userId: number) => {
     setPending(false);
     setError(error);
     if (error) return;
+    toast.success(
+      data.notice_sent
+        ? "Authenticator reset and email sent"
+        : "Authenticator reset",
+    );
     setEmailSent(data.notice_sent);
     setOpen(false);
     router.refresh();
@@ -36,6 +42,10 @@ const useResetAuthenticator = (userId: number) => {
     const { data, error } = await handleResendAuthenticatorNotice(userId);
     setResending(false);
     setEmailSent(error ? false : data.notice_sent);
+    if (!error)
+      toast.success(
+        data.notice_sent ? "Reset email sent" : "Reset email could not be sent",
+      );
   };
 
   return {

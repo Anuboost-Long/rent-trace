@@ -5,6 +5,7 @@ import {
   handleRespondClosure,
 } from "@/api/services/maintenance/serve-action";
 import { IssueRoutes } from "@/constants/maintenance";
+import useApiError from "@/hooks/useApiError";
 import type { ApiFailure } from "@/types/api/common";
 import type {
   AssignBody,
@@ -13,20 +14,34 @@ import type {
   MaintenanceAudience,
   ReportIssueBody,
 } from "@/types/maintenance/models";
+import { toast } from "@/utils/toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type IssuePath = Parameters<typeof handleIssueAction>[1];
 
+const ISSUE_DONE: Partial<Record<IssuePath, string>> = {
+  acknowledge: "Issue acknowledged",
+  start: "Work marked as started",
+  closure: "Closing proposed",
+  "closure/withdraw": "Closing withdrawn",
+  close: "Issue closed",
+  assignment: "Tradesperson booked",
+  "assignment/complete": "Visit marked done",
+};
+
 const useIssueActions = (audience: MaintenanceAudience, issueId?: number) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
-  const finish = (failure: ApiFailure | null) => {
+  const finish = (failure: ApiFailure | null, done: string) => {
     setPending(false);
     setError(failure);
-    if (!failure) router.refresh();
+    if (!failure) {
+      toast.success(done);
+      router.refresh();
+    }
     return !failure;
   };
 
@@ -35,15 +50,23 @@ const useIssueActions = (audience: MaintenanceAudience, issueId?: number) => {
     setPending(true);
     setError(null);
     const { error } = await handleIssueAction(issueId, path, body, audience);
-    return finish(error);
+    return finish(error, ISSUE_DONE[path] ?? "Done");
   };
 
   const respond = async (proposalId: number, answer: ClosureAnswer) => {
     if (issueId === undefined) return false;
     setPending(true);
     setError(null);
-    const { error } = await handleRespondClosure(issueId, proposalId, answer);
-    return finish(error);
+    const { error } = await handleRespondClosure(
+      issueId,
+      proposalId,
+      answer,
+      audience,
+    );
+    return finish(
+      error,
+      answer === "approve" ? "Closing approved" : "Closing rejected",
+    );
   };
 
   const report = async (body: ReportIssueBody) => {
@@ -52,7 +75,10 @@ const useIssueActions = (audience: MaintenanceAudience, issueId?: number) => {
     const { data, error } = await handleReportIssue(body);
     setPending(false);
     setError(error);
-    if (data) router.push(IssueRoutes[audience].detail(data.id));
+    if (data) {
+      toast.success("Issue reported");
+      router.push(IssueRoutes[audience].detail(data.id));
+    }
     return !error;
   };
 

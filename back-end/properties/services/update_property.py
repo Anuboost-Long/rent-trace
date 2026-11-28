@@ -11,5 +11,5 @@ def update_property(*, actor, property_id, changes, owned_by=None):
     target = live_properties(owned_by).select_for_update().filter(pk=property_id).first()
     if target is None:
         raise NotFound("No property with this id.")
-    save_changes(actor, target, changes)
+    save_changes(actor, target, changes, action="UPDATE_PROPERTY")
     return get_property(property_id=property_id, owned_by=owned_by)

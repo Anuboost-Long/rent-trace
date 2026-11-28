@@ -1,14 +1,15 @@
 "use client";
 import { handleChangeListingStatus } from "@/api/services/properties/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import type { PropertyAudience } from "@/types/properties/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useListingStatus = (audience: PropertyAudience, propertyId: number) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const change = async (listingStatus: string) => {
     setPending(true);
@@ -20,7 +21,10 @@ const useListingStatus = (audience: PropertyAudience, propertyId: number) => {
     );
     setPending(false);
     setError(error);
-    if (!error) router.refresh();
+    if (!error) {
+      toast.success("Listing status updated");
+      router.refresh();
+    }
   };
 
   return { pending, error, change };

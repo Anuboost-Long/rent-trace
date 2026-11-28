@@ -13,5 +13,5 @@ def change_unit_occupancy(*, actor, property_id, unit_id, occupancy_status, owne
     unit = find_unit_for_update(property_id, unit_id, owned_by)
     if Tenancy.objects.active_on(unit).exists():
         raise ValidationError({"occupancy_status": HAS_TENANT})
-    save_changes(actor, unit, {"occupancy_status": occupancy_status})
+    save_changes(actor, unit, {"occupancy_status": occupancy_status}, action="CHANGE_OCCUPANCY")
     return unit

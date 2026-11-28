@@ -53,8 +53,19 @@ export type IssueHistoryEntry = {
   created_at: string;
 };
 
+export type IssuePhoto = {
+  id: number;
+  name: string;
+  caption: string | null;
+  added_by: string;
+  added_at: string;
+  is_mine: boolean;
+};
+
 export type IssueDetail = IssueSummary & {
   description: string;
+  tenancy_id: number | null;
+  photos: IssuePhoto[];
   acknowledged_at: string | null;
   work_started_at: string | null;
   open_closure: OpenClosure | null;

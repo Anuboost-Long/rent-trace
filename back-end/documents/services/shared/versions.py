@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from common.models import PartySide
 from documents.models import DocumentFile, DocumentType, DocumentVersion
+from properties.services.shared.queries import current_owner_users
 from reviews.models import (
     ReviewKind,
     ReviewRequest,
@@ -25,7 +26,7 @@ def needs_consent(document):
     return document.document_type in NEEDS_CONSENT and document.tenancy_id is not None
 
 
-def add_version(document, actor, fields, stored_file):
+def add_version(document, actor, fields, stored_file, *, by_tenant=False):
     """Adds the next numbered version, then makes it current or asks the tenants to confirm it."""
     now = timezone.now()
     audit = {"created_by": actor, "correlation_id": uuid.uuid4()}
@@ -46,7 +47,11 @@ def add_version(document, actor, fields, stored_file):
         _ask_to_confirm(document, version, actor, now, audit)
     else:
         _make_current(document, version, actor)
-        notices.document_added(document, version.title)
+        if by_tenant:
+            owners = current_owner_users(document.property_unit.property)
+            notices.document_added_by_tenant(document, owners, actor, version.title)
+        else:
+            notices.document_added(document, version.title)
     return version
 
 
@@ -61,9 +66,22 @@ def _ask_to_confirm(document, version, actor, now, audit):
     superseded = ReviewRequest.objects.filter(
         target__document=document,
         kind=ReviewKind.DOCUMENT_CONFIRMATION,
-        status=ReviewStatus.PENDING_REVIEW,
+        status__in=[ReviewStatus.PENDING_REVIEW, ReviewStatus.DISPUTED],
     )
     for older in superseded:
+        older_status = older.status
+        for case in ReviewRequest.objects.cases_for(older).filter(
+            status=ReviewStatus.PENDING_REVIEW
+        ):
+            finish(case, ReviewStatus.CANCELLED, actor, now=now)
+            record_transition(
+                case,
+                ReviewStatus.CANCELLED,
+                "SUPERSEDE",
+                actor,
+                "A newer version was published",
+                from_status=ReviewStatus.PENDING_REVIEW,
+            )
         finish(older, ReviewStatus.CANCELLED, actor, now=now)
         record_transition(
             older,
@@ -71,7 +89,7 @@ def _ask_to_confirm(document, version, actor, now, audit):
             "SUPERSEDE",
             actor,
             "A newer version was published",
-            from_status=ReviewStatus.PENDING_REVIEW,
+            from_status=older_status,
         )
     target = ReviewTarget.objects.get_or_create(document=document, defaults=audit)[0]
     request = ReviewRequest.objects.create(

@@ -1,7 +1,9 @@
+import { handleGetTenantDocuments } from "@/api/services/documents/serve-action";
 import { handleGetMyEvidence } from "@/api/services/evidence/serve-action";
 import { handleGetMyTenancy } from "@/api/services/tenancies/serve-action";
 import TenantConditions from "@/components/conditions/tenant-conditions";
 import TenantEvidence from "@/components/conditions/tenant-evidence";
+import DocumentsSection from "@/components/documents/documents-section";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import TenantProviders from "@/components/providers/tenant-providers";
@@ -41,6 +43,7 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
   }
 
   const { data: reports } = await handleGetMyEvidence(tenancy.id);
+  const { data: documents } = await handleGetTenantDocuments(tenancy.id);
 
   const details: [string, string][] = [
     ["Status", TenantTenancyStatusLabel[tenancy.status]],
@@ -108,6 +111,16 @@ async function MyTenancyDetail({ params }: MyTenancyDetailProp) {
       />
 
       {tenancy.is_current && <TenantProviders tenancyId={tenancy.id} />}
+
+      {documents && (
+        <DocumentsSection
+          audience="tenant"
+          documents={documents}
+          tenancyId={tenancy.id}
+          unitId={tenancy.unit.id}
+          canUpload={tenancy.is_current}
+        />
+      )}
 
       <TenantConditions notes={tenancy.unit_conditions} />
 

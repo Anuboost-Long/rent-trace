@@ -3,9 +3,10 @@ import {
   handleGrantPermission,
   handleRevokePermission,
 } from "@/api/services/access/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 type Change = { grant: string[]; revoke: string[] };
 
@@ -14,7 +15,7 @@ type Change = { grant: string[]; revoke: string[] };
 const useAdminPermissions = (userId: number, afterSave: () => void) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const save = async ({ grant, revoke }: Change, reason: string) => {
     setPending(true);
@@ -35,6 +36,7 @@ const useAdminPermissions = (userId: number, afterSave: () => void) => {
       }
     }
     setPending(false);
+    toast.success("Permissions updated");
     router.refresh();
     afterSave();
   };

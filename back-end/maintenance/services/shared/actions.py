@@ -9,7 +9,7 @@ def allowed_actions(issue, user):
     if issue.status == MaintenanceStatus.CLOSED:
         return []
     if side is None:
-        return _admin_actions(issue) if user.is_top_level_admin else []
+        return _admin_actions(issue, user) if user.is_top_level_admin else []
     proposal = issue.open_closure_proposal
     if proposal is not None:
         return _answer_actions(proposal, user, side)
@@ -17,14 +17,14 @@ def allowed_actions(issue, user):
     return [*extra, "PROPOSE_CLOSURE"]
 
 
-ADMIN_ACTIONS = {"ACKNOWLEDGE", "START", "CLOSE_VACANT"}
-
-
-def _admin_actions(issue):
-    """A super admin acts for the landlord, but only on the status moves."""
-    if issue.open_closure_proposal is not None:
-        return []
-    return [action for action in _landlord_actions(issue) if action in ADMIN_ACTIONS]
+def _admin_actions(issue, user):
+    """A super admin acts for the landlord, and answers a closing for the side that did not propose it."""
+    proposal = issue.open_closure_proposal
+    if proposal is None:
+        return [*_landlord_actions(issue), "PROPOSE_CLOSURE"]
+    if proposal.proposed_by_id == user.pk:
+        return ["WITHDRAW_CLOSURE"]
+    return ["APPROVE_CLOSURE", "REJECT_CLOSURE"]
 
 
 def _landlord_actions(issue):

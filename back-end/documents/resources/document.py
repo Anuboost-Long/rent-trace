@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from documents.models import Document, DocumentFile, DocumentVersion
 from reviews.models import ReviewDecisionType, ReviewStatus
+from reviews.services.shared.decisions import is_expired
 
 
 class DocumentFileResource(serializers.ModelSerializer):
@@ -21,7 +22,10 @@ class DocumentVersionResource(serializers.ModelSerializer):
     uploaded_by_name = serializers.SerializerMethodField()
     uploaded_at = serializers.DateTimeField(source="created_at")
     confirmation = serializers.SerializerMethodField(
-        help_text="Null when no consent is needed; WAITING, CONFIRMED, FLAGGED or SUPERSEDED."
+        help_text=(
+            "Null when no consent is needed; WAITING, CONFIRMED, FLAGGED, EXPIRED (14 days without "
+            "an answer), ESCALATED (an admin was asked to decide) or SUPERSEDED."
+        )
     )
     flag_reason = serializers.SerializerMethodField()
     files = DocumentFileResource(many=True)
@@ -47,14 +51,17 @@ class DocumentVersionResource(serializers.ModelSerializer):
 
     def get_confirmation(
         self, version
-    ) -> Literal["WAITING", "CONFIRMED", "FLAGGED", "SUPERSEDED"] | None:
+    ) -> Literal["WAITING", "CONFIRMED", "FLAGGED", "EXPIRED", "ESCALATED", "SUPERSEDED"] | None:
         request = version.confirmation_request
         if request is None:
             return None
+        if is_expired(request):
+            return "EXPIRED"
         return {
             ReviewStatus.PENDING_REVIEW: "WAITING",
             ReviewStatus.APPROVED: "CONFIRMED",
             ReviewStatus.REJECTED: "FLAGGED",
+            ReviewStatus.DISPUTED: "ESCALATED",
         }.get(request.status, "SUPERSEDED")
 
     def get_flag_reason(self, version) -> str | None:

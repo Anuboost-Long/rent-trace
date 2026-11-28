@@ -1,14 +1,15 @@
 "use client";
 import { handleGrantPermission } from "@/api/services/access/serve-action";
 import { Route } from "@/constants/web-routes";
-import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useGrantForm = () => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const grant = async (userId: number, permission: string, reason: string) => {
     setPending(true);
@@ -17,6 +18,7 @@ const useGrantForm = () => {
     setPending(false);
     setError(error);
     if (!error) {
+      toast.success("Permission granted");
       router.push(Route.admin.grants);
       router.refresh();
     }

@@ -4,7 +4,7 @@ import {
   handleUpdatePropertyFile,
   handleUploadPropertyFile,
 } from "@/api/services/properties/serve-action";
-import type { ActionResult, ApiFailure } from "@/types/api/common";
+import type { ActionResult } from "@/types/api/common";
 import type {
   PropertyAudience,
   PropertyFile,
@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import useStagedFiles from "./useStagedFiles";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 export type UploadFailure = { id: string; name: string; message: string };
 
@@ -60,7 +62,7 @@ const usePropertyFiles = (
   const [uploading, setUploading] = useState("");
   const [failures, setFailures] = useState<UploadFailure[]>([]);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const dirty = staged.items.length > 0 || removedIds.length > 0;
 
@@ -104,6 +106,15 @@ const usePropertyFiles = (
     setRemovedIds(notRemoved);
     setFailures([...failed, ...notUploaded]);
     setSaving(false);
+    const uploaded = staged.items.length - notUploaded.length;
+    const removed = removedIds.length - notRemoved.length;
+    if (uploaded > 0)
+      toast.success(`${uploaded} file${uploaded === 1 ? "" : "s"} uploaded`);
+    if (removed > 0)
+      toast.success(`${removed} file${removed === 1 ? "" : "s"} removed`);
+    if (failed.length + notUploaded.length > 0) {
+      toast.error("Some files could not be saved. See the list for why.");
+    }
     router.refresh();
   };
 
@@ -113,13 +124,16 @@ const usePropertyFiles = (
     setFailures([]);
   };
 
-  const run = async (request: Promise<ActionResult<unknown>>) => {
+  const run = async (request: Promise<ActionResult<unknown>>, done: string) => {
     setPending(true);
     setError(null);
     const { error } = await request;
     setPending(false);
     setError(error);
-    if (!error) router.refresh();
+    if (!error) {
+      toast.success(done);
+      router.refresh();
+    }
     return !error;
   };
 
@@ -148,6 +162,7 @@ const usePropertyFiles = (
           { is_cover: true },
           unitId,
         ),
+        "Cover photo set",
       ),
     saveCaption: (fileId: number, caption: string) =>
       run(
@@ -158,6 +173,7 @@ const usePropertyFiles = (
           { caption },
           unitId,
         ),
+        "Caption saved",
       ),
   };
 };

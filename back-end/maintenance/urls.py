@@ -12,6 +12,12 @@ urlpatterns = [
         name="maintenance-acknowledge",
     ),
     path("<int:issue_id>/start/", views.StartWorkView.as_view(), name="maintenance-start"),
+    path("<int:issue_id>/photos/", views.IssuePhotosView.as_view(), name="maintenance-photos"),
+    path(
+        "<int:issue_id>/photos/<int:file_id>/",
+        views.IssuePhotoView.as_view(),
+        name="maintenance-photo",
+    ),
     path(
         "<int:issue_id>/assignment/",
         views.AssignProviderView.as_view(),

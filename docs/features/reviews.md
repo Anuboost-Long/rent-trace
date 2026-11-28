@@ -334,7 +334,30 @@ Existing:
    rent change proposals do. See "Expiry" above.
 4. ~~**Evidence files.**~~ Decided 26 Nov 2026: photos on condition reports; see "Evidence photos".
 
+## Removal requests screen — built 28 November 2026
+
+Admin screen at `/admin/removal-requests` (nav item "Removal requests", permission
+`reviews.review_removal`), following design A6 in the Figma export: filter chips (Pending, Approved,
+Rejected), a table, and a detail page with the records, reason, effect and a Decision card (**Approve and
+hide** or **Reject**, reason required). Added `GET /api/admin/removal-requests/<id>/` for the detail page
+(1 new test). Typecheck, lint and the production build pass. Seen in Chrome as an admin on 28 November: the list, the detail page, rejecting a request and
+approving one (status, reason and the alert both times; the approval wrote the hide effect). Left out because the API has no matching action: the design's "New removal request" (an admin
+recording a request for someone) and "Restore records", and the chip counts and photo thumbnails (items
+carry only a record id and title). Parties ask for removal from their own screens, which are not built yet.
+
+## Corrections screen — built 28 November 2026
+
+Admin screen at `/admin/corrections` (nav item "Corrections", permission `reviews.admin_review`), following
+the dispute-case design A3: filter chips (Waiting, Approved, Rejected), a table, and a detail page with
+what the party says (what is incorrect, the proposed replacement, why), a Before and after comparison and a
+Decision card (**Approve correction** or **Reject**, reason required). Added
+`GET /api/admin/condition-corrections/<id>/` for the detail page (1 new test). Typecheck, lint and the
+production build pass. Seen in Chrome as an admin: the list, the detail page with the before and after, and
+phone width (it stacks). Approving a correction worked (status, reason and alert); Reject was not tried there. Left out because the API has no matching action:
+"Request more information" on a correction, the Parties list, photo proof and "Add on behalf of a party".
+
 ## Not done
 
-Everything above. Also outside this feature: documents have no API, `business_change_history`
-is not written for property and unit edits, and reviews of providers are not planned.
+The screens for everything built after the first slice (asking for information, corrections, removal,
+the super admin acting for someone). Reviews of providers are not planned. Documents are in
+[Documents](documents.md).

@@ -4,10 +4,12 @@ import {
   handleDeleteUnit,
   handleUpdateUnit,
 } from "@/api/services/properties/serve-action";
-import type { ActionResult, ApiFailure } from "@/types/api/common";
+import type { ActionResult } from "@/types/api/common";
 import type { PropertyAudience, UnitBody } from "@/types/properties/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useUnitActions = (
   propertyId: number,
@@ -15,15 +17,18 @@ const useUnitActions = (
 ) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
-  const run = async (request: Promise<ActionResult<unknown>>) => {
+  const run = async (request: Promise<ActionResult<unknown>>, done: string) => {
     setPending(true);
     setError(null);
     const { error } = await request;
     setPending(false);
     setError(error);
-    if (!error) router.refresh();
+    if (!error) {
+      toast.success(done);
+      router.refresh();
+    }
     return !error;
   };
 
@@ -32,10 +37,11 @@ const useUnitActions = (
       unitId === null
         ? handleCreateUnit(propertyId, body, audience)
         : handleUpdateUnit(propertyId, unitId, body, audience),
+      unitId === null ? "Unit added" : "Unit saved",
     );
 
   const removeUnit = (unitId: number) =>
-    run(handleDeleteUnit(propertyId, unitId, audience));
+    run(handleDeleteUnit(propertyId, unitId, audience), "Unit removed");
 
   return {
     pending,

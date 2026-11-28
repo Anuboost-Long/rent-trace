@@ -131,6 +131,16 @@ def _tenants_of(document):
     return [party.tenant for party in parties.select_related("tenant")]
 
 
+def document_added_by_tenant(document, owners, tenant, title):
+    notify(
+        owners,
+        kind=Kind.DOCUMENT_ADDED,
+        title="A tenant added a document",
+        body=f"{_name(tenant)} added: {title}.",
+        subject_id=document.tenancy_id,
+    )
+
+
 def document_added(document, title):
     if document.tenancy_id is None:
         return
@@ -149,6 +159,33 @@ def document_confirmation_requested(document, title):
         kind=Kind.DOCUMENT_CONFIRMATION_REQUESTED,
         title="A document needs your confirmation",
         body=f"Your landlord published: {title}. Open your tenancy to confirm or flag it.",
+        subject_id=document.tenancy_id,
+    )
+
+
+def document_escalated(case, admins, escalator, others, title, reason):
+    notify(
+        admins,
+        kind=Kind.DOCUMENT_ESCALATED,
+        title="A document needs an admin decision",
+        body=f"{_name(escalator)} asked for a decision on: {title}. Reason: {reason}",
+        subject_id=case.pk,
+    )
+    notify(
+        others,
+        kind=Kind.DOCUMENT_SENT_TO_ADMIN,
+        title="A document was sent to an admin",
+        body=f"{_name(escalator)} asked an admin to decide: {title}. Reason: {reason}",
+        subject_id=case.parent_request.target.document.tenancy_id,
+    )
+
+
+def document_decided(document, people, title, outcome, reason):
+    notify(
+        people,
+        kind=Kind.DOCUMENT_DECIDED,
+        title=f"An admin {outcome} a document",
+        body=f"An admin {outcome}: {title}. Reason: {reason}",
         subject_id=document.tenancy_id,
     )
 

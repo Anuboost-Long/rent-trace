@@ -7,8 +7,18 @@ from rest_framework.exceptions import ValidationError
 from reviews.models import ReviewDecision, ReviewerSide, ReviewKind, ReviewStatus
 
 EVIDENCE_WINDOW = timedelta(days=14)
+WAITING_WINDOWS = {
+    ReviewKind.EVIDENCE_REVIEW: EVIDENCE_WINDOW,
+    ReviewKind.DOCUMENT_CONFIRMATION: timedelta(days=14),
+}
 NOT_PENDING = "This has already been answered or withdrawn."
 EXPIRED = "This report expired after 14 days. The tenant can send a new one."
+EXPIRED_MESSAGES = {
+    ReviewKind.EVIDENCE_REVIEW: EXPIRED,
+    ReviewKind.DOCUMENT_CONFIRMATION: (
+        "This version expired after 14 days without an answer. The landlord can publish it again."
+    ),
+}
 WAITING_FOR_TENANT = "Waiting for the tenant's reply."
 NOT_AWAITING_REPLY = "Nobody has asked for more information on this."
 KEY_USED = "That idempotency key was already used for a different request."
@@ -26,10 +36,11 @@ def was_already_decided(request, idempotency_key):
 
 def is_expired(request):
     """Waiting too long is worked out when it is read; nothing is stored or scheduled."""
+    window = WAITING_WINDOWS.get(request.kind)
     return (
-        request.kind == ReviewKind.EVIDENCE_REVIEW
+        window is not None
         and request.status == ReviewStatus.PENDING_REVIEW
-        and request.submitted_at + EVIDENCE_WINDOW <= timezone.now()
+        and request.submitted_at + window <= timezone.now()
     )
 
 
@@ -39,7 +50,7 @@ def require_pending(request):
     if request.status != ReviewStatus.PENDING_REVIEW:
         raise ValidationError({"request": NOT_PENDING})
     if is_expired(request):
-        raise ValidationError({"request": EXPIRED})
+        raise ValidationError({"request": EXPIRED_MESSAGES[request.kind]})
 
 
 def require_open(request):

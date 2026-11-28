@@ -6,9 +6,15 @@ Built; **not yet walked through in a browser** (needs a signed-in super admin). 
 tests pass, and so do all 67 in maintenance and notifications; admin typecheck and lint pass.
 
 - **Who:** only a super admin (`is_top_level_admin`). A normal admin stays read-only.
-- **What (first cut):** the landlord's status moves only: **acknowledge**, **start work**, and
-  **close directly** when no tenant lives there. Closing proposals, booking a tradesperson and
-  marking a visit done stay with the parties.
+- **What:** the landlord's status moves (**acknowledge**, **start work**, **close directly** when no
+  tenant lives there) and, added 28 November 2026 (API only, 9 tests, 76 maintenance tests pass):
+  **propose or withdraw a closing**, **approve or reject a closing** for whichever side is
+  not the proposer, **book a tradesperson** and **mark the visit done**.
+- **Closings and bookings:** a proposal the admin makes counts as the landlord's side, so the
+  tenants answer it; the admin cannot answer their own proposal. When the admin answers, they stand in
+  for the first current person on the other side, recorded as `on_behalf_of` on the closing's
+  status history row (a rejection leaves no such row). A booking uses the primary owner's
+  tradespeople linked to the property.
 - **Acting for:** automatic. The admin acts for the property's **primary owner**; there is nothing
   to pick. If the property has no current primary owner the action is refused. A super admin who
   is themselves the landlord of the issue just acts as the landlord, with nobody recorded as
@@ -18,7 +24,9 @@ tests pass, and so do all 67 in maintenance and notifications; admin typecheck a
   "Admin name, for Owner name". The issue's `updated_by` is the admin. The usual notifications
   go out as they do for the landlord.
 - **API:** `POST /api/admin/maintenance/<id>/acknowledge/`, `/start/` and `/close/` (outcome and
-  reason, as the landlord's). Non-super admins, landlords and tenants get 403. The same rules
+  reason, as the landlord's); `/closure/`, `/closure/withdraw/`, `/closure/<proposal>/approve/`,
+  `/closure/<proposal>/reject/`, `/assignment/` and `/assignment/complete/`, same bodies as the
+  landlord and tenant routes. Non-super admins, landlords and tenants get 403. The same rules
   apply as for the landlord: right status, no open closing proposal, vacant for `/close/`.
 - **Screens:** on `/admin/maintenance/<id>` a super admin sees the same Acknowledge, Start work
   and Close buttons the landlord would; everyone else sees none. The detail's `actions` list is
@@ -120,8 +128,26 @@ carry the issue title, never contact details.
 
 ### Not in the first version
 
-Photos on an issue, comments, assigning a provider, recurring issues, and service categories (the
-fields exist and stay empty).
+Comments, recurring issues, and receipts shown inside the issue (receipts are documents linked to the
+issue; see below). Photos are built (below).
+
+### Photos on an issue
+
+Decided and built 28 November 2026 (API only; screens to follow). Anyone who can see an issue (the
+tenants of its tenancy, past ones included, and the property's owners) can add photos to show what is
+wrong, while the issue is not closed.
+
+- `POST /api/maintenance/<id>/photos/` (multipart `file`, optional `caption`; permission
+  `maintenance.report`): JPEG or PNG up to 10 MB, at most 10 per issue (400 beyond that or for other
+  file types). Closed issues refuse new photos.
+- `GET /api/maintenance/<id>/photos/<file_id>/` downloads one (`maintenance.view`); admins use
+  `GET /api/admin/maintenance/<id>/photos/<file_id>/` (`maintenance.admin_view`). Anyone who cannot see
+  the issue gets a 404.
+- `DELETE /api/maintenance/<id>/photos/<file_id>/` removes a photo, only the person who added it and only
+  while the issue is open (the file is hidden, not deleted).
+- The issue detail lists `photos` (id, name, caption, who added it, when, and whether it is yours).
+- **Receipts** are documents: a landlord publishes a `RECEIPT` document linked to the issue with
+  `maintenance_issue_id` (see [Documents](documents.md)); tenants see it on their tenancy's documents.
 
 ### Trade and tradesperson
 
@@ -150,7 +176,20 @@ tradesperson's contact details on the issue. Booking does not change the issue's
 ## Not done
 
 - Everything under "Not in the first version" above.
-- Super admins can acknowledge, start and close-when-vacant for the primary owner (above). They
-  cannot propose or answer a closing, book a tradesperson or mark a visit done. Normal admins
-  cannot act at all.
+- Normal admins cannot act at all.
 - Landlords reporting issues themselves (for a vacant unit or an inspection).
+
+## Screens for photos, receipts and the super admin — 28 November 2026
+
+On the issue page (tenant, landlord and admin): a **Photos** section (thumbnails that open full size, Add a
+photo for the two parties while the issue is open, a remove button on your own photos), and a **Receipts**
+section that lists the papers linked to this issue and lets the two parties add a receipt (a `RECEIPT` paper
+through the Papers feature, see [Documents](documents.md)). The issue detail now includes `tenancy_id`.
+A super admin now gets the landlord's buttons (Book tradesperson, Mark visit done, Propose closing) and
+answers or withdraws a closing; the detail's `actions` list drives them, and `provider_options` shows the
+primary owner's tradespeople. The admin's answer goes to `/api/admin/maintenance/<id>/closure/<proposal>/...`.
+Back end: 78 maintenance tests pass. Admin: typecheck, lint and build pass. Seen in Chrome as a regular
+admin only (the issue page renders, no console errors); the photo upload, receipts and the super-admin
+buttons were not tried as a regular admin. Seen as a tenant on 28 November: Add a photo (the thumbnail loads
+through the proxy, with the alert) and Add a receipt (listed under Receipts, with the alert). The landlord
+and super-admin buttons still need their sign-ins.

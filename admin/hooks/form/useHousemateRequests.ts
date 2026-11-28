@@ -6,16 +6,21 @@ import {
 import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useHousemateRequests = (tenancyId: number) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
-  const finish = (failure: ApiFailure | null) => {
+  const finish = (failure: ApiFailure | null, done: string) => {
     setPending(false);
     setError(failure);
-    if (!failure) router.refresh();
+    if (!failure) {
+      toast.success(done);
+      router.refresh();
+    }
     return !failure;
   };
 
@@ -23,14 +28,14 @@ const useHousemateRequests = (tenancyId: number) => {
     setPending(true);
     setError(null);
     const { error } = await handleRequestHousemate(tenancyId, email);
-    return finish(error);
+    return finish(error, "Request sent");
   };
 
   const withdraw = async (invitationId: number) => {
     setPending(true);
     setError(null);
     const { error } = await handleWithdrawHousemate(tenancyId, invitationId);
-    return finish(error);
+    return finish(error, "Request withdrawn");
   };
 
   return { pending, error, request, withdraw };

@@ -2,6 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework.exceptions import NotFound
 
+from history.recording import record_business_change
 from properties.models import Property, PropertyUnit
 from properties.services.shared.errors import HasTenancies
 from tenancies.models import Tenancy
@@ -27,3 +28,11 @@ def delete_property(*, actor, property_id):
     target.updated_by = actor
     target.row_version += 1
     target.save()
+    record_business_change(
+        target,
+        actor,
+        "DELETE_PROPERTY",
+        {"deleted": False},
+        {"deleted": True},
+        "Removed through the app",
+    )

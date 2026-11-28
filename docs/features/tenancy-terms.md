@@ -49,7 +49,7 @@ correct it later. Tenants see the terms on their tenancy page and are told when 
 
 ## Not done
 
-- A history of who changed the rent and when (the project does not write its change-history table
-  yet).
+- A way to read the history of who changed the rent and when: it is written to `business_change_history`
+  (see [Properties](properties.md)) but there is no API to read it yet.
 - Rent increases with a notice period, rent payments and bond lodgement records.
 - Currencies other than Australian dollars.

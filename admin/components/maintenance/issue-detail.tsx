@@ -1,5 +1,10 @@
+import {
+  handleGetTenantDocuments,
+  handleGetUnitDocuments,
+} from "@/api/services/documents/serve-action";
 import { handleGetIssue } from "@/api/services/maintenance/serve-action";
 import LocalTime from "@/components/common/local-time";
+import DocumentsSection from "@/components/documents/documents-section";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import {
@@ -14,6 +19,7 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 
 import IssueActions from "./issue-actions";
+import IssuePhotos from "./issue-photos";
 import IssueProvider from "./issue-provider";
 import IssueTimeline from "./issue-timeline";
 
@@ -41,6 +47,17 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
       </p>
     );
   }
+
+  const allDocuments =
+    audience === "tenant"
+      ? issue.tenancy_id
+        ? (await handleGetTenantDocuments(issue.tenancy_id)).data
+        : null
+      : (await handleGetUnitDocuments(audience, issue.unit.id)).data;
+  const receipts = allDocuments?.filter(
+    (document) => document.maintenance_issue_id === issue.id,
+  );
+  const open = issue.status !== "CLOSED";
 
   const details: [string, ReactNode][] = [
     ["Status", IssueStatusLabel[issue.status]],
@@ -107,6 +124,23 @@ async function IssueDetail({ audience, params }: IssueDetailProp) {
           </div>
         ))}
       </dl>
+      <IssuePhotos
+        issueId={issue.id}
+        audience={audience}
+        photos={issue.photos}
+        canAdd={audience !== "admin" && open}
+      />
+      {receipts && (
+        <DocumentsSection
+          audience={audience}
+          documents={receipts}
+          tenancyId={issue.tenancy_id ?? 0}
+          unitId={issue.unit.id}
+          canUpload={audience !== "admin" && open}
+          heading="Receipts"
+          issueId={issue.id}
+        />
+      )}
       <IssueTimeline history={issue.history} />
     </>
   );

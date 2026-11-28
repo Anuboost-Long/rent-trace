@@ -10,16 +10,21 @@ import type {
 } from "@/types/tenancies/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useTermChange = (tenancyId: number) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
-  const finish = (failure: ApiFailure | null) => {
+  const finish = (failure: ApiFailure | null, done: string) => {
     setPending(false);
     setError(failure);
-    if (!failure) router.refresh();
+    if (!failure) {
+      toast.success(done);
+      router.refresh();
+    }
     return !failure;
   };
 
@@ -31,7 +36,10 @@ const useTermChange = (tenancyId: number) => {
       changeId,
       answer,
     );
-    return finish(error);
+    return finish(
+      error,
+      answer === "approve" ? "Change approved" : "Change declined",
+    );
   };
 
   const withdraw = async (changeId: number, audience: TenancyAudience) => {
@@ -42,7 +50,7 @@ const useTermChange = (tenancyId: number) => {
       changeId,
       audience,
     );
-    return finish(error);
+    return finish(error, "Proposal withdrawn");
   };
 
   const clearError = () => setError(null);

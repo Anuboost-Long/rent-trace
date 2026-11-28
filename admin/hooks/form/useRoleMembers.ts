@@ -6,11 +6,13 @@ import {
 import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useRoleMembers = (roleCode: string) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const run = async (request: Promise<{ error: ApiFailure | null }>) => {
     setPending(true);
@@ -18,7 +20,10 @@ const useRoleMembers = (roleCode: string) => {
     const { error } = await request;
     setPending(false);
     setError(error);
-    if (!error) router.refresh();
+    if (!error) {
+      toast.success("Role members updated");
+      router.refresh();
+    }
     return !error;
   };
 

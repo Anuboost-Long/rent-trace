@@ -21,6 +21,13 @@ def list_removals_for_unit(*, landlord, unit_id):
     return on_unit.with_removal_details().order_by("-id")
 
 
+def get_removal_for_admin(*, request_id):
+    found = ReviewRequest.objects.removals().with_removal_details().filter(pk=request_id).first()
+    if found is None:
+        raise NotFound("No removal request with this id.")
+    return found
+
+
 def list_removal_queue(*, status=None):
     waiting = ReviewRequest.objects.removals().filter(status=status or ReviewStatus.PENDING_REVIEW)
     return waiting.with_removal_details().order_by("submitted_at", "id")

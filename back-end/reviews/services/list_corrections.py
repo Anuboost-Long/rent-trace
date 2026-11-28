@@ -21,6 +21,15 @@ def list_corrections_for_unit(*, landlord, unit_id):
     return on_unit.with_correction_details().order_by("-id")
 
 
+def get_correction_for_admin(*, request_id):
+    found = (
+        ReviewRequest.objects.corrections().with_correction_details().filter(pk=request_id).first()
+    )
+    if found is None:
+        raise NotFound("No correction request with this id.")
+    return found
+
+
 def list_correction_queue(*, status=None):
     waiting = ReviewRequest.objects.corrections().filter(
         status=status or ReviewStatus.PENDING_REVIEW

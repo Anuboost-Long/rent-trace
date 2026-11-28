@@ -10,8 +10,8 @@ NOTHING_OPEN = "There is no open proposal."
 
 
 @transaction.atomic
-def withdraw_closure(*, user, issue_id):
-    issue = find_issue(user, issue_id, lock=True)
+def withdraw_closure(*, user, issue_id, as_admin=False):
+    issue = find_issue(user, issue_id, lock=True, as_admin=as_admin)
     proposal = issue.open_closure_proposal
     if issue.status == MaintenanceStatus.CLOSED or proposal is None:
         raise ValidationError({"proposal": NOTHING_OPEN})

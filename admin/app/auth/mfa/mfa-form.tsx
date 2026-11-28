@@ -1,5 +1,6 @@
 "use client";
 import { handleSignOut } from "@/api/services/auth/serve-action";
+import BackupCodes from "@/components/auth/backup-codes";
 import AuthCard from "@/components/common/auth-card";
 import Button from "@/components/common/button";
 import OtpInput from "@/components/common/inputs/otp-input";
@@ -52,46 +53,13 @@ export default function MfaForm({ status, destination }: MfaFormProp) {
   }, [status, startEnrolment]);
 
   if (mfa.backupCodes !== null) {
-    const codes = mfa.backupCodes;
-    const download = () => {
-      const file = new Blob([codes.join("\n") + "\n"], { type: "text/plain" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(file);
-      link.download = "renttrace-backup-codes.txt";
-      link.click();
-      URL.revokeObjectURL(link.href);
-    };
-
     return (
       <AuthCard
         tag={ADMIN_TAG}
         heading="Save your backup codes"
-        message="Use one of these if you lose your phone. Each code works once. We won't show them again."
+        message="Use one of these to sign in if you lose your phone."
       >
-        <ul className="grid grid-cols-2 gap-2">
-          {codes.map((code) => (
-            <li
-              key={code}
-              className="rounded-lg border border-default bg-subtle px-3 py-2 text-center font-mono text-body-sm"
-            >
-              {code}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <Button
-            variant="secondary"
-            onClick={() => navigator.clipboard.writeText(codes.join("\n"))}
-          >
-            Copy
-          </Button>
-          <Button variant="secondary" onClick={download}>
-            Download
-          </Button>
-        </div>
-        <Button onClick={continueToApp} className="mt-3 w-full">
-          I&apos;ve saved them, continue
-        </Button>
+        <BackupCodes codes={mfa.backupCodes} onContinue={continueToApp} />
       </AuthCard>
     );
   }
