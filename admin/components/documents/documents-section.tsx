@@ -16,6 +16,8 @@ type DocumentsSectionProp = Readonly<{
   tenancyId: number;
   unitId: number;
   canUpload: boolean;
+  heading?: string;
+  issueId?: number;
 }>;
 
 type Dialog =
@@ -30,11 +32,14 @@ export default function DocumentsSection({
   tenancyId,
   unitId,
   canUpload,
+  heading = "Papers",
+  issueId,
 }: DocumentsSectionProp) {
   const actions = useDocumentActions({
     audience: audience === "tenant" ? "tenant" : "landlord",
     tenancyId,
     unitId,
+    issueId,
   });
   const [dialog, setDialog] = useState<Dialog | null>(null);
 
@@ -52,7 +57,7 @@ export default function DocumentsSection({
     <section aria-labelledby="documents-heading" className="mt-12">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
         <h2 id="documents-heading" className="text-lg font-semibold">
-          Papers
+          {heading}
         </h2>
         {canUpload && audience !== "admin" && (
           <Button
@@ -61,16 +66,22 @@ export default function DocumentsSection({
             onClick={() => setDialog({ kind: "upload" })}
           >
             <Plus aria-hidden className="size-4" />
-            {audience === "tenant" ? "Upload a paper" : "Publish a paper"}
+            {issueId
+              ? "Add a receipt"
+              : audience === "tenant"
+                ? "Upload a paper"
+                : "Publish a paper"}
           </Button>
         )}
       </div>
 
       {documents.length === 0 ? (
         <p className="mt-3 max-w-[65ch] text-body-sm text-fg-secondary">
-          {audience === "tenant"
-            ? "Papers about this tenancy appear here. You can upload a notice or a receipt."
-            : "Publish the tenancy agreement, notices and receipts here. Tenants see them on their tenancy."}
+          {issueId
+            ? "Receipts for this repair appear here."
+            : audience === "tenant"
+              ? "Papers about this tenancy appear here. You can upload a notice or a receipt."
+              : "Publish the tenancy agreement, notices and receipts here. Tenants see them on their tenancy."}
         </p>
       ) : (
         <ul className="mt-2 divide-y divide-default">
@@ -146,9 +157,21 @@ export default function DocumentsSection({
 
       {dialog?.kind === "upload" && (
         <UploadDialog
-          heading={audience === "tenant" ? "Upload a paper" : "Publish a paper"}
+          heading={
+            issueId
+              ? "Add a receipt"
+              : audience === "tenant"
+                ? "Upload a paper"
+                : "Publish a paper"
+          }
           confirmLabel={audience === "tenant" ? "Upload" : "Publish"}
-          types={audience === "tenant" ? TenantUploadTypes : LandlordTypes}
+          types={
+            issueId
+              ? null
+              : audience === "tenant"
+                ? TenantUploadTypes
+                : LandlordTypes
+          }
           pending={actions.pending}
           error={actions.error}
           onSubmit={(fields, file) => finish(actions.upload(fields, file))}

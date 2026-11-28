@@ -111,3 +111,40 @@ class AdminPartyActionTests(MaintenanceApiTestCase):
         response = self.admin_post("assignment/complete/")
 
         self.assertEqual(response.status_code, 400)
+
+
+class AdminIssueDetailTests(MaintenanceApiTestCase):
+    def test_the_admin_sees_the_owners_tradespeople_to_book(self):
+        issue = self.reported()
+        self.as_user(self.lou)
+        created = self.post(
+            PROVIDERS,
+            {
+                "business_name": "Smith Plumbing",
+                "phone_number": "0400 111 222",
+                "category_codes": ["PLUMBING"],
+                "properties": [{"property_id": self.property["id"], "is_recommended": True}],
+            },
+        )
+        self.sign_in_as_admin(super_admin=True, email="boss@example.com")
+
+        detail = self.client.get(f"{ADMIN_URL}{issue['id']}/")
+
+        self.assertEqual(
+            [option["business_name"] for option in detail.data["provider_options"]],
+            ["Smith Plumbing"],
+        )
+        self.assertEqual(created.status_code, 201, created.data)
+        self.assertEqual(detail.data["tenancy_id"], self.tenancy["id"])
+
+    def test_a_proposal_the_admin_made_can_only_be_withdrawn_by_them(self):
+        issue = self.reported()
+        self.sign_in_as_admin(super_admin=True, email="boss@example.com")
+        self.post(
+            f"{ADMIN_URL}{issue['id']}/closure/",
+            {"outcome": "FIXED", "reason": "Landlord says done."},
+        )
+
+        detail = self.client.get(f"{ADMIN_URL}{issue['id']}/")
+
+        self.assertEqual(detail.data["actions"], ["WITHDRAW_CLOSURE"])

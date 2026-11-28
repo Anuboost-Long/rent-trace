@@ -5,6 +5,7 @@ import {
   handleRespondClosure,
 } from "@/api/services/maintenance/serve-action";
 import { IssueRoutes } from "@/constants/maintenance";
+import useApiError from "@/hooks/useApiError";
 import type { ApiFailure } from "@/types/api/common";
 import type {
   AssignBody,
@@ -13,10 +14,9 @@ import type {
   MaintenanceAudience,
   ReportIssueBody,
 } from "@/types/maintenance/models";
+import { toast } from "@/utils/toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import useApiError from "@/hooks/useApiError";
-import { toast } from "@/utils/toast";
 
 type IssuePath = Parameters<typeof handleIssueAction>[1];
 
@@ -57,7 +57,12 @@ const useIssueActions = (audience: MaintenanceAudience, issueId?: number) => {
     if (issueId === undefined) return false;
     setPending(true);
     setError(null);
-    const { error } = await handleRespondClosure(issueId, proposalId, answer);
+    const { error } = await handleRespondClosure(
+      issueId,
+      proposalId,
+      answer,
+      audience,
+    );
     return finish(
       error,
       answer === "approve" ? "Closing approved" : "Closing rejected",

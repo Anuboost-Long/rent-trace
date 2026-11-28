@@ -84,7 +84,7 @@ class AdminStatusMoveTests(MaintenanceApiTestCase):
 
         self.assertEqual((too_early.status_code, twice.status_code), (400, 400))
 
-    def test_the_detail_lists_only_the_status_moves_for_a_super_admin(self):
+    def test_the_detail_lists_the_landlords_moves_for_a_super_admin(self):
         issue = self.reported()
         self.sign_in_boss()
 
@@ -92,15 +92,18 @@ class AdminStatusMoveTests(MaintenanceApiTestCase):
         self.move(issue, "acknowledge")
         acknowledged = self.client.get(f"{ADMIN_URL}{issue['id']}/").data["actions"]
 
-        self.assertEqual(reported, ["ACKNOWLEDGE"])
-        self.assertEqual(acknowledged, ["START"])
+        self.assertEqual(reported, ["ACKNOWLEDGE", "ASSIGN_PROVIDER", "PROPOSE_CLOSURE"])
+        self.assertEqual(acknowledged, ["START", "ASSIGN_PROVIDER", "PROPOSE_CLOSURE"])
 
-    def test_no_actions_while_a_closing_proposal_waits(self):
+    def test_while_a_closing_proposal_waits_the_admin_can_only_answer_it(self):
         issue = self.reported()
         self.propose(issue, self.tina)
         self.sign_in_boss()
 
-        self.assertEqual(self.client.get(f"{ADMIN_URL}{issue['id']}/").data["actions"], [])
+        self.assertEqual(
+            self.client.get(f"{ADMIN_URL}{issue['id']}/").data["actions"],
+            ["APPROVE_CLOSURE", "REJECT_CLOSURE"],
+        )
         self.assertEqual(self.move(issue, "acknowledge").status_code, 400)
 
     def test_a_property_without_a_primary_owner_is_refused(self):

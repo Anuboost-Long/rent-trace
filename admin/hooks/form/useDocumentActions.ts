@@ -16,6 +16,7 @@ type Scope = Readonly<{
   audience: Exclude<DocumentAudience, "admin">;
   tenancyId: number;
   unitId: number;
+  issueId?: number;
 }>;
 
 const toFormData = (
@@ -30,7 +31,12 @@ const toFormData = (
   return formData;
 };
 
-const useDocumentActions = ({ audience, tenancyId, unitId }: Scope) => {
+const useDocumentActions = ({
+  audience,
+  tenancyId,
+  unitId,
+  issueId,
+}: Scope) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useApiError();
@@ -51,8 +57,11 @@ const useDocumentActions = ({ audience, tenancyId, unitId }: Scope) => {
     return !error;
   };
 
-  const upload = (fields: UploadFields, file: File) =>
-    audience === "tenant"
+  const upload = (given: UploadFields, file: File) => {
+    const fields: UploadFields = issueId
+      ? { ...given, document_type: "RECEIPT", maintenance_issue_id: issueId }
+      : given;
+    return audience === "tenant"
       ? run(
           handleUploadTenantDocument(
             tenancyId,
@@ -63,12 +72,17 @@ const useDocumentActions = ({ audience, tenancyId, unitId }: Scope) => {
       : run(
           handlePublishDocument(
             toFormData(
-              { ...fields, unit_id: unitId, tenancy_id: tenancyId },
+              {
+                ...fields,
+                unit_id: unitId,
+                tenancy_id: tenancyId > 0 ? tenancyId : undefined,
+              },
               file,
             ),
           ),
           "Paper published",
         );
+  };
 
   return {
     pending,

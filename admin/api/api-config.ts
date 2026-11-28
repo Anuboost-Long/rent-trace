@@ -185,12 +185,19 @@ export const EndPoints = {
       byEndpoint(`maintenance/${id}/${path}/`),
     respond: (id: number, proposalId: number, answer: string) =>
       byEndpoint(`maintenance/${id}/closure/${proposalId}/${answer}/`),
+    photos: (id: number) => byEndpoint(`maintenance/${id}/photos/`),
+    photo: (id: number | string, fileId: number | string) =>
+      byEndpoint(`maintenance/${id}/photos/${fileId}/`),
   },
   admin_maintenance: {
     list: byEndpoint("admin/maintenance/"),
     detail: (id: number | string) => byEndpoint(`admin/maintenance/${id}/`),
     action: (id: number, path: string) =>
       byEndpoint(`admin/maintenance/${id}/${path}/`),
+    respond: (id: number, proposalId: number, answer: string) =>
+      byEndpoint(`admin/maintenance/${id}/closure/${proposalId}/${answer}/`),
+    photo: (id: number | string, fileId: number | string) =>
+      byEndpoint(`admin/maintenance/${id}/photos/${fileId}/`),
   },
   notifications: {
     list: byEndpoint("notifications/"),

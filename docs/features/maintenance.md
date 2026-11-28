@@ -176,6 +176,18 @@ tradesperson's contact details on the issue. Booking does not change the issue's
 ## Not done
 
 - Everything under "Not in the first version" above.
-- Normal admins cannot act at all. The super-admin closing and booking actions have no screen
-  buttons yet.
+- Normal admins cannot act at all.
 - Landlords reporting issues themselves (for a vacant unit or an inspection).
+
+## Screens for photos, receipts and the super admin — 28 November 2026
+
+On the issue page (tenant, landlord and admin): a **Photos** section (thumbnails that open full size, Add a
+photo for the two parties while the issue is open, a remove button on your own photos), and a **Receipts**
+section that lists the papers linked to this issue and lets the two parties add a receipt (a `RECEIPT` paper
+through the Papers feature, see [Documents](documents.md)). The issue detail now includes `tenancy_id`.
+A super admin now gets the landlord's buttons (Book tradesperson, Mark visit done, Propose closing) and
+answers or withdraws a closing; the detail's `actions` list drives them, and `provider_options` shows the
+primary owner's tradespeople. The admin's answer goes to `/api/admin/maintenance/<id>/closure/<proposal>/...`.
+Back end: 78 maintenance tests pass. Admin: typecheck, lint and build pass. Seen in Chrome as a regular
+admin only (the issue page renders, no console errors); the photo upload, receipts and the super-admin
+buttons were **not** tried because they need a tenant, landlord or super admin sign-in.

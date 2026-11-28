@@ -4,7 +4,7 @@ from common.models import PartySide
 from maintenance.models import ClosureDecision
 from maintenance.resources.issue_summary import IssueSummaryResource, _name
 from maintenance.services.shared.actions import allowed_actions
-from maintenance.services.shared.parties import side_of
+from maintenance.services.shared.parties import primary_owner_user, side_of
 from providers.models import PropertyServiceProvider
 
 
@@ -12,6 +12,9 @@ class IssueDetailResource(IssueSummaryResource):
     """Needs `user` in the context: what the person can do depends on who they are."""
 
     description = serializers.CharField()
+    tenancy_id = serializers.IntegerField(
+        allow_null=True, help_text="The tenancy it was reported on, if any."
+    )
     open_closure = serializers.SerializerMethodField(
         help_text="The proposal waiting for an answer."
     )
@@ -33,6 +36,7 @@ class IssueDetailResource(IssueSummaryResource):
         fields = [
             *IssueSummaryResource.Meta.fields,
             "description",
+            "tenancy_id",
             "acknowledged_at",
             "work_started_at",
             "open_closure",
@@ -159,12 +163,19 @@ class IssueDetailResource(IssueSummaryResource):
             },
         }
 
+    def _owner_acting(self, issue):
+        user = self.context["user"]
+        if side_of(user, issue) == PartySide.LANDLORD:
+            return user
+        return primary_owner_user(issue) if user.is_top_level_admin else None
+
     def get_provider_options(self, issue) -> list[dict]:
-        if side_of(self.context["user"], issue) != PartySide.LANDLORD:
+        owner = self._owner_acting(issue)
+        if owner is None:
             return []
         links = PropertyServiceProvider.objects.filter(
             property=issue.property_unit.property_id,
-            service_provider__owner=self.context["user"],
+            service_provider__owner=owner,
             service_provider__deleted_at__isnull=True,
             deleted_at__isnull=True,
         ).select_related("service_provider")

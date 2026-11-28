@@ -62,7 +62,7 @@ function SidebarContent({
       </div>
       <nav
         aria-label={`${label} navigation`}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+        className="scrollbar-hidden min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         <ul className="flex flex-col gap-4">
           {groupNavItems(items).map(([group, groupItems]) => (
