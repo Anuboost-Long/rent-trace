@@ -190,4 +190,6 @@ answers or withdraws a closing; the detail's `actions` list drives them, and `pr
 primary owner's tradespeople. The admin's answer goes to `/api/admin/maintenance/<id>/closure/<proposal>/...`.
 Back end: 78 maintenance tests pass. Admin: typecheck, lint and build pass. Seen in Chrome as a regular
 admin only (the issue page renders, no console errors); the photo upload, receipts and the super-admin
-buttons were **not** tried because they need a tenant, landlord or super admin sign-in.
+buttons were not tried as a regular admin. Seen as a tenant on 28 November: Add a photo (the thumbnail loads
+through the proxy, with the alert) and Add a receipt (listed under Receipts, with the alert). The landlord
+and super-admin buttons still need their sign-ins.

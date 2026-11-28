@@ -21,7 +21,9 @@ file chips that open in a new tab, the flag reason, and earlier versions under a
 - **Admin:** a **Document cases** queue (`/admin/document-cases`) with Confirm version and Uphold flag
   (reason required) and a link to the tenancy to read the paper.
   Seen in Chrome as an admin: the queue, the decision (the version was confirmed with an alert), and the
-  read-only Papers section with a file opening. **Not yet seen as a tenant or landlord** (needs their sign-in).
+  read-only Papers section with a file opening. Seen as a tenant on 28 November: Upload a paper (with the alert), Flag a problem with a reason, and Ask an
+  admin to decide (it then reads "With an admin"); Confirm was not clicked. **Not yet seen as a landlord**
+  (needs their sign-in).
 
 ## Goal
 
