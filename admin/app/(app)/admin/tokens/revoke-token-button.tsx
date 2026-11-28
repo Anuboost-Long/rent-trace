@@ -9,6 +9,7 @@ import { useAtomValue } from "jotai";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "@/utils/toast";
 
 export default function RevokeTokenButton({
   token,
@@ -38,7 +39,11 @@ export default function RevokeTokenButton({
     const { error } = await handleRevokeToken(token.id);
     setPending(false);
     setError(error);
-    if (error) return;
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Token revoked");
     close();
     router.refresh();
   };

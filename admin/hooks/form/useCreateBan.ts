@@ -3,10 +3,11 @@ import { handleCreateBan } from "@/api/services/bans/serve-action";
 import { handleGetUsers } from "@/api/services/users/serve-action";
 import type { ComboboxOption } from "@/components/common/inputs/combobox-input";
 import { BanDurationDays } from "@/constants/security";
-import type { ApiFailure } from "@/types/api/common";
 import type { CreatableBanType } from "@/types/security/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const MS_PER_DAY = 86_400_000;
 
@@ -28,7 +29,7 @@ const useCreateBan = () => {
   const [reason, setReason] = useState("");
   const [duration, setDuration] = useState("never");
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const close = () => {
     setOpen(false);
@@ -60,6 +61,7 @@ const useCreateBan = () => {
     setError(error);
     if (error) return;
     close();
+    toast.success("Ban created");
     router.refresh();
   };
 

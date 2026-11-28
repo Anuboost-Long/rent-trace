@@ -1,5 +1,6 @@
 "use client";
 import LoadingHost from "@/components/common/loading/loading-host";
+import ToastHost from "@/components/common/toast/toast-host";
 import { createStore, Provider } from "jotai";
 import { useState } from "react";
 
@@ -12,6 +13,7 @@ export default function Config({
     <Provider store={store}>
       {children}
       <LoadingHost />
+      <ToastHost />
     </Provider>
   );
 }

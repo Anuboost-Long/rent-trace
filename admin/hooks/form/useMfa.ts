@@ -4,13 +4,14 @@ import {
   handleEnrolMfa,
   handleVerifyMfa,
 } from "@/api/services/auth/serve-action";
-import type { ActionResult, ApiFailure } from "@/types/api/common";
+import type { ActionResult } from "@/types/api/common";
 import type { MfaEnrolment } from "@/types/auth/models";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
 
 const useMfa = () => {
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
   const [enrolment, setEnrolment] = useState<MfaEnrolment | null>(null);
   const [backupCodes, setBackupCodes] = useState<string[] | null>(null);
 

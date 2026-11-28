@@ -1,12 +1,13 @@
 "use client";
 import { handleAcceptInvitation } from "@/api/services/tenancies/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import type { AcceptedInvitation } from "@/types/tenancies/models";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useAcceptInvitation = (token: string) => {
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
   const [accepted, setAccepted] = useState<AcceptedInvitation | null>(null);
 
   const accept = async () => {
@@ -16,6 +17,7 @@ const useAcceptInvitation = (token: string) => {
     setPending(false);
     setError(result.error);
     setAccepted(result.data);
+    if (result.data) toast.success("Invitation accepted");
   };
 
   return { pending, error, accepted, accept };

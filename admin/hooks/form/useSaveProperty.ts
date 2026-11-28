@@ -1,12 +1,14 @@
 "use client";
 import { PropertyRoutes } from "@/constants/properties";
-import type { ActionResult, ApiFailure } from "@/types/api/common";
+import type { ActionResult } from "@/types/api/common";
 import type {
   PropertyAudience,
   PropertyDetail,
 } from "@/types/properties/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useSaveProperty = <Body>(
   submit: (body: Body) => Promise<ActionResult<PropertyDetail>>,
@@ -14,7 +16,7 @@ const useSaveProperty = <Body>(
 ) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const save = async (
     body: Body,
@@ -26,6 +28,7 @@ const useSaveProperty = <Body>(
     setError(error);
     const proceed = data ? ((await afterSave?.(data)) ?? true) : false;
     setPending(false);
+    if (data) toast.success("Property saved");
     if (data && proceed) router.push(PropertyRoutes[audience].detail(data.id));
   };
 

@@ -10,6 +10,7 @@ import { useAtomValue } from "jotai";
 import { ShieldOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "@/utils/toast";
 
 export default function UnbanButton({ ban }: Readonly<{ ban: Ban }>) {
   const router = useRouter();
@@ -35,7 +36,11 @@ export default function UnbanButton({ ban }: Readonly<{ ban: Ban }>) {
     const { error } = await handleLiftBan(ban.id, reason.trim());
     setPending(false);
     setError(error);
-    if (error) return;
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Ban lifted");
     close();
     router.refresh();
   };

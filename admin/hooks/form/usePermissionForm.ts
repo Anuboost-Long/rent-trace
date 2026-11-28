@@ -5,9 +5,10 @@ import {
 } from "@/api/services/access/serve-action";
 import { Route } from "@/constants/web-routes";
 import type { PermissionItem } from "@/types/access/models";
-import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 type Fields = {
   code: string;
@@ -19,7 +20,7 @@ type Fields = {
 const usePermissionForm = (permission: PermissionItem | null) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const save = async (fields: Fields) => {
     setPending(true);
@@ -38,6 +39,7 @@ const usePermissionForm = (permission: PermissionItem | null) => {
     setPending(false);
     setError(error);
     if (data) {
+      toast.success("Permission saved");
       router.push(Route.admin.permission(data.code));
       router.refresh();
     }

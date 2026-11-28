@@ -6,7 +6,6 @@ import {
 import { handleCreateTenancy } from "@/api/services/tenancies/serve-action";
 import type { ComboboxOption } from "@/components/common/inputs/combobox-input";
 import { TenancyRoutes } from "@/constants/tenancies";
-import type { ApiFailure } from "@/types/api/common";
 import type { PropertyUnit } from "@/types/properties/models";
 import type {
   CreateTenancyBody,
@@ -15,6 +14,8 @@ import type {
 import { propertyTitle } from "@/utils/property-address";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 export type InitialProperty = {
   option: ComboboxOption;
@@ -52,7 +53,7 @@ const useCreateTenancy = (
   const [units, setUnits] = useState(initial?.units ?? []);
   const [unitId, setUnitId] = useState(onlyUnitId(initial?.units ?? []));
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const chooseProperty = async (option: ComboboxOption) => {
     setProperty(option);
@@ -75,7 +76,10 @@ const useCreateTenancy = (
     );
     setPending(false);
     setError(error);
-    if (data) router.push(TenancyRoutes[audience].detail(data.id));
+    if (data) {
+      toast.success("Tenancy created");
+      router.push(TenancyRoutes[audience].detail(data.id));
+    }
   };
 
   return {

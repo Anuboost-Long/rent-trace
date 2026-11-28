@@ -5,9 +5,11 @@ import {
   handleDeactivateUser,
   handleDeleteUser,
 } from "@/api/services/users/serve-action";
-import type { ActionResult, ApiFailure } from "@/types/api/common";
+import type { ActionResult } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 export type UserAction = "activate" | "deactivate" | "ban" | "delete";
 
@@ -22,11 +24,18 @@ const requests: Record<
   delete: (id) => handleDeleteUser(id),
 };
 
+const DONE: Record<UserAction, string> = {
+  activate: "Account reactivated",
+  deactivate: "Account suspended",
+  ban: "Account banned",
+  delete: "Account deleted",
+};
+
 const useUserActions = (userId: number, afterDelete?: () => void) => {
   const router = useRouter();
   const [action, setAction] = useState<UserAction | null>(null);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const cancel = () => {
     setAction(null);
@@ -40,6 +49,7 @@ const useUserActions = (userId: number, afterDelete?: () => void) => {
     setPending(false);
     setError(error);
     if (error) return;
+    toast.success(DONE[action]);
     setAction(null);
     if (action === "delete" && afterDelete) afterDelete();
     else router.refresh();

@@ -4,6 +4,7 @@ import Button from "@/components/common/button";
 import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "@/utils/toast";
 
 export default function AcceptInvitationButton({
   invitationId,
@@ -18,7 +19,11 @@ export default function AcceptInvitationButton({
     const { error } = await handleAcceptInvitationById(invitationId);
     setPending(false);
     setError(error);
-    if (!error) router.refresh();
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Invitation accepted");
+      router.refresh();
+    }
   };
 
   return (

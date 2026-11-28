@@ -1,9 +1,10 @@
 "use client";
 import { handleChangeUnitOccupancy } from "@/api/services/properties/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import type { PropertyAudience } from "@/types/properties/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useUnitOccupancy = (
   audience: PropertyAudience,
@@ -12,7 +13,7 @@ const useUnitOccupancy = (
 ) => {
   const router = useRouter();
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const change = async (occupancyStatus: string) => {
     setPending(true);
@@ -25,7 +26,10 @@ const useUnitOccupancy = (
     );
     setPending(false);
     setError(error);
-    if (!error) router.refresh();
+    if (!error) {
+      toast.success("Unit status updated");
+      router.refresh();
+    }
   };
 
   return { pending, error, change };

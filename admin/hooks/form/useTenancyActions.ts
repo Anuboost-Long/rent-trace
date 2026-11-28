@@ -1,15 +1,22 @@
 "use client";
 import { handleTenancyAction } from "@/api/services/tenancies/serve-action";
-import type { ApiFailure } from "@/types/api/common";
 import type { TenancyAction, TenancyAudience } from "@/types/tenancies/models";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
+
+const DONE: Record<TenancyAction, string> = {
+  activate: "Tenancy started",
+  end: "Tenancy ended",
+  cancel: "Tenancy cancelled",
+};
 
 const useTenancyActions = (audience: TenancyAudience, tenancyId: number) => {
   const router = useRouter();
   const [action, setAction] = useState<TenancyAction | null>(null);
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const cancel = () => {
     setAction(null);
@@ -23,6 +30,7 @@ const useTenancyActions = (audience: TenancyAudience, tenancyId: number) => {
     setPending(false);
     setError(error);
     if (error) return;
+    toast.success(DONE[action]);
     setAction(null);
     router.refresh();
   };

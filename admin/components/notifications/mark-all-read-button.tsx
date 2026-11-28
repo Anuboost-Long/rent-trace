@@ -4,6 +4,7 @@ import Button from "@/components/common/button";
 import { CheckCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "@/utils/toast";
 
 export default function MarkAllReadButton({
   disabled,
@@ -13,8 +14,13 @@ export default function MarkAllReadButton({
 
   const markAll = async () => {
     setPending(true);
-    await handleMarkAllNotificationsRead();
+    const { error } = await handleMarkAllNotificationsRead();
     setPending(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("All notifications marked as read");
     router.refresh();
   };
 

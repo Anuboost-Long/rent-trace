@@ -5,16 +5,17 @@ import {
 } from "@/api/services/access/serve-action";
 import { Route } from "@/constants/web-routes";
 import type { RoleItem } from "@/types/access/models";
-import type { ApiFailure } from "@/types/api/common";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import useApiError from "@/hooks/useApiError";
+import { toast } from "@/utils/toast";
 
 const useRoleEditor = (role: RoleItem | null, allRoles: RoleItem[]) => {
   const router = useRouter();
   const [direct, setDirect] = useState(() => new Set(role?.permissions ?? []));
   const [parent, setParent] = useState(role?.parent ?? "");
   const [pending, setPending] = useState(false);
-  const [error, setError] = useState<ApiFailure | null>(null);
+  const [error, setError] = useApiError();
 
   const parentRole = allRoles.find((candidate) => candidate.code === parent);
   const inherited = new Set(
@@ -48,6 +49,7 @@ const useRoleEditor = (role: RoleItem | null, allRoles: RoleItem[]) => {
     setPending(false);
     setError(error);
     if (error) return;
+    toast.success("Role saved");
     router.push(Route.admin.roles);
     router.refresh();
   };
