@@ -11,6 +11,7 @@ import {
   MessageSquare,
   MonitorSmartphone,
   Scale,
+  Trash2,
   Users,
   Wrench,
   type LucideIcon,
@@ -111,6 +112,14 @@ export const Navigation: Record<Audience, Navigation> = {
         permission: "reviews.admin_review",
         group: OPERATIONS,
         description: "Reports an admin has been asked to decide",
+      },
+      {
+        label: "Removal requests",
+        href: Route.admin.removal_requests,
+        icon: Trash2,
+        permission: "reviews.review_removal",
+        group: OPERATIONS,
+        description: "Records a tenant or landlord asked to hide",
       },
       {
         label: "Bans",

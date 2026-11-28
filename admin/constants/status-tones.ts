@@ -23,6 +23,11 @@ export const ContactRequestStatusTone: Record<string, StatusTone> = {
   DECLINED: "error",
 };
 
+export const RemovalStatusTone: Record<string, StatusTone> = {
+  PENDING_REVIEW: "warning",
+  APPROVED: "success",
+};
+
 export const BanStatusTone: Record<string, StatusTone> = { ACTIVE: "error" };
 
 export const TokenStatusTone: Record<string, StatusTone> = {

@@ -28,6 +28,20 @@ class ListRemovalsTests(EvidenceApiTestCase):
         self.assertEqual(self.client.get(ADMIN).data["count"], 0)
         self.assertEqual(self.client.get(f"{ADMIN}?status=APPROVED").data["count"], 1)
 
+    def test_an_admin_opens_one_request_by_id_and_others_cannot(self):
+        record = self.record_of(self.submitted())
+        request_id = self.ask_tenant_removal([record]).data["id"]
+        self.sign_in_as_admin(email="admin@example.com")
+
+        opened = self.client.get(f"{ADMIN}{request_id}/")
+        missing = self.client.get(f"{ADMIN}999999/")
+        self.as_user(self.lou)
+
+        self.assertEqual(opened.status_code, 200, opened.data)
+        self.assertEqual(opened.data["items"][0]["title"], "Damp patch in the bedroom")
+        self.assertEqual(missing.status_code, 404)
+        self.assertEqual(self.client.get(f"{ADMIN}{request_id}/").status_code, 403)
+
     def test_other_people_cannot_see_them(self):
         record = self.record_of(self.submitted())
         self.ask_tenant_removal([record])

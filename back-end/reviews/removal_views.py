@@ -108,6 +108,15 @@ class AdminRemovalsView(PermissionedView):
         return paginator.get_paginated_response(resources.RemovalResource(page, many=True).data)
 
 
+class AdminRemovalView(PermissionedView):
+    required_permissions = {"GET": "reviews.review_removal"}
+
+    @extend_schema(operation_id="admin_removal_request_detail", responses=resources.RemovalResource)
+    def get(self, request, request_id):
+        found = services.get_removal_for_admin(request_id=request_id)
+        return Response(resources.RemovalResource(found).data)
+
+
 class DecideRemovalView(PermissionedView):
     required_permissions = {"POST": "reviews.review_removal"}
 

@@ -18,6 +18,7 @@ from reviews.services.list_evidence import (
     list_my_evidence,
 )
 from reviews.services.list_removals import (
+    get_removal_for_admin,
     list_removal_queue,
     list_removals_for_tenancy,
     list_removals_for_unit,

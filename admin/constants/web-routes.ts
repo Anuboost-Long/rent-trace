@@ -58,6 +58,8 @@ export const Route = {
     providers: "/admin/providers",
     maintenance: "/admin/maintenance",
     review_cases: "/admin/review-cases",
+    removal_requests: "/admin/removal-requests",
+    removal_request: (id: number) => `/admin/removal-requests/${id}`,
     issue: (id: number) => `/admin/maintenance/${id}`,
     tenancies: "/admin/tenancies",
     tenancy_new: "/admin/tenancies/new",
