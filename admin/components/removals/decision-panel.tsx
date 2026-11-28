@@ -14,7 +14,7 @@ export default function DecisionPanel({
 
   if (removal.status !== "PENDING_REVIEW")
     return (
-      <Card title="Decision">
+      <Card title="Decision" className="self-start">
         <p className="text-body-sm text-fg-secondary">
           {removal.status === "APPROVED"
             ? "Approved. The records are hidden."
