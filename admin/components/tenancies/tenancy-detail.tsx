@@ -1,8 +1,10 @@
+import { handleGetUnitDocuments } from "@/api/services/documents/serve-action";
 import { handleGetUnitEvidence } from "@/api/services/evidence/serve-action";
 import { handleGetTenancy } from "@/api/services/tenancies/serve-action";
 import ButtonLink from "@/components/common/button-link";
 import Can from "@/components/common/can";
 import LandlordEvidence from "@/components/conditions/landlord-evidence";
+import DocumentsSection from "@/components/documents/documents-section";
 import Breadcrumbs from "@/components/layout/breadcrumbs";
 import { DetailSkeleton } from "@/components/layout/page-skeletons";
 import { PropertyRoutes } from "@/constants/properties";
@@ -54,6 +56,9 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
     audience === "landlord"
       ? (await handleGetUnitEvidence(tenancy.unit.id)).data
       : null;
+  const documents = (
+    await handleGetUnitDocuments(audience, tenancy.unit.id)
+  ).data?.filter((document) => document.tenancy_id === tenancy.id);
   const closed = tenancy.status === "ENDED" || tenancy.status === "CANCELLED";
   const details: [string, React.ReactNode][] = [
     ["Status", TenancyStatusLabel[tenancy.status]],
@@ -178,6 +183,16 @@ async function TenancyDetail({ audience, params }: TenancyDetailProp) {
         invitations={tenancy.invitations}
         closed={closed}
       />
+
+      {documents && (
+        <DocumentsSection
+          audience={audience}
+          documents={documents}
+          tenancyId={tenancy.id}
+          unitId={tenancy.unit.id}
+          canUpload={audience === "landlord" && !closed}
+        />
+      )}
 
       {reports && <LandlordEvidence reports={reports} />}
 

@@ -3,6 +3,7 @@ import {
   Ban,
   Bell,
   Building2,
+  FileCheck,
   FileText,
   HardHat,
   KeyRound,
@@ -113,6 +114,14 @@ export const Navigation: Record<Audience, Navigation> = {
         permission: "reviews.admin_review",
         group: OPERATIONS,
         description: "Reports an admin has been asked to decide",
+      },
+      {
+        label: "Document cases",
+        href: Route.admin.document_cases,
+        icon: FileCheck,
+        permission: "reviews.admin_review",
+        group: OPERATIONS,
+        description: "Papers a tenant or landlord asked an admin to decide",
       },
       {
         label: "Corrections",

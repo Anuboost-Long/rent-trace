@@ -123,6 +123,41 @@ export const EndPoints = {
     escalate_landlord: (id: number) =>
       byEndpoint(`landlord/condition-evidence/${id}/escalate/`),
   },
+  documents: {
+    tenant: {
+      list: (tenancyId: number | string) =>
+        byEndpoint(`tenant/tenancies/${tenancyId}/documents/`),
+      answer: (
+        tenancyId: number,
+        versionId: number,
+        action: "confirm" | "flag" | "escalate",
+      ) =>
+        byEndpoint(
+          `tenant/tenancies/${tenancyId}/documents/versions/${versionId}/${action}/`,
+        ),
+      file: (tenancyId: number | string, fileId: number | string) =>
+        byEndpoint(`tenant/tenancies/${tenancyId}/documents/files/${fileId}/`),
+    },
+    landlord: {
+      list: byEndpoint("landlord/documents/"),
+      versions: (documentId: number) =>
+        byEndpoint(`landlord/documents/${documentId}/versions/`),
+      escalate: (documentId: number, versionId: number) =>
+        byEndpoint(
+          `landlord/documents/${documentId}/versions/${versionId}/escalate/`,
+        ),
+      file: (_tenancyId: number | string, fileId: number | string) =>
+        byEndpoint(`landlord/documents/files/${fileId}/`),
+    },
+    admin: {
+      list: byEndpoint("admin/documents/"),
+      file: (_tenancyId: number | string, fileId: number | string) =>
+        byEndpoint(`admin/documents/files/${fileId}/`),
+      cases: byEndpoint("admin/documents/cases/"),
+      decide: (id: number, action: "approve" | "reject") =>
+        byEndpoint(`admin/documents/cases/${id}/${action}/`),
+    },
+  },
   corrections: {
     list: byEndpoint("admin/condition-corrections/"),
     detail: (id: number | string) =>

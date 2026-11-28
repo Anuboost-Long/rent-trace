@@ -8,6 +8,21 @@ and opening files. Added on 28 November 2026: expiry and escalation (19 tests) a
 clean. Notification kinds `DOCUMENT_ESCALATED`, `DOCUMENT_SENT_TO_ADMIN` and `DOCUMENT_DECIDED` need
 `notifications/0015` and `accounts/0016` applied (`manage.py migrate`). The screens come later.
 
+## Screens
+
+Added 28 November 2026. A **Papers** section sits on three pages: the tenant's tenancy, the landlord's
+tenancy and the admin's tenancy (read-only). It lists each paper with its newest version, a status badge,
+file chips that open in a new tab, the flag reason, and earlier versions under a disclosure.
+
+- **Tenant:** Upload a paper (notice, receipt or other), and on a version waiting for them Confirm or Flag a
+  problem (a reason is required). A flagged or expired version offers Ask an admin to decide.
+- **Landlord:** Publish a paper (any type, attached to this tenancy), New version, and Ask an admin to decide
+  on a flagged or expired version.
+- **Admin:** a **Document cases** queue (`/admin/document-cases`) with Confirm version and Uphold flag
+  (reason required) and a link to the tenancy to read the paper.
+  Seen in Chrome as an admin: the queue, the decision (the version was confirmed with an alert), and the
+  read-only Papers section with a file opening. **Not yet seen as a tenant or landlord** (needs their sign-in).
+
 ## Goal
 
 Landlords keep the papers of a tenancy in one place: the tenancy agreement and other contracts,
@@ -93,9 +108,13 @@ Decided 27 November 2026.
   `landlord_urls.py`, `tenant_urls.py`, `admin_urls.py`, `tests/`); migration `documents/0003`
   (maintenance link). Confirmation uses the review engine (`DOCUMENT_CONFIRMATION` requests; see
   [Reviews](reviews.md)).
-- Admin app: none yet.
+- Admin app (added 28 November 2026): `admin/components/documents/` (papers section, item, upload dialog,
+  admin case item), `admin/hooks/form/useDocumentActions.ts` and `useDocumentCaseDecision.ts`,
+  `admin/api/services/documents/serve-action.ts`, the file route `admin/app/document-files/`, and the admin
+  page `admin/app/(app)/admin/document-cases/`.
 
 ## Not done
 
-No screens. Also: a tenant adding a version to their own paper, and every screen. A super admin deciding a document case is the
+Not done: a tenant adding a version to their own paper; showing a maintenance issue's receipts on the issue
+page; the admin Papers section is read-only (no filter by type). A super admin deciding a document case is the
 same as any admin; nobody acts for a party on documents yet.
