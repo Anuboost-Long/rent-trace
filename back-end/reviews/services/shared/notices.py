@@ -131,6 +131,16 @@ def _tenants_of(document):
     return [party.tenant for party in parties.select_related("tenant")]
 
 
+def document_added_by_tenant(document, owners, tenant, title):
+    notify(
+        owners,
+        kind=Kind.DOCUMENT_ADDED,
+        title="A tenant added a document",
+        body=f"{_name(tenant)} added: {title}.",
+        subject_id=document.tenancy_id,
+    )
+
+
 def document_added(document, title):
     if document.tenancy_id is None:
         return

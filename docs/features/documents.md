@@ -2,10 +2,11 @@
 
 ## Status — 28 November 2026
 
-API built, no screens. Expiry and escalation added on 28 November (15 + 4 new tests; documents, reviews,
-notifications and accounts suites pass: 242). Back end: 21 tests pass in `documents` (publish, add a version, confirm or flag,
-list and open files), and the accounts and notifications suites still pass; ruff, migration check and
-OpenAPI validation are clean. The screens come later (the project is working API first).
+API built, no screens. The first 21 tests covered publish, adding a version, confirm or flag, listing
+and opening files. Added on 28 November 2026: expiry and escalation (19 tests) and tenant uploads
+(11 tests). The full back-end suite passes (918); ruff, the migration check and OpenAPI validation are
+clean. Notification kinds `DOCUMENT_ESCALATED`, `DOCUMENT_SENT_TO_ADMIN` and `DOCUMENT_DECIDED` need
+`notifications/0015` and `accounts/0016` applied (`manage.py migrate`). The screens come later.
 
 ## Goal
 
@@ -28,7 +29,7 @@ Decided 27 November 2026.
 - **Who does what** (permissions already seeded): a landlord who owns the property **publishes** and
   adds versions (`documents.publish`); a tenant of the tenancy **views** and **confirms or flags**
   (`documents.confirm`); anyone can view what they are allowed to see (`documents.view`). Tenants do
-  not upload (assumption; changing it needs a new permission code).
+  upload only the papers listed below (`documents.upload`, added 28 November 2026).
 - **Needs both sides' consent:** tenancy agreements and other contracts. Publishing a version of one
   creates a `DOCUMENT_CONFIRMATION` review request for the tenants; one current tenant of the tenancy
   confirms it or flags it with a reason (the engine's "one eligible opposite-side party" rule). A
@@ -36,6 +37,14 @@ Decided 27 November 2026.
   the landlord publishes a corrected version. A tenancy agreement must name a tenancy.
 - **No consent needed:** condition reports, notices, receipts and other papers. The new version is
   current at once and the tenants are told.
+- **Tenant uploads** (added 28 November 2026): a current tenant can upload a `NOTICE`, `RECEIPT` or
+  `OTHER` paper on their tenancy (`documents.upload`, migration `accounts/0016`), optionally linked to a
+  maintenance issue on the same tenancy. It is current at once and needs no consent; the owners are told
+  (`DOCUMENT_ADDED`, the tenants are not). Tenancy agreements and condition reports stay landlord-only
+  because they need consent. A tenant cannot add a new version to a paper afterwards.
+  `POST /api/tenant/tenancies/<id>/documents/` (multipart: `document_type`, `title`, `description`,
+  `document_date`, `maintenance_issue_id`, `file`). Housemates, the landlord and admins see it like any
+  other document.
 - **Seeing them:** a landlord sees every document on their units; a tenant sees the documents on their
   own tenancy (including all versions, so they can confirm a pending one). Admins can read any
   document. Anyone else gets a 404.
@@ -88,5 +97,5 @@ Decided 27 November 2026.
 
 ## Not done
 
-No screens. Also: tenants uploading, and every screen. A super admin deciding a document case is the
+No screens. Also: a tenant adding a version to their own paper, and every screen. A super admin deciding a document case is the
 same as any admin; nobody acts for a party on documents yet.

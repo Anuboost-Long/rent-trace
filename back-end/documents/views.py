@@ -65,7 +65,8 @@ class LandlordDocumentVersionsView(LandlordView):
 
 
 class TenantDocumentsView(TenantView):
-    required_permissions = {"GET": "documents.view"}
+    required_permissions = {"GET": "documents.view", "POST": "documents.upload"}
+    parser_classes = [MultiPartParser]
 
     @extend_schema(
         operation_id="tenant_documents_list", responses=resources.DocumentResource(many=True)
@@ -73,6 +74,18 @@ class TenantDocumentsView(TenantView):
     def get(self, request, tenancy_id):
         found = services.list_documents_for_tenancy(tenant=request.user, tenancy_id=tenancy_id)
         return Response(resources.DocumentResource(found, many=True).data)
+
+    @extend_schema(
+        operation_id="tenant_document_upload",
+        request={"multipart/form-data": dtos.UploadDocumentDto},
+        responses={201: resources.DocumentResource},
+    )
+    def post(self, request, tenancy_id):
+        fields = validated(dtos.UploadDocumentDto, request.data)
+        uploaded = services.upload_tenant_document(
+            tenant=request.user, tenancy_id=tenancy_id, fields=fields, upload=fields["file"]
+        )
+        return Response(resources.DocumentResource(uploaded).data, status=201)
 
 
 class TenantDocumentView(TenantView):

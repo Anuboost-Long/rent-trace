@@ -15,3 +15,4 @@ from documents.services.list_documents import (
 )
 from documents.services.open_document_file import open_document_file
 from documents.services.publish_document import publish_document
+from documents.services.upload_tenant_document import upload_tenant_document

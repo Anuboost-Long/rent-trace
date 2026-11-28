@@ -7,4 +7,5 @@ from documents.dtos.documents import (
     EscalateVersionDto,
     FlagVersionDto,
     PublishDocumentDto,
+    UploadDocumentDto,
 )
