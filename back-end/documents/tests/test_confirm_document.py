@@ -1,4 +1,7 @@
 import uuid
+from datetime import timedelta
+
+from django.utils import timezone
 
 from documents.models import Document
 from documents.tests.base import DocumentApiTestCase
@@ -69,3 +72,45 @@ class ConfirmDocumentTests(DocumentApiTestCase):
         self.assertEqual(self.answer(version_id, "confirm", user=outsider).status_code, 404)
         self.assertEqual(ReviewRequest.objects.get().status, "PENDING_REVIEW")
         self.assertEqual(self.answer(version_id, "confirm", user=self.sam).status_code, 200)
+
+
+class ExpiredConfirmationTests(DocumentApiTestCase):
+    def go_stale(self, days=15):
+        ReviewRequest.objects.update(submitted_at=timezone.now() - timedelta(days=days))
+
+    def test_a_version_nobody_answered_for_14_days_reads_as_expired(self):
+        document = self.published()
+        self.go_stale()
+
+        self.as_user(self.tina)
+        seen = self.client.get(f"{self.tenant_url}{document['id']}/")
+
+        self.assertEqual(seen.data["versions"][0]["confirmation"], "EXPIRED")
+
+    def test_an_expired_version_cannot_be_confirmed_or_flagged(self):
+        version_id = self.published()["versions"][0]["id"]
+        self.go_stale()
+
+        confirmed = self.answer(version_id, "confirm")
+        flagged = self.answer(version_id, "flag", reason="Too late")
+
+        self.assertEqual(confirmed.status_code, 400)
+        self.assertIn("expired", str(confirmed.data).lower())
+        self.assertEqual(flagged.status_code, 400)
+        self.assertIsNone(Document.objects.get().current_version)
+
+    def test_a_version_waiting_under_14_days_can_still_be_confirmed(self):
+        version_id = self.published()["versions"][0]["id"]
+        self.go_stale(days=13)
+
+        self.assertEqual(self.answer(version_id, "confirm").status_code, 200)
+
+    def test_the_landlord_can_publish_an_expired_version_again(self):
+        document = self.published()
+        self.go_stale()
+
+        again = self.add_version(document)
+
+        self.assertEqual(again.status_code, 201, again.data)
+        newest = again.data["versions"][-1]
+        self.assertEqual(self.answer(newest["id"], "confirm").status_code, 200)
